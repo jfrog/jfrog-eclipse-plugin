@@ -1,0 +1,64 @@
+allprojects {
+    task generateDependenciesGraphAsJson() {
+        doLast {
+            println "Display name:" + project.getDisplayName()
+            Set<Configuration> configurationSet = project.getConfigurations();
+            String jsonOutput = ""
+            jsonOutput += "{\"groupId\":\"" + project.getGroup() + "\",\"artifactId\":\"" + project.getName() + "\",\"version\":\"" +  project.getVersion() + "\""
+            jsonOutput += ",\"dependencies\":["
+
+            for (Configuration configuration : configurationSet) {
+                try {
+                    ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
+                    Set<ResolvedDependency> firstLevelModuleDependencies = resolvedConfiguration.getFirstLevelModuleDependencies();
+                    Iterator<ResolvedDependency> iterator = firstLevelModuleDependencies.iterator();
+                    while (iterator.hasNext()) {
+                        ResolvedDependency resolvedDependency = iterator.next();
+                        jsonOutput += "{\"groupId\":\"" + resolvedDependency.getModuleGroup() + "\",\"artifactId\":\"" + resolvedDependency.getModuleName() + "\",\"version\":\"" + resolvedDependency.getModuleVersion() + "\""
+                        Set<ResolvedDependency> childrens = resolvedDependency.getChildren();
+                        jsonOutput += ",\"dependencies\":["
+                        jsonOutput = printChildrens(childrens, jsonOutput);
+                        jsonOutput += "]\n"
+                        jsonOutput += "},"
+                    }
+
+                } catch (RuntimeException e) {
+                    // ignore
+                }
+            }
+            if (jsonOutput.endsWith(",")) {
+                jsonOutput = jsonOutput.substring(0, jsonOutput.length() - 1)
+            }
+            jsonOutput += "]}"
+            if (jsonOutput.equals("[]")) {
+                return
+            }
+            File homeDir = new File(System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin" + File.separator + name + File.separator + project.getName());
+            if (!homeDir.exists()) {
+                homeDir.mkdirs();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(homeDir.getAbsolutePath() + File.separator + project.getName() + ".txt"));
+            writer.write(jsonOutput);
+            writer.close();
+            println jsonOutput
+        }
+    }
+}
+
+private String printChildrens(Set<ResolvedDependency> childrens, String jsonOutput) {
+    for (ResolvedDependency children : childrens) {
+        jsonOutput += "{\"groupId\":\"" + children.getModuleGroup() + "\",\"artifactId\":\"" + children.getModuleName() + "\",\"version\":\"" + children.getModuleVersion() + "\""
+        jsonOutput += ",\"dependencies\":["
+        if (children.getChildren().size() > 0) {
+            jsonOutput += printChildrens(children.getChildren(), "")
+        }
+        jsonOutput += "]\n"
+        jsonOutput += "}\n,"
+    }
+
+    if (jsonOutput.endsWith(",")) {
+        jsonOutput = jsonOutput.substring(0, jsonOutput.length() - 1) + "\n"
+    }
+    return jsonOutput
+}

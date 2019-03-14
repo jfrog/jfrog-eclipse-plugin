@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.jfrog.eclipse.feature_1.0.0.qualifier.jar" id="org.jfrog.eclipse.feature" version="1.0.0.qualifier">
+      <category name="org.jfrog.eclipse"/>
+   </feature>
+   <category-def name="org.jfrog.eclipse" label="JFrog"/>
+</site>
