@@ -67,6 +67,7 @@ public class IssuesTree extends SearchableTree {
 	public void reset() {
 		super.reset();
 		root.removeAllChildren();
+		treeViewer.setInput(root);
 	}
 
 	public static void disposeTree() {

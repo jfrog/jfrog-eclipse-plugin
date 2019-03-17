@@ -89,6 +89,9 @@ public abstract class ScanManager extends ScanManagerBase {
 				if (parent.isDisposed()) {
 					return;
 				}
+				if (getScanResults() == null) {
+					return;
+				}
 				scanAndCacheArtifacts(indicator, quickScan);
 				addXrayInfoToTree(getScanResults());
 				if (!getScanResults().isLeaf()) {
@@ -109,5 +112,9 @@ public abstract class ScanManager extends ScanManagerBase {
 
 			}
 		});
+	}
+	
+	public IProject getIProject() {
+		return project;
 	}
 }

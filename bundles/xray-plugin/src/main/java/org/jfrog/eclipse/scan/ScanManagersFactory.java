@@ -41,7 +41,7 @@ public class ScanManagersFactory {
 		return scanManagers;
 	}
 
-	public void refreshScanManagers() {
+	public void refreshScanManagers(Composite parent) {
 		scanManagers = Lists.newArrayList();
 		IWorkspace iworkspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = iworkspace.getRoot();
@@ -55,7 +55,7 @@ public class ScanManagersFactory {
 						continue;
 					}
 					if (MavenScanManager.isApplicable(project)) {
-						scanManagers.add(new MavenScanManager(project));
+						scanManagers.add(new MavenScanManager(project, parent));
 					}
 					if (GradleScanManager.isApplicable(project)) {
 						scanManagers.add(new GradleScanManager(project));
@@ -78,7 +78,7 @@ public class ScanManagersFactory {
 			Logger.getLogger().info("Previous scan still running...");
 			return;
 		}
-		refreshScanManagers();
+		refreshScanManagers(parent);
 		if (scanManagers.size() > 0) {
 			setScanInProgress(true);
 		}
@@ -100,5 +100,14 @@ public class ScanManagersFactory {
 
 	public void setScanInProgress(boolean isScanInProgress) {
 		scanInProgress.set(isScanInProgress);
+	}
+	
+	public ScanManager getProjectScanManager(IProject project) {
+		for (ScanManager scanManager : scanManagers) {
+			if (scanManager.getIProject().getName().equals(project.getName())) {
+				return scanManager;
+			}
+		}
+		return null;
 	}
 }

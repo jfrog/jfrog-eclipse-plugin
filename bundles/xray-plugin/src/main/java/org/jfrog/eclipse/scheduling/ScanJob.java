@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.jfrog.eclipse.log.Logger;
 
 /**
  * @author yahavi
@@ -14,7 +15,7 @@ public class ScanJob extends Job {
 	private static final SchedulingRule schedulingRule = new SchedulingRule();
 
 	private ICoreRunnable runnable;
-	protected static String FAMILY = "JFrogEclipsePluginJob";
+	public static String FAMILY = "JFrogEclipsePluginJob";
 	
 	public ScanJob(String name, ICoreRunnable runnable) {
 		super(name);
