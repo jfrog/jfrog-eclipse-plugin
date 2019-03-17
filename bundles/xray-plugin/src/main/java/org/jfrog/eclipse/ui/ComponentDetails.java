@@ -8,9 +8,6 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ICoreRunnable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -26,17 +23,13 @@ import org.jfrog.build.extractor.scan.GeneralInfo;
 import org.jfrog.build.extractor.scan.License;
 import org.jfrog.eclipse.configuration.XrayGlobalConfiguration;
 import org.jfrog.eclipse.configuration.XrayServerConfigImpl;
-import org.jfrog.eclipse.scan.ScanManagersFactory;
 import org.jfrog.utils.Utils;
-
-import com.google.common.collect.Sets;
 
 /**
  * @author yahavi
  */
 public abstract class ComponentDetails extends Panel {
 
-	private static Set<ICoreRunnable> credentialsSetListeners = Sets.newConcurrentHashSet();
 	protected Panel componentDetailsPanel;
 	private Hyperlink credentialsConfigLink;
 	private String title;
@@ -47,7 +40,6 @@ public abstract class ComponentDetails extends Panel {
 		setGridLayout(this, 1, false);
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			createMissingCredentialsPanel();
-			credentialsSetListeners.add(createCredentialsSetListener());
 			return;
 		}
 		createComponentsPanel();
@@ -63,30 +55,21 @@ public abstract class ComponentDetails extends Panel {
 		credentialsConfigLink.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(final HyperlinkEvent e) {
-				XrayGlobalConfiguration.createPreferenceDialog(credentialsSetListeners).open();
+				XrayGlobalConfiguration.createPreferenceDialog().open();
 			}
 		});
 	}
-
-	private ICoreRunnable createCredentialsSetListener() {
-		return new ICoreRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				if (credentialsConfigLink.isDisposed() || !XrayServerConfigImpl.getInstance().areCredentialsSet()) {
-					return;
-				}
-				credentialsConfigLink.dispose();
-				createComponentsPanel();
-				refreshPanel();
-				if (credentialsSetListeners.size() == 1) {
-					ScanManagersFactory.getInstance().startScan(ComponentDetails.this, true);
-				}
-				credentialsSetListeners.remove(this);
-			}
-		};
+	
+	public void credentialsSet() {
+		if (credentialsConfigLink == null || credentialsConfigLink.isDisposed()) {
+			return;
+		}
+		credentialsConfigLink.dispose();
+		createComponentsPanel();
+		refreshPanel();
 	}
 
-	private void createComponentsPanel() {
+	protected void createComponentsPanel() {
 		createText(this, title);
 		componentDetailsPanel = new Panel(this);
 		setGridLayout(componentDetailsPanel, 2, false);

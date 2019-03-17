@@ -20,7 +20,7 @@ public class LicensesTab extends CTabItem {
 		LicensesTree.createLicensesTree(horizontalDivision);
 
 		// Right
-		ComponentDetails componentDetails = new ComponentLicenseDetails(horizontalDivision);
+		ComponentDetails componentDetails = ComponentLicenseDetails.create(horizontalDivision);
 
 		LicensesTree licensesTree = LicensesTree.getLicensesTree();
 		licensesTree.setComponentDetails(componentDetails);

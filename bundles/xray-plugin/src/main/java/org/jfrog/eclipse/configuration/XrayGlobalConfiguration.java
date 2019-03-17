@@ -1,9 +1,5 @@
 package org.jfrog.eclipse.configuration;
 
-import java.util.Set;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -13,9 +9,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.jfrog.eclipse.log.Logger;
-
-import com.google.common.collect.Sets;
+import org.jfrog.eclipse.scan.ScanManagersFactory;
+import org.jfrog.eclipse.ui.ComponentDetails;
+import org.jfrog.eclipse.ui.issues.ComponentIssueDetails;
+import org.jfrog.eclipse.ui.licenses.ComponentLicenseDetails;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -30,8 +27,6 @@ import com.google.common.collect.Sets;
  * @author yahavi
  */
 public class XrayGlobalConfiguration extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-	Set<ICoreRunnable> runnables = Sets.newHashSet();
 
 	public XrayGlobalConfiguration() {
 		super(GRID);
@@ -53,23 +48,22 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		addField(new TestConnectionButton(urlEditor, usernameEditor, passwordEditor, getFieldEditorParent()));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void applyData(Object data) {
-		super.applyData(data);
-		runnables = (Set<ICoreRunnable>) data;
-	}
-
 	@Override
 	public boolean performOk() {
 		super.performOk();
-		try {
-			for (ICoreRunnable runnable : runnables) {
-				runnable.run(null);
+		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
+			return true;
+		}
+		boolean doQuickScan = false;
+		ComponentDetails[] componentsDetails = { ComponentIssueDetails.get(), ComponentLicenseDetails.get() };
+		for (ComponentDetails componentsDetail : componentsDetails) {
+			if (componentsDetail != null) {
+				componentsDetail.credentialsSet();
+				doQuickScan = true;
 			}
-		} catch (CoreException e) {
-			Logger.getLogger().error(e.getMessage(), e);
-			return false;
+		}
+		if (doQuickScan) {
+			ScanManagersFactory.getInstance().startScan(getShell().getParent(), true);
 		}
 		return true;
 	}
@@ -80,10 +74,10 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		setPreferenceStore(new ScopedPreferenceStore(ConfigurationScope.INSTANCE, PreferenceConstants.XRAY_QUALIFIER));
 	}
 
-	public static PreferenceDialog createPreferenceDialog(Set<ICoreRunnable> credentialsSetListeners) {
+	public static PreferenceDialog createPreferenceDialog() {
 		return PreferencesUtil.createPreferenceDialogOn(Display.getCurrent().getActiveShell(),
 				"org.jfrog.eclipse.ui.preferences.XrayServerConfig",
-				new String[] { "org.jfrog.eclipse.ui.preferences.XrayServerConfig" }, credentialsSetListeners);
+				new String[] { "org.jfrog.eclipse.ui.preferences.XrayServerConfig" }, null);
 	}
 
 }

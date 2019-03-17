@@ -8,7 +8,19 @@ import org.jfrog.eclipse.ui.ComponentDetails;
  * @author yahavi
  */
 public class ComponentLicenseDetails extends ComponentDetails {
-	public ComponentLicenseDetails(Composite parent) {
+	
+	private static ComponentLicenseDetails instance;
+	
+	public static ComponentLicenseDetails create(Composite parent) {
+		instance = new ComponentLicenseDetails(parent);
+		return instance;
+	}
+	
+	public static ComponentLicenseDetails get() {
+		return instance;
+	}
+	
+	private ComponentLicenseDetails(Composite parent) {
 		super(parent, "Details");
 	}
 

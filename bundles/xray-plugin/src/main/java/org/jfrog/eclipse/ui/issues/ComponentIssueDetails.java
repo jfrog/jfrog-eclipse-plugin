@@ -11,7 +11,18 @@ import org.jfrog.eclipse.ui.ComponentDetails;
  */
 public class ComponentIssueDetails extends ComponentDetails {
 
-	public ComponentIssueDetails(Composite parent) {
+	private static ComponentIssueDetails instance;
+
+	public static ComponentIssueDetails create(Composite parent) {
+		instance = new ComponentIssueDetails(parent);
+		return instance;
+	}
+
+	public static ComponentIssueDetails get() {
+		return instance;
+	}
+
+	private ComponentIssueDetails(Composite parent) {
 		super(parent, "Component Details");
 	}
 
