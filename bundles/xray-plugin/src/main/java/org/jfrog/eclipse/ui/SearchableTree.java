@@ -36,7 +36,7 @@ public abstract class SearchableTree extends FilteredTree {
 		setQuickSelectionMode(true);
 		treeViewer.setContentProvider(new ScanTreeContentProvider());
 		treeViewer.getTree().setHeaderVisible(true);
-		createColumn(labelProvider);
+		createColumn("Components Tree", labelProvider, SWT.NONE, 1);
 	}
 
 	@Override
@@ -72,12 +72,16 @@ public abstract class SearchableTree extends FilteredTree {
 		return patternFilter;
 	}
 
-	private void createColumn(ColumnLabelProvider labelProvider) {
-		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
-		viewerColumn.getColumn().setText("Components Tree");
+	public TreeViewerColumn createColumn(String title, ColumnLabelProvider labelProvider, int style, int weight) {
+		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, style);
+		viewerColumn.getColumn().setMoveable(false);
+		viewerColumn.getColumn().setResizable(false);
+		viewerColumn.getColumn().setText(title);
 		viewerColumn.setLabelProvider(labelProvider);
+		viewerColumn.getColumn().pack();
 		treeLayout.setColumnData(viewerColumn.getColumn(),
-				new ColumnWeightData(1, viewerColumn.getColumn().getWidth()));
+				new ColumnWeightData(weight, viewerColumn.getColumn().getWidth() + 20));
+		return viewerColumn;
 	}
 
 	public List<DependenciesTree> getSelectedNodes() {

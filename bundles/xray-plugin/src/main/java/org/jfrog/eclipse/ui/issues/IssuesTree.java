@@ -2,6 +2,8 @@ package org.jfrog.eclipse.ui.issues;
 
 import java.util.Map.Entry;
 
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 import org.jfrog.eclipse.ui.SearchableTree;
@@ -15,6 +17,8 @@ public class IssuesTree extends SearchableTree {
 	private static IssuesTree instance;
 	private ComponentIssueTable componentIssueTable;
 	private static DependenciesTree root;
+	private TreeViewerColumn issuesCountColumn;
+	private int totalIssues;
 
 	public static void createIssuesTree(Composite parent) {
 		instance = new IssuesTree(parent);
@@ -26,6 +30,7 @@ public class IssuesTree extends SearchableTree {
 
 	private IssuesTree(Composite parent) {
 		super(parent, new IssuesTreeColumnLabelProvider());
+		issuesCountColumn = createColumn("Issues (0)", new IssueCountColumnLabelProvider(this), SWT.RIGHT, 0);
 		if (root == null) {
 			root = new DependenciesTree();
 		}
@@ -48,7 +53,7 @@ public class IssuesTree extends SearchableTree {
 		if (project != null) {
 			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
 			FilterManager filterManager = FilterManager.getInstance();
-			filterManager.applyFilters(project, filteredRoot, new DependenciesTree("All components"));
+			filterManager.applyFilters(project, filteredRoot, new DependenciesTree());
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
@@ -56,6 +61,8 @@ public class IssuesTree extends SearchableTree {
 			} else {
 				treeViewer.setInput(root);
 			}
+			totalIssues += filteredRoot.getIssueCount();
+			issuesCountColumn.getColumn().setText("Issues (" + totalIssues + ")");
 		}
 	}
 
@@ -70,6 +77,7 @@ public class IssuesTree extends SearchableTree {
 	@Override
 	public void reset() {
 		super.reset();
+		totalIssues = 0;
 		root.removeAllChildren();
 		treeViewer.setInput(root);
 	}
