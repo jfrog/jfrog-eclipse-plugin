@@ -29,4 +29,10 @@ public class ComponentLicenseDetails extends ComponentDetails {
 		createCommonPanel(node);
 		refreshPanel();
 	}
+	
+	public static void disposeComponentDetails() {
+		if (instance != null) {
+			instance.dispose();
+		}
+	}
 }

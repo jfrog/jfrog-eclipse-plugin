@@ -35,4 +35,10 @@ public class ComponentIssueDetails extends ComponentDetails {
 		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
 		refreshPanel();
 	}
+	
+	public static void disposeComponentDetails() {
+		if (instance != null) {
+			instance.dispose();
+		}
+	}
 }

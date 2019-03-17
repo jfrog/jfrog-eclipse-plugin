@@ -40,6 +40,7 @@ public class IssuesTab extends CTabItem {
 	
 	@Override
 	public void dispose() {
+		ComponentIssueDetails.disposeComponentDetails();
 		IssuesTree.disposeTree();
 		super.dispose();
 	}

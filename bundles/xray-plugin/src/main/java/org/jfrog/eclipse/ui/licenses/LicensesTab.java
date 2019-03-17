@@ -31,6 +31,7 @@ public class LicensesTab extends CTabItem {
 	
 	@Override
 	public void dispose() {
+		ComponentLicenseDetails.disposeComponentDetails();
 		LicensesTree.disposeTree();
 		super.dispose();
 	}
