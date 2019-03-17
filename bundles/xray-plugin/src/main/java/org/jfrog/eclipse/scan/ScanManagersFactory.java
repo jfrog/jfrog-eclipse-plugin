@@ -72,7 +72,7 @@ public class ScanManagersFactory {
 			}
 		}
 	}
-	
+
 	public void startScan(Composite parent, boolean quickScan) {
 		if (isScanInProgress()) {
 			Logger.getLogger().info("Previous scan still running...");

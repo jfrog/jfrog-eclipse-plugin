@@ -35,13 +35,14 @@ public class ComponentIssueTable extends Panel {
 
 	private TableColumnLayout tableLayout;
 	private TableViewer tableViewer;
+	private Panel tablePanel;
 
 	public ComponentIssueTable(Composite parent) {
 		super(parent);
 		setGridLayout(this, 1, true);
 		createText(this, "Component Issues Details");
 
-		Panel tablePanel = new Panel(this);
+		tablePanel = new Panel(this);
 		setGridLayout(tablePanel, 1, true);
 		tableLayout = new TableColumnLayout();
 		tablePanel.setLayout(tableLayout);

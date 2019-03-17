@@ -51,7 +51,11 @@ public class IssuesTree extends SearchableTree {
 			filterManager.applyFilters(project, filteredRoot, new DependenciesTree("All components"));
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
 			root.add(filteredRoot);
-			treeViewer.setInput(root);
+			if (root.getChildCount() == 1) {
+				treeViewer.setInput(filteredRoot);
+			} else {
+				treeViewer.setInput(root);
+			}
 		}
 	}
 

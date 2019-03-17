@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
@@ -30,8 +31,9 @@ import org.jfrog.utils.Utils;
  */
 public abstract class ComponentDetails extends Panel {
 
-	protected Panel componentDetailsPanel;
+	protected Composite componentDetailsPanel;
 	private Hyperlink credentialsConfigLink;
+	private ScrolledComposite scrolledComposite;
 	private String title;
 
 	public ComponentDetails(Composite parent, String title) {
@@ -59,7 +61,7 @@ public abstract class ComponentDetails extends Panel {
 			}
 		});
 	}
-	
+
 	public void credentialsSet() {
 		if (credentialsConfigLink == null || credentialsConfigLink.isDisposed()) {
 			return;
@@ -71,9 +73,12 @@ public abstract class ComponentDetails extends Panel {
 
 	protected void createComponentsPanel() {
 		createText(this, title);
-		componentDetailsPanel = new Panel(this);
+		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		setGridLayout(scrolledComposite, 1, false);
+		componentDetailsPanel = new Panel(scrolledComposite);
 		setGridLayout(componentDetailsPanel, 2, false);
 		UiUtils.createDisabledTextLabel(componentDetailsPanel, "Component information is not available");
+		scrolledComposite.setContent(componentDetailsPanel);
 	}
 
 	protected void createCommonPanel(DependenciesTree node) {
@@ -90,6 +95,7 @@ public abstract class ComponentDetails extends Panel {
 		addSection("Type:", StringUtils.capitalize(generalInfo.getPkgType()));
 		addSection("Path:", generalInfo.getPath());
 		addLicenses(node.getLicenses());
+		refreshPanel();
 	}
 
 	protected void addSection(String name, String content) {
@@ -101,8 +107,8 @@ public abstract class ComponentDetails extends Panel {
 	}
 
 	protected void refreshPanel() {
+		layout(true, true);
 		componentDetailsPanel.pack();
-		componentDetailsPanel.getParent().layout();
 	}
 
 	private void addLicenses(Set<License> licenses) {

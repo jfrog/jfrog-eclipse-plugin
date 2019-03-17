@@ -32,7 +32,7 @@ public abstract class SearchableTree extends FilteredTree {
 
 	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {
 		super(parent, true);
-		init(SWT.NONE, createFilter());
+		init(SWT.BORDER, createFilter());
 		setQuickSelectionMode(true);
 		treeViewer.setContentProvider(new ScanTreeContentProvider());
 		treeViewer.getTree().setHeaderVisible(true);

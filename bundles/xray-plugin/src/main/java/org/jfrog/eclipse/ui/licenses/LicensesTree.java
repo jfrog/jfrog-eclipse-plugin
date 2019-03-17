@@ -45,7 +45,11 @@ public class LicensesTree extends SearchableTree {
 			FilterManager filterManager = FilterManager.getInstance();
 			filterManager.applyFilters(project, new DependenciesTree(), filteredRoot);
 			root.add(filteredRoot);
-			treeViewer.setInput(root);
+			if (root.getChildCount() == 1) {
+				treeViewer.setInput(filteredRoot);
+			} else {
+				treeViewer.setInput(root);
+			}
 		}
 	}
 
@@ -63,7 +67,7 @@ public class LicensesTree extends SearchableTree {
 		root.removeAllChildren();
 		treeViewer.setInput(root);
 	}
-	
+
 	public static void disposeTree() {
 		if (instance != null) {
 			instance.dispose();
