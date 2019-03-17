@@ -19,14 +19,14 @@ public class UiUtils {
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
 
-	public static void createText(Panel parent, String str) {
+	public static void createText(Composite parent, String str) {
 		Text text = new Text(parent, SWT.LEFT_TO_RIGHT);
 		text.setEditable(false);
 		text.setText(str);
 	}
 
-	public static void createDisabledTextLabel(Panel parent, String str) {
-		Text text = new Text(parent, SWT.NONE);
+	public static void createDisabledTextLabel(Composite parent, String str) {
+		Text text = new Text(parent, SWT.CENTER);
 		text.setEnabled(false);
 		text.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 		text.setText(str);
