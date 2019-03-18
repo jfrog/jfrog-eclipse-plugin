@@ -5,6 +5,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class ProblemsLogger {
 
@@ -42,7 +43,7 @@ public class ProblemsLogger {
 		};
 
 		try {
-			ResourcesPlugin.getWorkspace().run(editorMarker, null);
+			ResourcesPlugin.getWorkspace().run(editorMarker, new NullProgressMonitor());
 		} catch (CoreException e) {
 			System.err.println("Some error set marker: " + e);
 		}
