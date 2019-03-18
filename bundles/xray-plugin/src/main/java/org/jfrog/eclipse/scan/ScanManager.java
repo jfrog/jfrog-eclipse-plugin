@@ -105,15 +105,16 @@ public abstract class ScanManager extends ScanManagerBase {
 				}
 				parent.getDisplay().syncExec(new Runnable() {
 					public void run() {
-						licensesTree.applyFilters(getProjectName());
-						issuesTree.applyFilters(getProjectName());
+						if (!monitor.isCanceled()) {
+							licensesTree.applyFilters(getProjectName());
+							issuesTree.applyFilters(getProjectName());
+						} 
 					}
 				});
-
 			}
 		});
 	}
-	
+
 	public IProject getIProject() {
 		return project;
 	}

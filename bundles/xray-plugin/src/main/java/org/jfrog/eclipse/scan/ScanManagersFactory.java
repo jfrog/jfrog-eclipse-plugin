@@ -10,9 +10,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.eclipse.log.Logger;
 import org.jfrog.eclipse.npm.NpmProject;
+import org.jfrog.eclipse.scheduling.ScanJob;
 import org.jfrog.eclipse.ui.issues.IssuesTree;
 import org.jfrog.eclipse.ui.licenses.LicensesTree;
 import org.jfrog.utils.Utils;
@@ -79,6 +81,14 @@ public class ScanManagersFactory {
 			return;
 		}
 		refreshScanManagers(parent);
+		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
+		if (jobs.length > 0) {
+			for (Job job : jobs) {
+				Logger.getLogger().info("Cancling previous running scan: " + job.getName());
+				job.cancel();
+			}
+		}
+
 		if (scanManagers.size() > 0) {
 			setScanInProgress(true);
 		}
