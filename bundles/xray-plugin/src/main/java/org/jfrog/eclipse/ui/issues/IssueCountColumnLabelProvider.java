@@ -7,6 +7,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
+/**
+ * @author yahavi
+ */
 public class IssueCountColumnLabelProvider extends ColumnLabelProvider {
 	
 	private Font font;

@@ -56,7 +56,6 @@ public class ComponentIssueTable extends Panel {
 		Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		createColumns();
 	}
@@ -117,6 +116,8 @@ public class ComponentIssueTable extends Panel {
 			issuesSet.addAll(scanManager.getFilteredScanIssues(selectedNodes));
 		});
 
-		tableViewer.setInput(issuesSet.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList()));
+		tableViewer.setInput(issuesSet.stream()
+				.sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
+				.collect(Collectors.toList()));
 	}
 }
