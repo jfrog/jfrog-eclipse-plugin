@@ -1,11 +1,11 @@
 package org.jfrog.eclipse.ui;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.LayoutConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 /**
  * @author yahavi
@@ -13,10 +13,8 @@ import org.eclipse.swt.widgets.Text;
 public class UiUtils {
 
 	public static void setGridLayout(Composite composite, int numColumns, boolean makeColumnsEqualWidth) {
-		GridLayout layout = new GridLayout(numColumns, makeColumnsEqualWidth);
-		layout.marginWidth = layout.marginHeight = 0;
-		layout.horizontalSpacing = layout.verticalSpacing = 0;
-		composite.setLayout(layout);
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).equalWidth(makeColumnsEqualWidth)
+				.spacing(LayoutConstants.getSpacing().x, 0).create());
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
 

@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.jfrog.eclipse.ui.Panel;
 import org.jfrog.eclipse.ui.UiUtils;
 import org.jfrog.utils.XrayConnectionUtils;

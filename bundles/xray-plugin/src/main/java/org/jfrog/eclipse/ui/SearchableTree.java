@@ -75,7 +75,6 @@ public abstract class SearchableTree extends FilteredTree {
 	public TreeViewerColumn createColumn(String title, ColumnLabelProvider labelProvider, int style, int weight) {
 		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, style);
 		viewerColumn.getColumn().setMoveable(false);
-		viewerColumn.getColumn().setResizable(false);
 		viewerColumn.getColumn().setText(title);
 		viewerColumn.setLabelProvider(labelProvider);
 		viewerColumn.getColumn().pack();
