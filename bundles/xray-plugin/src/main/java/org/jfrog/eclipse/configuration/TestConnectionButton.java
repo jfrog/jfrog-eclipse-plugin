@@ -12,8 +12,10 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.jfrog.eclipse.ui.Panel;
+import org.jfrog.eclipse.ui.UiUtils;
 import org.jfrog.utils.XrayConnectionUtils;
 import org.osgi.framework.FrameworkUtil;
 
@@ -30,7 +32,7 @@ public class TestConnectionButton extends FieldEditor {
 			+ FrameworkUtil.getBundle(XrayGlobalConfiguration.class).getVersion().toString();
 	private StringFieldEditor urlEditor, usernameEditor, passwordEditor;
 	private Button button;
-	private Text connectionResults;
+	private Label connectionResults;
 	private Panel panel;
 
 	public TestConnectionButton(StringFieldEditor urlEditor, StringFieldEditor usernameEditor,
@@ -41,7 +43,7 @@ public class TestConnectionButton extends FieldEditor {
 		this.passwordEditor = passwordEditor;
 		createPanel(parent);
 		createButton(panel);
-		createResultsText(panel);
+		connectionResults = UiUtils.createLabel(panel, "");
 	}
 
 	private void createPanel(Composite parent) {
@@ -80,11 +82,6 @@ public class TestConnectionButton extends FieldEditor {
 				panel.pack();
 			}
 		});
-	}
-
-	private void createResultsText(Composite parent) {
-		connectionResults = new Text(parent, SWT.LEFT_TO_RIGHT);
-		connectionResults.setEnabled(false);
 	}
 
 	@Override

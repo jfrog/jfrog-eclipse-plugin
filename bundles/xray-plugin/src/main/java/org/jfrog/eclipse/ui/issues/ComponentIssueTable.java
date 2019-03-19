@@ -1,6 +1,6 @@
 package org.jfrog.eclipse.ui.issues;
 
-import static org.jfrog.eclipse.ui.UiUtils.createText;
+import static org.jfrog.eclipse.ui.UiUtils.createLabel;
 import static org.jfrog.eclipse.ui.UiUtils.setGridLayout;
 
 import java.util.Comparator;
@@ -40,7 +40,7 @@ public class ComponentIssueTable extends Panel {
 	public ComponentIssueTable(Composite parent) {
 		super(parent);
 		setGridLayout(this, 1, true);
-		createText(this, "Component Issues Details");
+		createLabel(this, "Component Issues Details");
 
 		tablePanel = new Panel(this);
 		setGridLayout(tablePanel, 1, true);

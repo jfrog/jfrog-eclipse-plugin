@@ -1,6 +1,6 @@
 package org.jfrog.eclipse.ui;
 
-import static org.jfrog.eclipse.ui.UiUtils.createText;
+import static org.jfrog.eclipse.ui.UiUtils.createLabel;
 import static org.jfrog.eclipse.ui.UiUtils.setGridLayout;
 
 import java.util.Set;
@@ -72,7 +72,7 @@ public abstract class ComponentDetails extends Panel {
 	}
 
 	protected void createComponentsPanel() {
-		createText(this, title);
+		createLabel(this, title);
 		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
 		setGridLayout(scrolledComposite, 1, false);
 		componentDetailsPanel = new Panel(scrolledComposite);
@@ -85,6 +85,7 @@ public abstract class ComponentDetails extends Panel {
 		for (Control control : componentDetailsPanel.getChildren()) {
 			control.dispose();
 		}
+		componentDetailsPanel.setBackground(scrolledComposite.getBackground());
 		GeneralInfo generalInfo = ObjectUtils.defaultIfNull(node.getGeneralInfo(), new GeneralInfo());
 		if (!StringUtils.equalsIgnoreCase("Npm", generalInfo.getPkgType())) {
 			addSection("Group:", generalInfo.getGroupId());
@@ -102,8 +103,8 @@ public abstract class ComponentDetails extends Panel {
 		if (StringUtils.isBlank(content)) {
 			return;
 		}
-		createText(componentDetailsPanel, name);
-		createText(componentDetailsPanel, content);
+		createLabel(componentDetailsPanel, name);
+		createLabel(componentDetailsPanel, content);
 	}
 
 	protected void refreshPanel() {
@@ -115,12 +116,12 @@ public abstract class ComponentDetails extends Panel {
 		if (licenses.isEmpty()) {
 			return;
 		}
-		createText(componentDetailsPanel, "Licenses");
+		createLabel(componentDetailsPanel, "Licenses");
 		Panel licensesPanel = new Panel(componentDetailsPanel);
 		licensesPanel.setLayout(new FillLayout());
 		licenses.forEach(license -> {
 			if (CollectionUtils.isEmpty(license.getMoreInfoUrl())) {
-				createText(licensesPanel, Utils.createLicenseString(license));
+				createLabel(licensesPanel, Utils.createLicenseString(license));
 			} else {
 				addHyperlink(licensesPanel, Utils.createLicenseString(license), license.getMoreInfoUrl().get(0));
 			}

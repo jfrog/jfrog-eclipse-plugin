@@ -7,9 +7,5 @@
 	<unit id="org.eclipse.m2e.feature.feature.group" version="1.9.0.20180606-2036"/>
 	<unit id="org.eclipse.buildship.feature.group" version="2.2.1.v20180125-1441"/>
 </location>
-	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		<unit id="org.testng.eclipse.feature.group" version="6.14.3.201902250526"/>
-		<repository location="http://beust.com/eclipse/updatesites/6.14.3.201902250526"/>
-	</location>
 </locations>
 </target>
