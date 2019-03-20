@@ -11,14 +11,14 @@ import junit.framework.TestCase;
 public class GradleScanManagerTest extends TestCase {
 
 	public void testIsApplicable() throws CoreException, IOException {
-		String projectName = "gradleIsApplicable";
-		IProject project = Utils.createProject(projectName);
+		String projectLocation = "gradleIsApplicable";
+		IProject project = Utils.createProject(projectLocation, "gradle");
 		assertTrue(GradleScanManager.isApplicable(project));
 	}
 	
 	public void testIsNotApplicable() throws CoreException, IOException {
-		String projectName = "gradleIsNotApplicable";
-		IProject project = Utils.createProject(projectName);
+		String projectLocation =  "gradleIsNotApplicable";
+		IProject project = Utils.createProject(projectLocation, "gradle");
 		assertFalse(GradleScanManager.isApplicable(project));
 	}
 }

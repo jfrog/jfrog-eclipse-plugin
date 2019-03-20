@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Path;
 
 public class Utils {
 	
-	public static IProject createProject(String projectName) throws IOException, CoreException {
+	public static IProject createProject(String projectName, String projectType) throws IOException, CoreException {
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		File dir = new File(workspace.getRoot().getLocation().toFile(), projectName);
@@ -25,7 +25,7 @@ public class Utils {
 			dir.delete();
 		}
 		dir.mkdirs();
-		File src = new File("resources/projects/" + projectName);
+		File src = new File("resources/projects/" + projectType + "/" + projectName);
 		FileUtils.copyDirectory(src, dir);
 		final IProject project = workspace.getRoot().getProject(projectName);
 		workspace.run(new IWorkspaceRunnable() {
