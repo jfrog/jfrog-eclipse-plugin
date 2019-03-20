@@ -57,7 +57,6 @@ public class MavenScanManager extends ScanManager {
 
 				@Override
 				public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
-					// TODO Auto-generated method stub
 					Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
 					if (jobs != null) {
 						for (Job job : jobs) {
