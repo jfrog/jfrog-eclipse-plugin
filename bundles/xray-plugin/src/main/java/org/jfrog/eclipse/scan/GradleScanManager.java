@@ -14,12 +14,14 @@ import java.util.LinkedHashSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
+import org.jfrog.eclipse.log.Logger;
 import org.jfrog.eclipse.utils.GradleArtifact;
 import org.jfrog.scan.ComponentPrefix;
 
@@ -38,7 +40,7 @@ public class GradleScanManager extends ScanManager {
 
 	public static boolean isApplicable(IProject project) {
 		try {
-			return project.getNature("org.eclipse.buildship.core.gradleprojectnature") != null;
+			return project.hasNature("org.eclipse.buildship.core.gradleprojectnature");
 		} catch (CoreException ce) {
 			// Ignore
 		}

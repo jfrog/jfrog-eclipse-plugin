@@ -40,7 +40,7 @@ public class MavenScanManager extends ScanManager {
 
 	public static boolean isApplicable(IProject project) {
 		try {
-			return project.getNature("org.eclipse.m2e.core.maven2Nature") != null;
+			return project.hasNature("org.eclipse.m2e.core.maven2Nature");
 		} catch (CoreException ce) {
 			// Ignore
 		}
@@ -57,6 +57,7 @@ public class MavenScanManager extends ScanManager {
 
 				@Override
 				public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
+					// TODO Auto-generated method stub
 					Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
 					if (jobs != null) {
 						for (Job job : jobs) {

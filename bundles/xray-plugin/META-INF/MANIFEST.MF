@@ -19,4 +19,5 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.109.100",
 Bundle-ClassPath: .,
  lib/ide-plugins-common.jar
 Bundle-Vendor: JFrog
-Export-Package: org.jfrog.eclipse.scan
+Export-Package: org.jfrog.eclipse.scan,
+ org.jfrog.scan
