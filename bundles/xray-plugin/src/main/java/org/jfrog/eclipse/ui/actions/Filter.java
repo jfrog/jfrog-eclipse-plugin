@@ -2,7 +2,6 @@ package org.jfrog.eclipse.ui.actions;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.ISharedImages;
 import org.jfrog.eclipse.ui.issues.IssuesFilterDialog;
 import org.jfrog.eclipse.ui.licenses.LicensesFilterDialog;
 
@@ -18,7 +17,7 @@ public class Filter extends Action {
 	private FilterType filterType = FilterType.Severity;
 
 	public Filter(ToolBar toolBar) {
-		super(toolBar, ISharedImages.IMG_ETOOL_CLEAR);
+		super(toolBar, "filter");
 		setFilterType(FilterType.Severity);
 	}
 

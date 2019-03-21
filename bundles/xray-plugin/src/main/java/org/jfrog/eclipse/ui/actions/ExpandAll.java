@@ -2,7 +2,6 @@ package org.jfrog.eclipse.ui.actions;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.ISharedImages;
 import org.jfrog.eclipse.ui.issues.IssuesTree;
 import org.jfrog.eclipse.ui.licenses.LicensesTree;
 
@@ -12,7 +11,7 @@ import org.jfrog.eclipse.ui.licenses.LicensesTree;
 public class ExpandAll extends Action {
 
 	public ExpandAll(ToolBar toolBar) {
-		super(toolBar, ISharedImages.IMG_ELCL_COLLAPSEALL_DISABLED);
+		super(toolBar, "expandAll");
 	}
 
 	@Override

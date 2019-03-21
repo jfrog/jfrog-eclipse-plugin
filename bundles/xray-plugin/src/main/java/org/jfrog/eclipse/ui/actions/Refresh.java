@@ -2,7 +2,6 @@ package org.jfrog.eclipse.ui.actions;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.ISharedImages;
 import org.jfrog.eclipse.configuration.XrayServerConfigImpl;
 import org.jfrog.eclipse.log.Logger;
 import org.jfrog.eclipse.scan.ScanManagersFactory;
@@ -13,7 +12,7 @@ import org.jfrog.eclipse.scan.ScanManagersFactory;
 public class Refresh extends Action {
 
 	public Refresh(ToolBar toolBar) {
-		super(toolBar, ISharedImages.IMG_ELCL_SYNCED);
+		super(toolBar, "refresh");
 	}
 
 	@Override

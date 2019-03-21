@@ -5,7 +5,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.PlatformUI;
+import org.jfrog.eclipse.ui.IconManager;
 
 /**
  * @author yahavi
@@ -14,7 +14,7 @@ public abstract class Action extends ToolItem {
 
 	public Action(ToolBar toolBar, String image) {
 		super(toolBar, SWT.PUSH);
-		setImage(PlatformUI.getWorkbench().getSharedImages().getImage(image));
+		setImage(IconManager.load(image));
 		addSelectionListener(new ActionPerformed());
 	}
 
