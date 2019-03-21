@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.eclipse.log.Logger;
@@ -26,7 +27,8 @@ import com.google.common.collect.Sets;
  * @author yahavi
  */
 public class ScanManagersFactory {
-	private static ScanManagersFactory instance = new ScanManagersFactory();
+
+	private static ScanManagersFactory instance;
 	private List<ScanManager> scanManagers = Lists.newArrayList();
 
 	// Lock to prevent multiple simultaneous scans
@@ -36,6 +38,9 @@ public class ScanManagersFactory {
 	}
 
 	public static ScanManagersFactory getInstance() {
+		if (instance == null) {
+			instance = new ScanManagersFactory();
+		}
 		return instance;
 	}
 
@@ -43,14 +48,57 @@ public class ScanManagersFactory {
 		return scanManagers;
 	}
 
+	/**
+	 * Start an Xray scan.
+	 * 
+	 * @param parent    - The parent composite requested to perform the scan. Will
+	 *                  be used later to check if it's disposed.
+	 * @param quickScan - True to use scan cache in case they are not invalidated.
+	 */
+	public void startScan(Composite parent, boolean quickScan) {
+		if (isScanInProgress()) {
+			Logger.getLogger().info("Previous scan still running...");
+			return;
+		}
+		refreshScanManagers(parent);
+
+		// Cancel other jobs
+		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
+		if (ArrayUtils.isNotEmpty(jobs)) {
+			for (Job job : jobs) {
+				Logger.getLogger().info("Cancling previous running scan: " + job.getName());
+				job.cancel();
+			}
+		}
+
+		if (scanManagers.size() > 0) {
+			setScanInProgress(true);
+		}
+		IssuesTree issuesTree = IssuesTree.getIssuesTree();
+		LicensesTree licensesTree = LicensesTree.getLicensesTree();
+		if (issuesTree == null || licensesTree == null) {
+			return;
+		}
+		issuesTree.reset();
+		licensesTree.reset();
+		for (ScanManager scanManager : getScanManagers()) {
+			scanManager.scanAndUpdateResults(quickScan, issuesTree, licensesTree, parent);
+		}
+	}
+
+	/**
+	 * Initialize scan managers list.
+	 * 
+	 * @param parent - The parent composite requested to perform the scan. Will be
+	 *               used later to check if it's disposed.
+	 */
 	public void refreshScanManagers(Composite parent) {
 		scanManagers = Lists.newArrayList();
-		IWorkspace iworkspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = iworkspace.getRoot();
-		IProject[] projects = root.getProjects();
-		Set<Path> paths = Sets.newHashSet();
+		IWorkspace iworkspace = ResourcesPlugin.getWorkspace();
+		IProject[] projects = iworkspace.getRoot().getProjects();
 		if (projects.length > 0) {
 			try {
+				Set<Path> paths = Sets.newHashSet();
 				for (IProject project : projects) {
 					if (!project.isOpen()) {
 						Logger.getLogger().info("Project is closed: " + project.getName());
@@ -75,49 +123,11 @@ public class ScanManagersFactory {
 		}
 	}
 
-	public void startScan(Composite parent, boolean quickScan) {
-		if (isScanInProgress()) {
-			Logger.getLogger().info("Previous scan still running...");
-			return;
-		}
-		refreshScanManagers(parent);
-		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
-		if (jobs.length > 0) {
-			for (Job job : jobs) {
-				Logger.getLogger().info("Cancling previous running scan: " + job.getName());
-				job.cancel();
-			}
-		}
-
-		if (scanManagers.size() > 0) {
-			setScanInProgress(true);
-		}
-		IssuesTree issuesTree = IssuesTree.getIssuesTree();
-		LicensesTree licensesTree = LicensesTree.getLicensesTree();
-		if (issuesTree == null || licensesTree == null) {
-			return;
-		}
-		issuesTree.reset();
-		licensesTree.reset();
-		for (ScanManager scanManager : getScanManagers()) {
-			scanManager.scanAndUpdateResults(quickScan, issuesTree, licensesTree, parent);
-		}
-	}
-
 	public boolean isScanInProgress() {
 		return scanInProgress.get();
 	}
 
 	public void setScanInProgress(boolean isScanInProgress) {
 		scanInProgress.set(isScanInProgress);
-	}
-	
-	public ScanManager getProjectScanManager(IProject project) {
-		for (ScanManager scanManager : scanManagers) {
-			if (scanManager.getIProject().getName().equals(project.getName())) {
-				return scanManager;
-			}
-		}
-		return null;
 	}
 }

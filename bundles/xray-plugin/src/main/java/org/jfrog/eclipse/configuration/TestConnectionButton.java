@@ -23,6 +23,8 @@ import com.jfrog.xray.client.impl.XrayClient;
 import com.jfrog.xray.client.services.system.Version;
 
 /**
+ * Button in the configuration panel for testing connection with Xray.
+ * 
  * @author yahavi
  */
 public class TestConnectionButton extends FieldEditor {
@@ -53,34 +55,7 @@ public class TestConnectionButton extends FieldEditor {
 	private void createButton(Composite parent) {
 		button = new Button(parent, SWT.PUSH);
 		button.setText(getLabelText());
-		button.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				try {
-					connectionResults.setText("Connecting to Xray...");
-					Xray xrayClient = XrayClient.create(urlEditor.getStringValue(), usernameEditor.getStringValue(),
-							passwordEditor.getStringValue(), USER_AGENT);
-					Version xrayVersion = xrayClient.system().version();
-
-					if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {
-						connectionResults.setText(XrayConnectionUtils.Results.unsupported(xrayVersion));
-					} else {
-						Pair<Boolean, String> testComponentPermissionRes = XrayConnectionUtils
-								.testComponentPermission(xrayClient);
-						if (!testComponentPermissionRes.getLeft()) {
-							throw new IOException(testComponentPermissionRes.getRight());
-						}
-						connectionResults.setText(XrayConnectionUtils.Results.success(xrayVersion));
-						connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
-					}
-				} catch (IOException | IllegalArgumentException e1) {
-					connectionResults.setText(XrayConnectionUtils.Results.error(e1));
-					connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-				}
-				panel.pack();
-			}
-		});
+		button.addSelectionListener(new ButtonSelection());
 	}
 
 	@Override
@@ -106,5 +81,33 @@ public class TestConnectionButton extends FieldEditor {
 	@Override
 	public int getNumberOfControls() {
 		return 1;
+	}
+
+	private class ButtonSelection extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			try {
+				connectionResults.setText("Connecting to Xray...");
+				Xray xrayClient = XrayClient.create(urlEditor.getStringValue(), usernameEditor.getStringValue(),
+						passwordEditor.getStringValue(), USER_AGENT);
+				Version xrayVersion = xrayClient.system().version();
+
+				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {
+					connectionResults.setText(XrayConnectionUtils.Results.unsupported(xrayVersion));
+				} else {
+					Pair<Boolean, String> testComponentPermissionRes = XrayConnectionUtils
+							.testComponentPermission(xrayClient);
+					if (!testComponentPermissionRes.getLeft()) {
+						throw new IOException(testComponentPermissionRes.getRight());
+					}
+					connectionResults.setText(XrayConnectionUtils.Results.success(xrayVersion));
+					connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
+				}
+			} catch (IOException | IllegalArgumentException exeption) {
+				connectionResults.setText(XrayConnectionUtils.Results.error(exeption));
+				connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+			}
+			panel.pack();
+		}
 	}
 }

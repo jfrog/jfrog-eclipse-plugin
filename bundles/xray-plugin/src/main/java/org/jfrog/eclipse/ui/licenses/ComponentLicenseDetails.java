@@ -26,7 +26,7 @@ public class ComponentLicenseDetails extends ComponentDetails {
 
 	@Override
 	public void createDetailsView(DependenciesTree node) {
-		createCommonPanel(node);
+		createCommonInfo(node);
 		refreshPanel();
 	}
 	

@@ -14,7 +14,7 @@ import org.jfrog.filter.FilterManager;
 public class LicensesTree extends SearchableTree {
 
 	private static LicensesTree instance;
-	private static DependenciesTree root;
+	private DependenciesTree root = new DependenciesTree();;
 
 	public static void createLicensesTree(Composite parent) {
 		instance = new LicensesTree(parent);
@@ -26,9 +26,6 @@ public class LicensesTree extends SearchableTree {
 
 	private LicensesTree(Composite parent) {
 		super(parent, new ColumnLabelProvider());
-		if (root == null) {
-			root = new DependenciesTree();
-		}
 		applyFiltersForAllProjects();
 	}
 
@@ -46,6 +43,7 @@ public class LicensesTree extends SearchableTree {
 			filterManager.applyFilters(project, new DependenciesTree(), filteredRoot);
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
+				// If there is only one project - Show only its dependencies in the tree viewer.
 				treeViewer.setInput(filteredRoot);
 			} else {
 				treeViewer.setInput(root);

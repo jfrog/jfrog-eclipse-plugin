@@ -51,8 +51,7 @@ public class ComponentIssueTable extends Panel {
 	}
 
 	private void createComponentsIssuesTable(Composite tableComposite) {
-		tableViewer = new TableViewer(tableComposite,
-				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -116,8 +115,8 @@ public class ComponentIssueTable extends Panel {
 			issuesSet.addAll(scanManager.getFilteredScanIssues(selectedNodes));
 		});
 
-		tableViewer.setInput(issuesSet.stream()
-				.sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
-				.collect(Collectors.toList()));
+		tableViewer.setInput(
+				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
+						.collect(Collectors.toList()));
 	}
 }

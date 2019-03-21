@@ -7,6 +7,8 @@ import org.jfrog.build.extractor.scan.Severity;
 import org.jfrog.eclipse.ui.IconManager;
 
 /**
+ * Show severity icons in the issues tree.
+ * 
  * @author yahavi
  */
 public class IssuesTreeColumnLabelProvider extends ColumnLabelProvider {

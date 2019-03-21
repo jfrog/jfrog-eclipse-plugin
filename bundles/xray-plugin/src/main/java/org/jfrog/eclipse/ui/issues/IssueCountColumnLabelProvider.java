@@ -8,16 +8,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 /**
+ * The issues count component in the issues tree.
+ * 
  * @author yahavi
  */
 public class IssueCountColumnLabelProvider extends ColumnLabelProvider {
-	
+
 	private Font font;
-	
+
 	public IssueCountColumnLabelProvider(Composite parent) {
 		this.font = FontDescriptor.createFrom(parent.getFont()).setStyle(SWT.RIGHT).createFont(parent.getDisplay());
 	}
-	
+
 	@Override
 	public String getText(Object element) {
 		int issueCount = ((DependenciesTree) element).getIssueCount();
@@ -28,10 +30,10 @@ public class IssueCountColumnLabelProvider extends ColumnLabelProvider {
 	public Font getFont(Object element) {
 		return font;
 	}
-	
+
 	@Override
 	public void dispose() {
-		if (font != null) {			
+		if (font != null) {
 			font.dispose();
 		}
 		super.dispose();

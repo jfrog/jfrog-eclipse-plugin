@@ -24,7 +24,6 @@ public class LicensesTab extends CTabItem {
 
 		LicensesTree licensesTree = LicensesTree.getLicensesTree();
 		licensesTree.setComponentDetails(componentDetails);
-		licensesTree.registerListeners();
 		horizontalDivision.setWeights(new int[] { 1, 2 });
 		setControl(horizontalDivision);
 	}

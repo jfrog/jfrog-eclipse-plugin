@@ -6,6 +6,8 @@ import org.jfrog.eclipse.ui.issues.IssuesTree;
 import org.jfrog.eclipse.ui.licenses.LicensesTree;
 
 /**
+ * Expand the issue/licenses tree.
+ * 
  * @author yahavi
  */
 public class ExpandAll extends Action {

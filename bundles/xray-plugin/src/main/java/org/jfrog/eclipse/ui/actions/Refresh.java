@@ -7,6 +7,8 @@ import org.jfrog.eclipse.log.Logger;
 import org.jfrog.eclipse.scan.ScanManagersFactory;
 
 /**
+ * Start a new slow scan.
+ * 
  * @author yahavi
  */
 public class Refresh extends Action {

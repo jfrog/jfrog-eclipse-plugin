@@ -4,11 +4,13 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 /**
+ * Content provider for DependenciesTree.
+ * 
  * @author yahavi
  */
 public class ScanTreeContentProvider implements ITreeContentProvider {
 	private static final DependenciesTree[] EMPTY_NODE = new DependenciesTree[0];
-	
+
 	@Override
 	public Object[] getElements(Object element) {
 		return getChildren(element);

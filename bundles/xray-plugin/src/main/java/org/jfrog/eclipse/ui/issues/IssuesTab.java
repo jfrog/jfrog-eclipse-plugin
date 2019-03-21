@@ -35,7 +35,6 @@ public class IssuesTab extends CTabItem {
 		IssuesTree issuesTree = IssuesTree.getIssuesTree();
 		issuesTree.setComponentDetails(componentDetails);
 		issuesTree.setComponentIssueTable(componentIssueTable);
-		issuesTree.registerListeners();
 	}
 	
 	@Override

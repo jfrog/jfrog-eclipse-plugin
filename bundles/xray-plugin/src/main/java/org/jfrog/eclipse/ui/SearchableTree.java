@@ -22,6 +22,8 @@ import org.jfrog.build.extractor.scan.DependenciesTree;
 import com.google.common.collect.Lists;
 
 /**
+ * Base class for the issues and licenses trees.
+ * 
  * @author yahavi
  */
 public abstract class SearchableTree extends FilteredTree {
@@ -32,11 +34,12 @@ public abstract class SearchableTree extends FilteredTree {
 
 	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {
 		super(parent, true);
-		init(SWT.BORDER, createFilter());
+		init(SWT.BORDER | SWT.MULTI, createFilter());
 		setQuickSelectionMode(true);
 		treeViewer.setContentProvider(new ScanTreeContentProvider());
 		treeViewer.getTree().setHeaderVisible(true);
 		createColumn("Components Tree", labelProvider, SWT.NONE, 1);
+		registerListeners();
 	}
 
 	@Override
@@ -46,8 +49,19 @@ public abstract class SearchableTree extends FilteredTree {
 		treeControl.getParent().setLayout(treeLayout);
 		return treeControl;
 	}
+	
+	public TreeViewerColumn createColumn(String title, ColumnLabelProvider labelProvider, int style, int weight) {
+		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, style);
+		viewerColumn.getColumn().setMoveable(false);
+		viewerColumn.getColumn().setText(title);
+		viewerColumn.setLabelProvider(labelProvider);
+		viewerColumn.getColumn().pack();
+		treeLayout.setColumnData(viewerColumn.getColumn(),
+				new ColumnWeightData(weight, viewerColumn.getColumn().getWidth() + 20));
+		return viewerColumn;
+	}
 
-	public void registerListeners() {
+	private void registerListeners() {
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -70,17 +84,6 @@ public abstract class SearchableTree extends FilteredTree {
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
 		return patternFilter;
-	}
-
-	public TreeViewerColumn createColumn(String title, ColumnLabelProvider labelProvider, int style, int weight) {
-		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, style);
-		viewerColumn.getColumn().setMoveable(false);
-		viewerColumn.getColumn().setText(title);
-		viewerColumn.setLabelProvider(labelProvider);
-		viewerColumn.getColumn().pack();
-		treeLayout.setColumnData(viewerColumn.getColumn(),
-				new ColumnWeightData(weight, viewerColumn.getColumn().getWidth() + 20));
-		return viewerColumn;
 	}
 
 	public List<DependenciesTree> getSelectedNodes() {

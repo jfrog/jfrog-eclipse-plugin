@@ -1,14 +1,15 @@
 package org.jfrog.eclipse.scan;
 
 import java.io.IOException;
+import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectChangedListener;
@@ -48,41 +49,17 @@ public class MavenScanManager extends ScanManager {
 	}
 
 	@Override
-	void refreshDependencies() throws CoreException {
+	void refreshDependencies(IProgressMonitor monitor) throws CoreException {
 		IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
 		if (facade == null) {
 			// If workspace is not ready yet, the get project will return null.
-			// Adding a listener to wait for workspace build completion. 
-			MavenPlugin.getMavenProjectRegistry().addMavenProjectChangedListener(new IMavenProjectChangedListener() {
-
-				@Override
-				public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
-					// TODO Auto-generated method stub
-					Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
-					if (jobs != null) {
-						for (Job job : jobs) {
-							if (job.getName().equals(getProjectName())) {
-								Logger.getLogger().info("Found existing job : " + getProjectName());
-								MavenPlugin.getMavenProjectRegistry().removeMavenProjectChangedListener(this);
-								return;
-							}
-						}
-					}
-					IssuesTree issuesTree = IssuesTree.getIssuesTree();
-					LicensesTree licensesTree = LicensesTree.getLicensesTree();
-					if (issuesTree == null || licensesTree == null) {
-						MavenPlugin.getMavenProjectRegistry().removeMavenProjectChangedListener(this);
-						return;
-					}
-					scanAndUpdateResults(false, issuesTree, licensesTree, parent);
-					MavenPlugin.getMavenProjectRegistry().removeMavenProjectChangedListener(this);
-				}
-			});
+			// Adding a listener to wait for workspace build completion.
+			MavenPlugin.getMavenProjectRegistry().addMavenProjectChangedListener(new MavenProjectListener());
 			return;
 		}
-		mavenProject = facade.getMavenProject(new NullProgressMonitor());
+		mavenProject = facade.getMavenProject(monitor);
 		mavenDependenciesRoot = MavenPlugin.getMavenModelManager().readDependencyTree(facade, mavenProject,
-				Artifact.SCOPE_COMPILE_PLUS_RUNTIME, new NullProgressMonitor());
+				Artifact.SCOPE_COMPILE_PLUS_RUNTIME, monitor);
 	}
 
 	@Override
@@ -116,4 +93,30 @@ public class MavenScanManager extends ScanManager {
 		return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getBaseVersion();
 	}
 
+	/**
+	 * Implements listener that waits for Maven jobs completion.
+	 */
+	private class MavenProjectListener implements IMavenProjectChangedListener {
+		@Override
+		public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
+			try {
+				Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
+				if (jobs != null) {
+					boolean alreadyRun = Arrays.stream(jobs)
+							.anyMatch(job -> StringUtils.equals(job.getName(), getProjectName()));
+					if (alreadyRun) {
+						Logger.getLogger().info("Found existing job: " + getProjectName());
+						return;
+					}
+				}
+				IssuesTree issuesTree = IssuesTree.getIssuesTree();
+				LicensesTree licensesTree = LicensesTree.getLicensesTree();
+				if (issuesTree != null && licensesTree != null) {
+					scanAndUpdateResults(false, issuesTree, licensesTree, parent);
+				}
+			} finally {
+				MavenPlugin.getMavenProjectRegistry().removeMavenProjectChangedListener(this);
+			}
+		}
+	}
 }

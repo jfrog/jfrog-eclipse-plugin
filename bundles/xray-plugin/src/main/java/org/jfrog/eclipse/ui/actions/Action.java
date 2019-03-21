@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.jfrog.eclipse.ui.IconManager;
 
 /**
+ * Base class for items in the tool bar.
+ * 
  * @author yahavi
  */
 public abstract class Action extends ToolItem {
@@ -31,7 +33,7 @@ public abstract class Action extends ToolItem {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-            execute(e);
+			execute(e);
 		}
 	}
 }

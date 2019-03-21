@@ -4,17 +4,11 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.jfrog.build.extractor.npm.NpmDriver;
-import org.jfrog.build.extractor.npm.extractor.NpmDependencyTree;
-import org.jfrog.build.extractor.scan.DependenciesTree;
-import org.jfrog.build.extractor.scan.GeneralInfo;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.jfrog.npm.NpmTreeBuilder;
 import org.jfrog.scan.ComponentPrefix;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 
 /**
  * @author yahavi
@@ -30,7 +24,7 @@ public class NpmScanManager extends ScanManager {
 	}
 
 	@Override
-	void refreshDependencies() throws IOException {
+	void refreshDependencies(IProgressMonitor monitor) throws IOException {
 	}
 
 	@Override

@@ -27,13 +27,16 @@ import org.jfrog.eclipse.configuration.XrayServerConfigImpl;
 import org.jfrog.utils.Utils;
 
 /**
+ * Base class for ComponentDetails panels. Those panels contain information on a
+ * single component.
+ * 
  * @author yahavi
  */
 public abstract class ComponentDetails extends Panel {
 
 	protected Composite componentDetailsPanel;
-	private Hyperlink credentialsConfigLink;
 	private ScrolledComposite scrolledComposite;
+	private Hyperlink credentialsConfigLink;
 	private String title;
 
 	public ComponentDetails(Composite parent, String title) {
@@ -49,6 +52,9 @@ public abstract class ComponentDetails extends Panel {
 
 	public abstract void createDetailsView(DependenciesTree node);
 
+	/**
+	 * Create this panel if there are missing credentials.
+	 */
 	private void createMissingCredentialsPanel() {
 		credentialsConfigLink = new Hyperlink(this, SWT.WRAP);
 		credentialsConfigLink.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
@@ -62,6 +68,9 @@ public abstract class ComponentDetails extends Panel {
 		});
 	}
 
+	/**
+	 * Will be called after credentials were set.
+	 */
 	public void credentialsSet() {
 		if (credentialsConfigLink == null || credentialsConfigLink.isDisposed()) {
 			return;
@@ -81,7 +90,12 @@ public abstract class ComponentDetails extends Panel {
 		scrolledComposite.setContent(componentDetailsPanel);
 	}
 
-	protected void createCommonPanel(DependenciesTree node) {
+	/**
+	 * Create the common information between issues and licenses tabs.
+	 * 
+	 * @param node - Extract the component information from this node.
+	 */
+	protected void createCommonInfo(DependenciesTree node) {
 		for (Control control : componentDetailsPanel.getChildren()) {
 			control.dispose();
 		}
@@ -107,11 +121,19 @@ public abstract class ComponentDetails extends Panel {
 		createLabel(componentDetailsPanel, content);
 	}
 
+	/**
+	 * Optimize component panel size.
+	 */
 	protected void refreshPanel() {
 		layout(true, true);
 		componentDetailsPanel.pack();
 	}
 
+	/**
+	 * Add licenses to panel.
+	 * 
+	 * @param licenses - The licenses to add.
+	 */
 	private void addLicenses(Set<License> licenses) {
 		if (licenses.isEmpty()) {
 			return;
@@ -121,8 +143,10 @@ public abstract class ComponentDetails extends Panel {
 		licensesPanel.setLayout(new FillLayout());
 		licenses.forEach(license -> {
 			if (CollectionUtils.isEmpty(license.getMoreInfoUrl())) {
+				// Add a license without URL.
 				createLabel(licensesPanel, Utils.createLicenseString(license));
 			} else {
+				// Add a license with URL.
 				addHyperlink(licensesPanel, Utils.createLicenseString(license), license.getMoreInfoUrl().get(0));
 			}
 		});

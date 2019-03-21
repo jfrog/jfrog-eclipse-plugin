@@ -16,6 +16,9 @@ import org.jfrog.eclipse.ui.issues.IssuesTab;
 import org.jfrog.eclipse.ui.licenses.LicensesTab;
 
 /**
+ * The entry point of the plug-in. Creates the UI and perform a quick scan if
+ * credentials set.
+ * 
  * @author yahavi
  */
 public class PartControl {

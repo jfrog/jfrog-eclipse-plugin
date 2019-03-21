@@ -6,6 +6,8 @@ import org.jfrog.eclipse.ui.issues.IssuesFilterDialog;
 import org.jfrog.eclipse.ui.licenses.LicensesFilterDialog;
 
 /**
+ * Open the filter dialog.
+ * 
  * @author yahavi
  */
 public class Filter extends Action {

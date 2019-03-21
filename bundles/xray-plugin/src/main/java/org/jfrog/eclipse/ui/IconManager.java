@@ -13,24 +13,26 @@ import org.osgi.framework.FrameworkUtil;
 import com.google.common.collect.Maps;
 
 /**
+ * Manage and cache icons.
+ * 
  * @author yahavi
  */
 public class IconManager {
-    private static Map<String, Image> icons = Maps.newHashMap();
+	private static Map<String, Image> icons = Maps.newHashMap();
 
-    public static Image load(String icon) {
-    	Image image = icons.get(icon);
-    	if (image == null) {
-            Bundle bundle = FrameworkUtil.getBundle(IconManager.class);
-            URL url = FileLocator.find(bundle, new Path("icons/" + icon + ".png"), null);
-            image = ImageDescriptor.createFromURL(url).createImage();
-            icons.put(icon, image);
-    	}
-        return image;
-    }
-    
-    public static void dispose() {
-    	icons.values().forEach(Image::dispose);
-    	icons = Maps.newHashMap();
-    }
+	public static Image load(String icon) {
+		Image image = icons.get(icon);
+		if (image == null) {
+			Bundle bundle = FrameworkUtil.getBundle(IconManager.class);
+			URL url = FileLocator.find(bundle, new Path("icons/" + icon + ".png"), null);
+			image = ImageDescriptor.createFromURL(url).createImage();
+			icons.put(icon, image);
+		}
+		return image;
+	}
+
+	public static void dispose() {
+		icons.values().forEach(Image::dispose);
+		icons = Maps.newHashMap();
+	}
 }

@@ -1,6 +1,9 @@
 package org.jfrog.eclipse.scan;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.CancellationException;
 
 import org.eclipse.core.resources.IProject;
@@ -27,12 +30,14 @@ import com.jfrog.xray.client.services.summary.Components;
  */
 public abstract class ScanManager extends ScanManagerBase {
 
+	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), "jfrog-eclipse-plugin");
 	private IProgressMonitor monitor;
 	IProject project;
 
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		super(project.getName(), Logger.getLogger(), XrayServerConfigImpl.getInstance(), prefix);
+		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getLogger(), XrayServerConfigImpl.getInstance(), prefix);
 		this.project = project;
+		Files.createDirectories(HOME_PATH);
 	}
 
 	/**
@@ -41,7 +46,7 @@ public abstract class ScanManager extends ScanManagerBase {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	abstract void refreshDependencies() throws IOException, CoreException;
+	abstract void refreshDependencies(IProgressMonitor monitor) throws IOException, CoreException;
 
 	/**
 	 * Collect and return {@link Components} to be scanned by JFrog Xray.
@@ -78,24 +83,22 @@ public abstract class ScanManager extends ScanManagerBase {
 				if (parent.isDisposed()) {
 					return;
 				}
-				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
 				getLog().info("Performing scan for " + getProjectName());
 				try {
-					refreshDependencies();
+					refreshDependencies(monitor);
 					buildTree();
 				} catch (IOException e) {
 					Logger.getLogger().error(e.getMessage(), e);
-				}
-				if (parent.isDisposed()) {
 					return;
 				}
-				if (getScanResults() == null) {
+				if (parent.isDisposed() || getScanResults() == null) {
 					return;
 				}
+				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
 				scanAndCacheArtifacts(indicator, quickScan);
 				addXrayInfoToTree(getScanResults());
 				if (!getScanResults().isLeaf()) {
-					setUiLicenses();
+					addFilterMangerLicenses();
 				}
 				DependenciesTree scanResults = getScanResults();
 				issuesTree.addScanResults(scanResults, getProjectName());
@@ -105,10 +108,11 @@ public abstract class ScanManager extends ScanManagerBase {
 				}
 				parent.getDisplay().syncExec(new Runnable() {
 					public void run() {
-						if (!monitor.isCanceled()) {
-							licensesTree.applyFilters(getProjectName());
-							issuesTree.applyFilters(getProjectName());
-						} 
+						if (monitor.isCanceled()) {
+							return;
+						}
+						licensesTree.applyFilters(getProjectName());
+						issuesTree.applyFilters(getProjectName());	
 					}
 				});
 			}

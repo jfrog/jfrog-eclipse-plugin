@@ -1,5 +1,6 @@
 package org.jfrog.eclipse.scheduling;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -11,7 +12,7 @@ public class XrayJobEventListener extends JobChangeAdapter {
 	public void done(IJobChangeEvent event) {
 		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
 		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance();
-		if (jobs.length == 0) {
+		if (ArrayUtils.isNotEmpty(jobs)) {
 			scanManagersFactory.setScanInProgress(false);
 		}
 	}

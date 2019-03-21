@@ -18,13 +18,16 @@ import org.eclipse.swt.widgets.Shell;
 import com.google.common.collect.Lists;
 
 /**
+ * Base filter menu.
+ * 
  * @author yahavi
  */
 public abstract class FilterDialog extends Dialog {
-	private String title;
-	private Font titleFont;
-	protected Button selectAllButton;
+	
 	protected List<Button> buttons = Lists.newArrayList();
+	protected Button selectAllButton;
+	private Font titleFont;
+	private String title;
 
 	public FilterDialog(Shell parentShell, String title) {
 		super(parentShell);
@@ -50,6 +53,9 @@ public abstract class FilterDialog extends Dialog {
 		label.setFont(titleFont);
 	}
 
+	/**
+	 * Don't create the button bar.
+	 */
 	@Override
 	protected Control createButtonBar(Composite parent) {
 		return null;
@@ -66,9 +72,12 @@ public abstract class FilterDialog extends Dialog {
 		titleFont.dispose();
 		return super.close();
 	}
-	
+
+	/**
+	 * Logic of the select all button.
+	 */
 	protected abstract void selectAll();
-	
+
 	private class SelectAllListener extends SelectionAdapter {
 
 		@Override
@@ -78,7 +87,7 @@ public abstract class FilterDialog extends Dialog {
 			selectAll();
 		}
 	}
-	
+
 	protected abstract class FilterButton extends Button {
 		public FilterButton(Composite parent, String name, boolean isSelected) {
 			super(parent, SWT.CHECK);

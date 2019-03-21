@@ -28,14 +28,14 @@ public class ComponentIssueDetails extends ComponentDetails {
 
 	@Override
 	public void createDetailsView(DependenciesTree node) {
-		createCommonPanel(node);
+		createCommonInfo(node);
 		Issue topIssue = node.getTopIssue();
 		addSection("Top Issue Severity:", StringUtils.capitalize(topIssue.getSeverity().toString()));
 		addSection("Top Issue Type:", StringUtils.capitalize(topIssue.getIssueType()));
 		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
 		refreshPanel();
 	}
-	
+
 	public static void disposeComponentDetails() {
 		if (instance != null) {
 			instance.dispose();

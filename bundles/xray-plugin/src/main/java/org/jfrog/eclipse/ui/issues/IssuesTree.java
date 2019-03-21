@@ -15,8 +15,9 @@ import org.jfrog.filter.FilterManager;
 public class IssuesTree extends SearchableTree {
 
 	private static IssuesTree instance;
+
+	private DependenciesTree root = new DependenciesTree();
 	private ComponentIssueTable componentIssueTable;
-	private static DependenciesTree root;
 	private TreeViewerColumn issuesCountColumn;
 	private int totalIssues;
 
@@ -31,9 +32,6 @@ public class IssuesTree extends SearchableTree {
 	private IssuesTree(Composite parent) {
 		super(parent, new IssuesTreeColumnLabelProvider());
 		issuesCountColumn = createColumn("Issues (0)", new IssueCountColumnLabelProvider(this), SWT.RIGHT, 0);
-		if (root == null) {
-			root = new DependenciesTree();
-		}
 		applyFiltersForAllProjects();
 	}
 
@@ -57,6 +55,7 @@ public class IssuesTree extends SearchableTree {
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
+				// If there is only one project - Show only its dependencies in the tree viewer.
 				treeViewer.setInput(filteredRoot);
 			} else {
 				treeViewer.setInput(root);
