@@ -171,4 +171,19 @@ public class GradleScanManager extends ScanManager {
 			monitor.beginTask(event.getDescription(), IProgressMonitor.UNKNOWN);
 		}
 	}
+	
+	/**
+	 * 
+	 * @return the version
+	 */
+	public String getVersion() {
+		return VERSION;
+	}
+	
+	/**
+	 * @return the Gradle file name
+	 */
+	public String getFileName() {
+		return GRADLE_FILE_NAME;
+	}
 }

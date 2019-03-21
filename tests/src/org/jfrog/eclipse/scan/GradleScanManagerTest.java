@@ -15,10 +15,17 @@ public class GradleScanManagerTest extends TestCase {
 		IProject project = Utils.createProject(projectLocation, "gradle");
 		assertTrue(GradleScanManager.isApplicable(project));
 	}
-	
+
 	public void testIsNotApplicable() throws CoreException, IOException {
-		String projectLocation =  "gradleIsNotApplicable";
+		String projectLocation = "gradleIsNotApplicable";
 		IProject project = Utils.createProject(projectLocation, "gradle");
 		assertFalse(GradleScanManager.isApplicable(project));
+	}
+
+	public void testCreateGradleFile() throws IOException, CoreException {
+		String projectLocation = "gradleIsApplicable";
+		IProject project = Utils.createProject(projectLocation, "gradle");
+		GradleScanManager gradleScanManager = new GradleScanManager(project);
+		Utils.assertGradleFileCreation(gradleScanManager);
 	}
 }

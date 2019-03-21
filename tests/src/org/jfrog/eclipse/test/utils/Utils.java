@@ -1,6 +1,9 @@
 package org.jfrog.eclipse.test.utils;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -14,11 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.jfrog.eclipse.scan.GradleScanManager;
 
 public class Utils {
 	
-	public static IProject createProject(String projectName, String projectType) throws IOException, CoreException {
-		
+	public static IProject createProject(String projectName, String projectType) throws IOException, CoreException {	
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		File dir = new File(workspace.getRoot().getLocation().toFile(), projectName);
 		if (dir.exists()) {
@@ -42,5 +45,16 @@ public class Utils {
 		}, null);
 		return project;
 	}
-
+	
+	public static void assertGradleFileCreation(GradleScanManager gradleScanManager) throws IOException {
+		File currentDir = new File(System.getProperty("user.dir"));
+		File parentDir = currentDir.getParentFile();
+		File pathToGradleScriptFile = new File(parentDir + File.separator + "bundles" + File.separator + "xray-plugin"
+				+ File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
+				+ "gradle" + File.separator + gradleScanManager.getFileName());
+		gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
+		File shouldBeGradleLocation = new File(System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin"
+				+ File.separator + gradleScanManager.getVersion() + File.separator + gradleScanManager.getFileName());
+		assertTrue(shouldBeGradleLocation.exists());
+	}
 }
