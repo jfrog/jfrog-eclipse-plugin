@@ -19,13 +19,13 @@ public class IconManager {
     private static Map<String, Image> icons = Maps.newHashMap();
 
     public static Image load(String icon) {
-    	if (icons.containsKey(icon)) {
-    		return icons.get(icon);
+    	Image image = icons.get(icon);
+    	if (image == null) {
+            Bundle bundle = FrameworkUtil.getBundle(IconManager.class);
+            URL url = FileLocator.find(bundle, new Path("icons/" + icon + ".png"), null);
+            image = ImageDescriptor.createFromURL(url).createImage();
+            icons.put(icon, image);
     	}
-        Bundle bundle = FrameworkUtil.getBundle(IconManager.class);
-        URL url = FileLocator.find(bundle, new Path("icons/" + icon + ".png"), null);
-        Image image = ImageDescriptor.createFromURL(url).createImage();
-        icons.put(icon, image);
         return image;
     }
     
