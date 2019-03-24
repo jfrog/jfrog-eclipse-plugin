@@ -19,7 +19,7 @@ public class Filter extends Action {
 	private FilterType filterType = FilterType.Severity;
 
 	public Filter(ToolBar toolBar) {
-		super(toolBar, "filter");
+		super(toolBar, "Filter", "filter");
 		setFilterType(FilterType.Severity);
 	}
 

@@ -13,7 +13,7 @@ import org.jfrog.eclipse.ui.licenses.LicensesTree;
 public class ExpandAll extends Action {
 
 	public ExpandAll(ToolBar toolBar) {
-		super(toolBar, "expandAll");
+		super(toolBar, "Expand All", "expandAll");
 	}
 
 	@Override

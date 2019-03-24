@@ -14,7 +14,7 @@ import org.jfrog.eclipse.scan.ScanManagersFactory;
 public class Refresh extends Action {
 
 	public Refresh(ToolBar toolBar) {
-		super(toolBar, "refresh");
+		super(toolBar, "Refresh", "refresh");
 	}
 
 	@Override

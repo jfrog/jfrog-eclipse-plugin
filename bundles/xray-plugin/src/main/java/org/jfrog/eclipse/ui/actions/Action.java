@@ -14,10 +14,11 @@ import org.jfrog.eclipse.ui.IconManager;
  */
 public abstract class Action extends ToolItem {
 
-	public Action(ToolBar toolBar, String image) {
+	public Action(ToolBar toolBar, String name, String imageName) {
 		super(toolBar, SWT.PUSH);
-		setImage(IconManager.load(image));
+		setImage(IconManager.load(imageName));
 		addSelectionListener(new ActionPerformed());
+		setToolTipText(name);
 	}
 
 	public abstract void execute(SelectionEvent e);

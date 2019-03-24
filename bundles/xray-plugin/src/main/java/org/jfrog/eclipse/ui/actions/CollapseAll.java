@@ -13,7 +13,7 @@ import org.jfrog.eclipse.ui.licenses.LicensesTree;
 public class CollapseAll extends Action {
 
 	public CollapseAll(ToolBar toolBar) {
-		super(toolBar, "collapseAll");
+		super(toolBar, "Collapse All", "collapseAll");
 	}
 
 	@Override
