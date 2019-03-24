@@ -1,14 +1,10 @@
 package org.jfrog.eclipse.scan;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.jfrog.eclipse.test.utils.Utils;
 import org.jfrog.eclipse.utils.GradleArtifact;
 
@@ -63,7 +59,6 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(0, gradleArtifact.getDependencies().length);
 	}
-
 	
 	public void testParseMultipleDependenciesProject() throws IOException, CoreException {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleMultipleDependencies");
@@ -73,6 +68,16 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("jfrog.org", gradleArtifact.groupId);
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(6, gradleArtifact.getDependencies().length);
+	}
+	
+	public void testParseDependenciesThatDoesNotExists() throws IOException, CoreException {
+		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleWithMissingDependencies");
+		gradleScanManager.parseJsonResult();
+		GradleArtifact gradleArtifact = gradleScanManager.getGradleArtifact();
+		assertEquals("gradleWithMissingDependencies", gradleArtifact.artifactId);
+		assertEquals("jfrog.org", gradleArtifact.groupId);
+		assertEquals("1.0.0", gradleArtifact.version);
+		assertEquals(2, gradleArtifact.getDependencies().length);
 	}
 	
 	private GradleScanManager generateDependenciesGraph(String projectName) throws IOException, CoreException {
@@ -86,6 +91,7 @@ public class GradleScanManagerTest extends TestCase {
 		gradleScanManager.generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFileLocation);
 		return gradleScanManager;
 	}
+	
 	private IProject getGradleProject(String projectLocation) throws IOException, CoreException {
 		return Utils.createProject(projectLocation, "gradle");
 	}
