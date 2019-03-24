@@ -11,14 +11,16 @@ import junit.framework.TestCase;
 public class MavenScanManagerTest extends TestCase {
 
 	public void testIsMavenApplicable() throws CoreException, IOException {
-		String projectLocation = "mavenIsApplicable";
-		IProject project = Utils.createProject(projectLocation, "maven");
+		IProject project = getMavenProject("mavenIsApplicable");
 		assertTrue(MavenScanManager.isApplicable(project));
 	}
 
 	public void testIsMavenNotApplicable() throws CoreException, IOException {
-		String projectLocation = "mavenIsNotApplicable";
-		IProject project = Utils.createProject(projectLocation, "maven");
+		IProject project = getMavenProject("mavenIsNotApplicable");
 		assertFalse(MavenScanManager.isApplicable(project));
+	}
+	
+	private IProject getMavenProject(String projectLocation) throws IOException, CoreException {
+		return Utils.createProject(projectLocation, "maven");
 	}
 }
