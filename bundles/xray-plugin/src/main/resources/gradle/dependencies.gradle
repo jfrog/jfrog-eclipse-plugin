@@ -1,7 +1,6 @@
 allprojects {
 	task generateDependenciesGraphAsJson() {
 		doLast {
-			println "Display name:" + project.getDisplayName()
 			Set<Configuration> configurationSet = project.getConfigurations();
 			String jsonOutput = ""
 			jsonOutput += "{\"groupId\":\"" + project.getGroup() + "\",\"artifactId\":\"" + project.getName() + "\",\"version\":\"" +  project.getVersion() + "\""
@@ -51,7 +50,6 @@ allprojects {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(homeDir.getAbsolutePath() + File.separator + project.getName() + ".txt"));
 			writer.write(jsonOutput);
 			writer.close();
-			println jsonOutput
 		}
 	}
 }

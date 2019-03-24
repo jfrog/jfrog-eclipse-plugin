@@ -13,7 +13,7 @@ public class XrayJobEventListener extends JobChangeAdapter {
 		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
 		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance();
 		if (ArrayUtils.isEmpty(jobs)) {
-			scanManagersFactory.setScanInProgress(false);
+			scanManagersFactory.scanFinished();
 		}
 	}
 }

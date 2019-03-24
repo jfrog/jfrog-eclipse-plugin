@@ -127,7 +127,7 @@ public class ScanManagersFactory {
 		return scanInProgress.get();
 	}
 
-	public void setScanInProgress(boolean isScanInProgress) {
-		scanInProgress.set(isScanInProgress);
+	public void scanFinished() {
+		scanInProgress.set(false);
 	}
 }
