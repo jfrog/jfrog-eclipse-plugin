@@ -1,7 +1,5 @@
 package org.jfrog.eclipse.test.utils;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

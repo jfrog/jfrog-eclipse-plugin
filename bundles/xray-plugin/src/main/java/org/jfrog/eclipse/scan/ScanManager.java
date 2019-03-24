@@ -80,7 +80,7 @@ public abstract class ScanManager extends ScanManagerBase {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				ScanManager.this.monitor = monitor;
-				if (parent.isDisposed()) {
+				if (parent == null || parent.isDisposed()) {
 					return;
 				}
 				getLog().info("Performing scan for " + getProjectName());
@@ -91,7 +91,7 @@ public abstract class ScanManager extends ScanManagerBase {
 					Logger.getLogger().error(e.getMessage(), e);
 					return;
 				}
-				if (parent.isDisposed() || getScanResults() == null) {
+				if (parent == null || parent.isDisposed() || getScanResults() == null) {
 					return;
 				}
 				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
@@ -103,7 +103,7 @@ public abstract class ScanManager extends ScanManagerBase {
 				DependenciesTree scanResults = getScanResults();
 				issuesTree.addScanResults(scanResults, getProjectName());
 				licensesTree.addScanResults(scanResults, getProjectName());
-				if (parent.isDisposed()) {
+				if (parent == null || parent.isDisposed()) {
 					return;
 				}
 				parent.getDisplay().syncExec(new Runnable() {

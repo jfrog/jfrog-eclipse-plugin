@@ -20,5 +20,6 @@ Bundle-ClassPath: .,
  lib/ide-plugins-common.jar
 Bundle-Vendor: JFrog
 Export-Package: org.jfrog.eclipse.scan,
+ org.jfrog.eclipse.scheduling,
  org.jfrog.eclipse.utils,
  org.jfrog.scan
