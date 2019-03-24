@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProgressEvent;
@@ -69,7 +70,6 @@ public class GradleScanManager extends ScanManager {
 			}
 			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
 			parseJsonResult();
-			removeDuplicateDependencies();
 		}
 	}
 
@@ -88,7 +88,7 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	private void removeDuplicateDependencies() {
-		if (ArrayUtils.isNotEmpty(gradleArtifact.getDependencies())) {
+		if (gradleArtifact != null && ArrayUtils.isNotEmpty(gradleArtifact.getDependencies())) {
 			Set<GradleArtifact> dependenciesSet = Sets.newHashSet(gradleArtifact.getDependencies());
 			gradleArtifact.setDependencies(dependenciesSet.toArray(new GradleArtifact[] {}));
 		}
@@ -152,14 +152,21 @@ public class GradleScanManager extends ScanManager {
 	 * @throws IOException in case of incorrect JSON file.
 	 */
 	public void parseJsonResult() throws IOException {
+		byte[] json = readGeneratedJson();
+		if (json != null) {
+			gradleArtifact = objectMapper.readValue(json, GradleArtifact.class);
+			removeDuplicateDependencies();
+		}
+	}
+	
+	public byte[] readGeneratedJson() throws IOException {
 		Path pathToTaskOutputDir = HOME_PATH.resolve(TASK_NAME).resolve(project.getName());
 		if (!Files.exists(pathToTaskOutputDir)) {
 			getLog().warn("Path is missing " + pathToTaskOutputDir.toAbsolutePath().toString());
-			return;
+			return null;
 		}
 		Path jsonOutputFile = pathToTaskOutputDir.resolve(getProjectName() + ".txt");
-		byte[] json = Files.readAllBytes(jsonOutputFile);
-		gradleArtifact = objectMapper.readValue(json, GradleArtifact.class);
+		return Files.readAllBytes(jsonOutputFile);
 	}
 
 	/**
@@ -168,6 +175,9 @@ public class GradleScanManager extends ScanManager {
 	class GradleProgressListener implements ProgressListener {
 		@Override
 		public void statusChanged(ProgressEvent event) {
+			if (monitor == null) {
+				monitor = new NullProgressMonitor();
+			}
 			monitor.beginTask(event.getDescription(), IProgressMonitor.UNKNOWN);
 		}
 	}
@@ -185,5 +195,9 @@ public class GradleScanManager extends ScanManager {
 	 */
 	public String getFileName() {
 		return GRADLE_FILE_NAME;
+	}
+	
+	public GradleArtifact getGradleArtifact() {
+		return gradleArtifact;
 	}
 }

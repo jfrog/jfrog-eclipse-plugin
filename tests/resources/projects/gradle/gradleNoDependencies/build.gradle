@@ -7,17 +7,13 @@
  */
 
 plugins {
-	// Apply the java-library plugin to add support for Java Library
-	id 'java-library'
 }
 
 project.group = "jfrog.org"
 project.version = "1.0.0"
 
 dependencies {
-	compile module("commons-lang:commons-lang:2.4") {
-		dependency("commons-io:commons-io:1.2")
-	}
+	
 }
 
 // In this section you declare where to find the dependencies of your project

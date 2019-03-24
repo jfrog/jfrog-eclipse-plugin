@@ -15,9 +15,13 @@ project.group = "jfrog.org"
 project.version = "1.0.0"
 
 dependencies {
-	compile module("commons-lang:commons-lang:2.4") {
-		dependency("commons-io:commons-io:1.2")
-	}
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+    testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
 }
 
 // In this section you declare where to find the dependencies of your project

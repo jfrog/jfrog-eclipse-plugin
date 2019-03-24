@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IProject;
@@ -46,15 +47,17 @@ public class Utils {
 		return project;
 	}
 	
-	public static void assertGradleFileCreation(GradleScanManager gradleScanManager) throws IOException {
+	public static String getGradleScriptFileLocation(GradleScanManager gradleScanManager) throws IOException {
 		File currentDir = new File(System.getProperty("user.dir"));
 		File parentDir = currentDir.getParentFile();
 		File pathToGradleScriptFile = new File(parentDir + File.separator + "bundles" + File.separator + "xray-plugin"
 				+ File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
 				+ "gradle" + File.separator + gradleScanManager.getFileName());
-		gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
-		File shouldBeGradleLocation = new File(System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin"
-				+ File.separator + gradleScanManager.getVersion() + File.separator + gradleScanManager.getFileName());
-		assertTrue(shouldBeGradleLocation.exists());
+		return gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
+	}
+	
+	public static byte[] getResultContent(String folderName, String fileName) throws IOException {
+		File expected = new File("resources/results/" + folderName + "/" + fileName);
+		return Files.readAllBytes(expected.toPath());	
 	}
 }
