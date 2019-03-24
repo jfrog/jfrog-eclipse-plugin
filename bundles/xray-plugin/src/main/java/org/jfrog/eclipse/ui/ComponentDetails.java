@@ -8,14 +8,17 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -140,7 +143,7 @@ public abstract class ComponentDetails extends Panel {
 		}
 		createLabel(componentDetailsPanel, "Licenses");
 		Panel licensesPanel = new Panel(componentDetailsPanel);
-		licensesPanel.setLayout(new FillLayout());
+		licensesPanel.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
 		licenses.forEach(license -> {
 			if (CollectionUtils.isEmpty(license.getMoreInfoUrl())) {
 				// Add a license without URL.
@@ -153,12 +156,10 @@ public abstract class ComponentDetails extends Panel {
 	}
 
 	private static void addHyperlink(Panel parent, String text, String url) {
-		Hyperlink link = new Hyperlink(parent, SWT.WRAP);
-		link.setText(text);
-		link.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(final HyperlinkEvent e) {
+		Link link = new Link(parent, SWT.NONE);
+		link.setText("<A>" + text + "</A>");
+		link.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
 				Program.launch(url);
 			}
 		});
