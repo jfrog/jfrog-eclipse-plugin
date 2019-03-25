@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.jfrog.ide.npm.NpmTreeBuilder;
-import com.jfrog.ide.scan.ComponentPrefix;
+import com.jfrog.ide.common.npm.NpmTreeBuilder;
+import com.jfrog.ide.common.scan.ComponentPrefix;
 
 /**
  * @author yahavi

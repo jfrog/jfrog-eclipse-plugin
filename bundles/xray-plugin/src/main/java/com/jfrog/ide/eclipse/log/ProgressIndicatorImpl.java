@@ -2,7 +2,7 @@ package com.jfrog.ide.eclipse.log;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.jfrog.ide.log.ProgressIndicator;
+import com.jfrog.ide.common.log.ProgressIndicator;
 
 /**
  * @author yahavi

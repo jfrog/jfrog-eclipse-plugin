@@ -6,8 +6,9 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
+
+import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
-import com.jfrog.ide.filter.FilterManager;
 
 /**
  * @author yahavi

@@ -25,9 +25,10 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 import org.jfrog.build.extractor.scan.License;
+
+import com.jfrog.ide.common.utils.Utils;
 import com.jfrog.ide.eclipse.configuration.XrayGlobalConfiguration;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
-import com.jfrog.ide.utils.Utils;
 
 /**
  * Base class for ComponentDetails panels. Those panels contain information on a

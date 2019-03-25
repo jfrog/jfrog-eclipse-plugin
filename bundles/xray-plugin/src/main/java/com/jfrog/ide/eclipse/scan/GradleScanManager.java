@@ -22,10 +22,11 @@ import org.gradle.tooling.ProgressListener;
 import org.gradle.tooling.ProjectConnection;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
-import com.jfrog.ide.eclipse.utils.GradleArtifact;
-import com.jfrog.ide.scan.ComponentPrefix;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import com.jfrog.ide.common.scan.ComponentPrefix;
+import com.jfrog.ide.eclipse.utils.GradleArtifact;
 
 public class GradleScanManager extends ScanManager {
 

@@ -13,14 +13,15 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Composite;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.jfrog.ide.common.utils.Utils;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.npm.NpmProject;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
-import com.jfrog.ide.utils.Utils;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * @author yahavi

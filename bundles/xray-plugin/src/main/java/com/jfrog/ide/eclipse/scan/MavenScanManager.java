@@ -18,11 +18,12 @@ import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
+
+import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
-import com.jfrog.ide.scan.ComponentPrefix;
 
 /**
  * @author yahavi

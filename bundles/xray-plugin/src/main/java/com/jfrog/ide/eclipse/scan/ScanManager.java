@@ -12,16 +12,17 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfrog.ide.common.log.ProgressIndicator;
+import com.jfrog.ide.common.scan.ComponentPrefix;
+import com.jfrog.ide.common.scan.ScanManagerBase;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
-import com.jfrog.ide.log.ProgressIndicator;
-import com.jfrog.ide.scan.ComponentPrefix;
-import com.jfrog.ide.scan.ScanManagerBase;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfrog.xray.client.services.summary.Components;
 
 /**

@@ -7,8 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.jfrog.build.extractor.scan.License;
+
+import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.FilterDialog;
-import com.jfrog.ide.filter.FilterManager;
 
 /**
  * @author yahavi

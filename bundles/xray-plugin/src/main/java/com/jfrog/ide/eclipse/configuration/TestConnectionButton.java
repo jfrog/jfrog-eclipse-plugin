@@ -13,12 +13,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import com.jfrog.ide.eclipse.ui.Panel;
-import com.jfrog.ide.eclipse.ui.UiUtils;
-import com.jfrog.ide.utils.XrayConnectionUtils;
-
 import org.osgi.framework.FrameworkUtil;
 
+import com.jfrog.ide.common.utils.XrayConnectionUtils;
+import com.jfrog.ide.eclipse.ui.Panel;
+import com.jfrog.ide.eclipse.ui.UiUtils;
 import com.jfrog.xray.client.Xray;
 import com.jfrog.xray.client.impl.XrayClient;
 import com.jfrog.xray.client.services.system.Version;

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import com.jfrog.ide.configuration.XrayServerConfig;
+import com.jfrog.ide.common.configuration.XrayServerConfig;
 
 /**
  * @author yahavi
