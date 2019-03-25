@@ -27,13 +27,13 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.jfrog</groupId>
+									<groupId>com.jfrog.ide</groupId>
 									<artifactId>ide-plugins-common</artifactId>
 									<version>1.0.0</version>
 									<destFileName>ide-plugins-common.jar</destFileName>
 								</artifactItem>
 								<artifactItem>
-									<groupId>org.jfrog</groupId>
+									<groupId>com.jfrog.ide</groupId>
 									<artifactId>ide-plugins-common</artifactId>
 									<version>1.0.0</version>
 									<classifier>sources</classifier>
