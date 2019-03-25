@@ -31,8 +31,8 @@ import com.jfrog.ide.eclipse.utils.GradleArtifact;
 public class GradleScanManager extends ScanManager {
 
 	private static final String TASK_NAME = "generateDependenciesGraphAsJson";
-	private static final String GRADLE_FILE_NAME = "dependencies.gradle";
-	private static final String VERSION = "01";
+	public static final String GRADLE_FILE_NAME = "dependencies.gradle";
+	public static final String VERSION = "01";
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private GradleArtifact gradleArtifact;
@@ -85,6 +85,10 @@ public class GradleScanManager extends ScanManager {
 			populateDependenciesTree(rootNode, dependencies);
 		}
 		setScanResults(rootNode);
+	}
+	
+	public GradleArtifact getGradleArtifact() {
+		return gradleArtifact;
 	}
 
 	private void removeDuplicateDependencies() {
@@ -180,24 +184,5 @@ public class GradleScanManager extends ScanManager {
 			}
 			monitor.beginTask(event.getDescription(), IProgressMonitor.UNKNOWN);
 		}
-	}
-	
-	/**
-	 * 
-	 * @return the version
-	 */
-	public String getVersion() {
-		return VERSION;
-	}
-	
-	/**
-	 * @return the Gradle file name
-	 */
-	public String getFileName() {
-		return GRADLE_FILE_NAME;
-	}
-	
-	public GradleArtifact getGradleArtifact() {
-		return gradleArtifact;
 	}
 }

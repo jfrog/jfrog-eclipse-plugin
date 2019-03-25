@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-import com.jfrog.ide.eclipse.scan.GradleScanManager;
 import com.jfrog.ide.eclipse.utils.GradleArtifact;
 import com.jfrog.ide.eclipse.utils.Utils;
 
@@ -28,13 +27,13 @@ public class GradleScanManagerTest extends TestCase {
 		IProject project = getGradleProject("gradleIsApplicable");
 		GradleScanManager gradleScanManager = new GradleScanManager(project);
 		String gradleFileLocation = Utils.getGradleScriptFileLocation(gradleScanManager);
-		File gradleScriptExpectedLocation = new File(System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin"
-				+ File.separator + gradleScanManager.getVersion() + File.separator + gradleScanManager.getFileName());
+		File gradleScriptExpectedLocation = new File(
+				System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin" + File.separator
+						+ GradleScanManager.VERSION + File.separator + GradleScanManager.GRADLE_FILE_NAME);
 		assertTrue(gradleScriptExpectedLocation.exists());
 		assertEquals(gradleScriptExpectedLocation.getAbsolutePath(), gradleFileLocation);
-
 	}
-	
+
 	public void testReadGeneratedJSonFile() throws IOException, CoreException {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleIsApplicable");
 		byte[] json = gradleScanManager.readGeneratedJson();
@@ -51,7 +50,7 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(1, gradleArtifact.getDependencies().length);
 	}
-	
+
 	public void testParseNoDependenciesProject() throws IOException, CoreException {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleNoDependencies");
 		gradleScanManager.parseJsonResult();
@@ -61,7 +60,7 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(0, gradleArtifact.getDependencies().length);
 	}
-	
+
 	public void testParseMultipleDependenciesProject() throws IOException, CoreException {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleMultipleDependencies");
 		gradleScanManager.parseJsonResult();
@@ -71,7 +70,7 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(6, gradleArtifact.getDependencies().length);
 	}
-	
+
 	public void testParseDependenciesThatDoesNotExists() throws IOException, CoreException {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleWithMissingDependencies");
 		gradleScanManager.parseJsonResult();
@@ -81,7 +80,7 @@ public class GradleScanManagerTest extends TestCase {
 		assertEquals("1.0.0", gradleArtifact.version);
 		assertEquals(2, gradleArtifact.getDependencies().length);
 	}
-	
+
 	private GradleScanManager generateDependenciesGraph(String projectName) throws IOException, CoreException {
 		IProject project = getGradleProject(projectName);
 		GradleScanManager gradleScanManager = new GradleScanManager(project);
@@ -93,7 +92,7 @@ public class GradleScanManagerTest extends TestCase {
 		gradleScanManager.generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFileLocation);
 		return gradleScanManager;
 	}
-	
+
 	private IProject getGradleProject(String projectLocation) throws IOException, CoreException {
 		return Utils.createProject(projectLocation, "gradle");
 	}

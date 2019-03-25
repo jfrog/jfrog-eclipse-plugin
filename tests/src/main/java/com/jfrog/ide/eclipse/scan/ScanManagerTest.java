@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 
 public class ScanManagerTest extends TestCase {
 
-	public void testSchedulingAJob() throws IOException, CoreException, OperationCanceledException, InterruptedException {
+	public void testSchedulingAJob()
+			throws IOException, CoreException, OperationCanceledException, InterruptedException {
 		String projectName = "gradleIsApplicable";
 		JobListener jobListener = new JobListener();
 		IProject project = Utils.createProject(projectName, "gradle");
@@ -62,14 +63,15 @@ public class ScanManagerTest extends TestCase {
 		private static AtomicBoolean jobExists = new AtomicBoolean(false);
 		private String jobName;
 		private static AtomicInteger numOfJobs = new AtomicInteger();
-		
-		@Override 
+
+		@Override
 		public void scheduled(IJobChangeEvent event) {
 			if (event.getJob().belongsTo(ScanJob.FAMILY)) {
 				this.jobName = event.getJob().getName();
 				numOfJobs.incrementAndGet();
 			}
 		}
+
 		@Override
 		public void done(IJobChangeEvent event) {
 			// TODO Auto-generated method stub
@@ -77,15 +79,15 @@ public class ScanManagerTest extends TestCase {
 				jobExists.set(true);
 			}
 		}
-		
+
 		public boolean isJobExists() {
 			return jobExists.get();
 		}
-		
+
 		public String getJobName() {
 			return jobName;
 		}
-		
+
 		public int numOfJobs() {
 			return numOfJobs.get();
 		}

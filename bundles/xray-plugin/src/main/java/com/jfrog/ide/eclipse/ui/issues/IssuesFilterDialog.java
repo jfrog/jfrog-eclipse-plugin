@@ -29,6 +29,14 @@ public class IssuesFilterDialog extends FilterDialog {
 		return container;
 	}
 
+	@Override
+	protected void selectAll() {
+		FilterManager.getInstance().getSelectedSeverities().replaceAll((severity, isSelected) -> {
+			return selectAllButton.getSelection();
+		});
+		IssuesTree.getIssuesTree().applyFiltersForAllProjects();
+	}
+
 	private class SeverityButton extends FilterButton {
 		public SeverityButton(Composite parent, Severity severity, boolean isSelected) {
 			super(parent, severity.getSeverityName(), isSelected);
@@ -42,13 +50,5 @@ public class IssuesFilterDialog extends FilterDialog {
 				}
 			});
 		}
-	}
-
-	@Override
-	protected void selectAll() {
-		FilterManager.getInstance().getSelectedSeverities().replaceAll((severity, isSelected) -> {
-			return selectAllButton.getSelection();
-		});
-		IssuesTree.getIssuesTree().applyFiltersForAllProjects();
 	}
 }

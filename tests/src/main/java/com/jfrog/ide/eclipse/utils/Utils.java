@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.Path;
 import com.jfrog.ide.eclipse.scan.GradleScanManager;
 
 public class Utils {
-	
-	public static IProject createProject(String projectName, String projectType) throws IOException, CoreException {	
+
+	public static IProject createProject(String projectName, String projectType) throws IOException, CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		File dir = new File(workspace.getRoot().getLocation().toFile(), projectName);
 		if (dir.exists()) {
@@ -45,18 +45,18 @@ public class Utils {
 		}, null);
 		return project;
 	}
-	
+
 	public static String getGradleScriptFileLocation(GradleScanManager gradleScanManager) throws IOException {
 		File currentDir = new File(System.getProperty("user.dir"));
 		File parentDir = currentDir.getParentFile();
 		File pathToGradleScriptFile = new File(parentDir + File.separator + "bundles" + File.separator + "xray-plugin"
 				+ File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-				+ "gradle" + File.separator + gradleScanManager.getFileName());
+				+ "gradle" + File.separator + GradleScanManager.GRADLE_FILE_NAME);
 		return gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
 	}
-	
+
 	public static byte[] getResultContent(String folderName, String fileName) throws IOException {
 		File expected = new File("resources/results/" + folderName + "/" + fileName);
-		return Files.readAllBytes(expected.toPath());	
+		return Files.readAllBytes(expected.toPath());
 	}
 }

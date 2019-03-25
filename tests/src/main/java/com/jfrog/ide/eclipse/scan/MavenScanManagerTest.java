@@ -20,7 +20,7 @@ public class MavenScanManagerTest extends TestCase {
 		IProject project = getMavenProject("mavenIsNotApplicable");
 		assertFalse(MavenScanManager.isApplicable(project));
 	}
-	
+
 	private IProject getMavenProject(String projectLocation) throws IOException, CoreException {
 		return Utils.createProject(projectLocation, "maven");
 	}

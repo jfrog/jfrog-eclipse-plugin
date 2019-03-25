@@ -20,7 +20,6 @@ public class IssuesTree extends SearchableTree {
 	private DependenciesTree root = new DependenciesTree();
 	private ComponentIssueTable componentIssueTable;
 	private TreeViewerColumn issuesCountColumn;
-	private int totalIssues;
 
 	public static void createIssuesTree(Composite parent) {
 		instance = new IssuesTree(parent);
@@ -51,6 +50,7 @@ public class IssuesTree extends SearchableTree {
 		DependenciesTree project = projects.get(projectName);
 		if (project != null) {
 			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
+			filteredRoot.getIssues().clear();
 			FilterManager filterManager = FilterManager.getInstance();
 			filterManager.applyFilters(project, filteredRoot, new DependenciesTree());
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
@@ -61,14 +61,14 @@ public class IssuesTree extends SearchableTree {
 			} else {
 				treeViewer.setInput(root);
 			}
-			totalIssues += filteredRoot.getIssueCount();
+			long totalIssues = root.getChildren().stream().mapToInt(DependenciesTree::getIssueCount).sum();
 			issuesCountColumn.getColumn().setText("Issues (" + totalIssues + ")");
 		}
 	}
 
 	@Override
 	public void applyFiltersForAllProjects() {
-		root.removeAllChildren();
+		root = new DependenciesTree();
 		for (Entry<String, DependenciesTree> entry : projects.entrySet()) {
 			applyFilters(entry.getKey());
 		}
@@ -77,8 +77,7 @@ public class IssuesTree extends SearchableTree {
 	@Override
 	public void reset() {
 		super.reset();
-		totalIssues = 0;
-		root.removeAllChildren();
+		root = new DependenciesTree();
 		treeViewer.setInput(root);
 	}
 
