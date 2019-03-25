@@ -1,0 +1,119 @@
+package com.jfrog.ide.eclipse.ui;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
+import org.jfrog.build.extractor.scan.DependenciesTree;
+
+import com.google.common.collect.Lists;
+
+/**
+ * Base class for the issues and licenses trees.
+ * 
+ * @author yahavi
+ */
+public abstract class SearchableTree extends FilteredTree {
+
+	protected HashMap<String, DependenciesTree> projects = new HashMap<String, DependenciesTree>();
+	protected ComponentDetails componentDetails;
+	private TreeColumnLayout treeLayout = new TreeColumnLayout();
+
+	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {
+		super(parent, true);
+		init(SWT.BORDER | SWT.MULTI, createFilter());
+		setQuickSelectionMode(true);
+		treeViewer.setContentProvider(new ScanTreeContentProvider());
+		treeViewer.getTree().setHeaderVisible(true);
+		createColumn("Components Tree", labelProvider, SWT.NONE, 1);
+		registerListeners();
+	}
+
+	@Override
+	protected Control createTreeControl(Composite parent, int style) {
+		Control treeControl = super.createTreeControl(parent, style);
+		treeControl.setLayoutData(null);
+		treeControl.getParent().setLayout(treeLayout);
+		return treeControl;
+	}
+	
+	public TreeViewerColumn createColumn(String title, ColumnLabelProvider labelProvider, int style, int weight) {
+		TreeViewerColumn viewerColumn = new TreeViewerColumn(treeViewer, style);
+		viewerColumn.getColumn().setMoveable(false);
+		viewerColumn.getColumn().setText(title);
+		viewerColumn.setLabelProvider(labelProvider);
+		viewerColumn.getColumn().pack();
+		treeLayout.setColumnData(viewerColumn.getColumn(),
+				new ColumnWeightData(weight, viewerColumn.getColumn().getWidth() + 20));
+		return viewerColumn;
+	}
+
+	private void registerListeners() {
+		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (event.getSelection().isEmpty()) {
+					return;
+				}
+				DependenciesTree selection = (DependenciesTree) treeViewer.getStructuredSelection().getFirstElement();
+				onClick(selection);
+			}
+		});
+	}
+
+	public void setComponentDetails(ComponentDetails componentDetails) {
+		this.componentDetails = componentDetails;
+	}
+
+	protected abstract void onClick(DependenciesTree selection);
+
+	private static PatternFilter createFilter() {
+		PatternFilter patternFilter = new PatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
+		return patternFilter;
+	}
+
+	public List<DependenciesTree> getSelectedNodes() {
+		List<DependenciesTree> selectedNodes = Lists.newArrayList();
+		TreePath[] selectionPaths = treeViewer.getStructuredSelection().getPaths();
+		if (selectionPaths != null) {
+			selectedNodes = Arrays.stream(selectionPaths)
+					.map(selectedPath -> (DependenciesTree) selectedPath.getLastSegment()).collect(Collectors.toList());
+		}
+
+		return selectedNodes;
+	}
+
+	public void collapseAll() {
+		getViewer().collapseAll();
+	}
+
+	public void expandAll() {
+		getViewer().expandAll();
+	}
+
+	public void reset() {
+		projects.clear();
+	}
+
+	public void addScanResults(DependenciesTree scanTree, String projectName) {
+		projects.put(projectName, scanTree);
+	}
+
+	public abstract void applyFilters(String projectName);
+
+	public abstract void applyFiltersForAllProjects();
+}

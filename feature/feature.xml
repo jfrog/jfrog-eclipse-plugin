@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.jfrog.eclipse.feature"
+      id="eclipse.feature"
       label="JFrog Plugin"
       version="1.0.0.qualifier"
       provider-name="JFrog">
@@ -85,7 +85,7 @@ limitations under the License.
    </license>
 
    <plugin
-         id="org.jfrog.eclipse.plugin"
+         id="eclipse.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"
