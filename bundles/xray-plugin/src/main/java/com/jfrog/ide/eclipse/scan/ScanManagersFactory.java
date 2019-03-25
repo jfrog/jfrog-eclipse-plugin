@@ -130,4 +130,8 @@ public class ScanManagersFactory {
 	public void scanFinished() {
 		scanInProgress.set(false);
 	}
+	
+	public AtomicBoolean getScanInProgress() {
+		return scanInProgress;
+	}
 }
