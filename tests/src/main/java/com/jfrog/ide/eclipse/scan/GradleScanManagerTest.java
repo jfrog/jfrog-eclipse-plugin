@@ -38,7 +38,7 @@ public class GradleScanManagerTest extends TestCase {
 		GradleScanManager gradleScanManager = generateDependenciesGraph("gradleIsApplicable");
 		byte[] json = gradleScanManager.readGeneratedJson();
 		byte[] result = Utils.getResultContent("generatedJson", "generatedGradleJson.txt");
-		assertEquals(new String(result), new String(json));
+		assertEquals(new String(result).replace("\n", "").replace("\r", ""), new String(json).replace("\n", "").replace("\r", ""));
 	}
 
 	public void testParseJsonResult() throws IOException, CoreException {

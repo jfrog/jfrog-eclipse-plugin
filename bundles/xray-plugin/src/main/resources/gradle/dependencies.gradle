@@ -5,12 +5,17 @@ allprojects {
 			String jsonOutput = ""
 			jsonOutput += "{\"groupId\":\"" + project.getGroup() + "\",\"artifactId\":\"" + project.getName() + "\",\"version\":\"" +  project.getVersion() + "\""
 			jsonOutput += ",\"dependencies\":["
-
+			Spec<Object> SATISFIES_ALL = new Spec<Object>() {
+				public boolean isSatisfiedBy(Object element) {
+					return true;
+				}
+			};
+		
 			for (Configuration configuration : configurationSet) {
 				try {
 					ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
 					LenientConfiguration lenientConfiguration = resolvedConfiguration.getLenientConfiguration();
-					Set<ResolvedDependency> firstLevelModuleDependencies = lenientConfiguration.getFirstLevelModuleDependencies();
+					Set<ResolvedDependency> firstLevelModuleDependencies = lenientConfiguration.getFirstLevelModuleDependencies(SATISFIES_ALL);
 					Iterator<ResolvedDependency> iterator = firstLevelModuleDependencies.iterator();
 					while (iterator.hasNext()) {
 						ResolvedDependency resolvedDependency = iterator.next();
