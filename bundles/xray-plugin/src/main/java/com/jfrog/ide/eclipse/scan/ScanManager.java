@@ -21,6 +21,7 @@ import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
+import com.jfrog.ide.eclipse.ui.ProjectsMap;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 import com.jfrog.xray.client.services.summary.Components;
@@ -101,8 +102,8 @@ public abstract class ScanManager extends ScanManagerBase {
 					addFilterMangerLicenses();
 				}
 				DependenciesTree scanResults = getScanResults();
-				issuesTree.addScanResults(scanResults, getProjectName());
-				licensesTree.addScanResults(scanResults, getProjectName());
+				issuesTree.addScanResults(getProjectName(), scanResults);
+				licensesTree.addScanResults(getProjectName(), scanResults);
 				if (parent == null || parent.isDisposed()) {
 					return;
 				}
@@ -111,8 +112,9 @@ public abstract class ScanManager extends ScanManagerBase {
 						if (monitor.isCanceled()) {
 							return;
 						}
-						licensesTree.applyFilters(getProjectName());
-						issuesTree.applyFilters(getProjectName());	
+						ProjectsMap.ProjectKey projectKey = ProjectsMap.createKey(getProjectName(), scanResults.getGeneralInfo());
+						licensesTree.applyFilters(projectKey);
+						issuesTree.applyFilters(projectKey);	
 					}
 				});
 			}

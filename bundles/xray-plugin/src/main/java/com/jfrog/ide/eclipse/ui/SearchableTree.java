@@ -1,7 +1,6 @@
 package com.jfrog.ide.eclipse.ui;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ import com.google.common.collect.Lists;
  */
 public abstract class SearchableTree extends FilteredTree {
 
-	protected HashMap<String, DependenciesTree> projects = new HashMap<String, DependenciesTree>();
+	protected ProjectsMap projects = new ProjectsMap();
 	protected ComponentDetails componentDetails;
 	private TreeColumnLayout treeLayout = new TreeColumnLayout();
 
@@ -109,11 +108,11 @@ public abstract class SearchableTree extends FilteredTree {
 		projects.clear();
 	}
 
-	public void addScanResults(DependenciesTree scanTree, String projectName) {
-		projects.put(projectName, scanTree);
+	public void addScanResults(String projectName, DependenciesTree dependenciesTree) {
+		projects.put(projectName, dependenciesTree);
 	}
 
-	public abstract void applyFilters(String projectName);
+	public abstract void applyFilters(ProjectsMap.ProjectKey projectName);
 
 	public abstract void applyFiltersForAllProjects();
 }

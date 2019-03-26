@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 import com.jfrog.ide.common.filter.FilterManager;
+import com.jfrog.ide.eclipse.ui.ProjectsMap.ProjectKey;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 
 /**
@@ -46,8 +47,8 @@ public class IssuesTree extends SearchableTree {
 	}
 
 	@Override
-	public void applyFilters(String projectName) {
-		DependenciesTree project = projects.get(projectName);
+	public void applyFilters(ProjectKey projectKey) {
+		DependenciesTree project = projects.get(projectKey);
 		if (project != null) {
 			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
 			filteredRoot.getIssues().clear();
@@ -69,7 +70,7 @@ public class IssuesTree extends SearchableTree {
 	@Override
 	public void applyFiltersForAllProjects() {
 		root = new DependenciesTree();
-		for (Entry<String, DependenciesTree> entry : projects.entrySet()) {
+		for (Entry<ProjectKey, DependenciesTree> entry : projects.entrySet()) {
 			applyFilters(entry.getKey());
 		}
 	}
