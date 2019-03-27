@@ -2,6 +2,7 @@ package com.jfrog.ide.eclipse.ui;
 
 import java.util.List;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,15 +24,24 @@ import com.google.common.collect.Lists;
  * @author yahavi
  */
 public abstract class FilterDialog extends Dialog {
-	
+
 	protected List<Button> buttons = Lists.newArrayList();
 	protected Button selectAllButton;
+	private MutableBoolean selectAllState;
 	private Font titleFont;
 	private String title;
 
-	public FilterDialog(Shell parentShell, String title) {
+	/**
+	 * Construct a filter dialog.
+	 * 
+	 * @param parentShell    - The shell that will contain the dialog.
+	 * @param title          - Filter dialog title - "Severity" or "License".
+	 * @param selectAllState - The state of "All" checkbox.
+	 */
+	public FilterDialog(Shell parentShell, String title, MutableBoolean selectAllState) {
 		super(parentShell);
 		this.title = title;
+		this.selectAllState = selectAllState;
 	}
 
 	@Override
@@ -40,7 +50,7 @@ public abstract class FilterDialog extends Dialog {
 		createTitle(container);
 		selectAllButton = new Button(container, SWT.CHECK);
 		selectAllButton.setText("All");
-		selectAllButton.setSelection(true);
+		selectAllButton.setSelection(selectAllState.booleanValue());
 		selectAllButton.addSelectionListener(new SelectAllListener());
 		return container;
 	}
@@ -84,6 +94,7 @@ public abstract class FilterDialog extends Dialog {
 		public void widgetSelected(SelectionEvent event) {
 			super.widgetSelected(event);
 			buttons.forEach(button -> button.setSelection(selectAllButton.getSelection()));
+			selectAllState.setValue(selectAllButton.getSelection());
 			selectAll();
 		}
 	}

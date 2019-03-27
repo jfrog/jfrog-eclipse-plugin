@@ -1,5 +1,6 @@
 package com.jfrog.ide.eclipse.ui.licenses;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -16,8 +17,10 @@ import com.jfrog.ide.eclipse.ui.FilterDialog;
  */
 public class LicensesFilterDialog extends FilterDialog {
 
+	private static MutableBoolean selectAllState = new MutableBoolean(true);
+
 	public LicensesFilterDialog(Shell parentShell, String title) {
-		super(parentShell, title);
+		super(parentShell, title, selectAllState);
 	}
 
 	@Override
