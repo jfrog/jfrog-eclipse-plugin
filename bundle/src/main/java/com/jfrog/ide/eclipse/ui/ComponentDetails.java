@@ -142,7 +142,7 @@ public abstract class ComponentDetails extends Panel {
 		if (licenses.isEmpty()) {
 			return;
 		}
-		createLabel(componentDetailsPanel, "Licenses");
+		createLabel(componentDetailsPanel, "Licenses:");
 		Panel licensesPanel = new Panel(componentDetailsPanel);
 		licensesPanel.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
 		licenses.forEach(license -> {

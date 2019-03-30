@@ -15,9 +15,9 @@ defaultTasks 'publishP2Repo'
 publishP2Repo {
     repoOwner = 'yahav'
     repoName = 'jfrog-eclipse-plugin-yahav'
-    compositePackage = ''
+    mainFeatureId = 'com.jfrog.ide.eclipse'
     subCompositeStrategy = 'MICRO'
     repoDir = new File("target/repository")
-    zippedRepoFile = new File("target/eclipse.update-1.0.0.zip")
+    zippedRepoFile = new File("target/com.jfrog.ide.eclipse.releng.update-site-1.0.0.zip")
 }
 

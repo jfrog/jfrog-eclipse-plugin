@@ -49,9 +49,9 @@ public class Utils {
 	public static String getGradleScriptFileLocation(GradleScanManager gradleScanManager) throws IOException {
 		File currentDir = new File(System.getProperty("user.dir"));
 		File parentDir = currentDir.getParentFile();
-		File pathToGradleScriptFile = new File(parentDir + File.separator + "bundles" + File.separator + "xray-plugin"
-				+ File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-				+ "gradle" + File.separator + GradleScanManager.GRADLE_FILE_NAME);
+		File pathToGradleScriptFile = new File(parentDir + File.separator + "bundle" + File.separator + "src"
+				+ File.separator + "main" + File.separator + "resources" + File.separator + "gradle" + File.separator
+				+ GradleScanManager.GRADLE_FILE_NAME);
 		return gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
 	}
 

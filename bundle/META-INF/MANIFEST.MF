@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XRay Plugin
-Bundle-SymbolicName: eclipse.plugin;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: com.jfrog.ide.eclipse;singleton:=true
+Bundle-Version: 1.0.0
 nEnvironment: JavaSE-1.8
 Import-Package: javax.annotation;version="0.0.0"
 Automatic-Module-Name: org.jfrog.plugin.rcp
@@ -19,6 +19,13 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.109.100",
 Bundle-ClassPath: .,
  lib/ide-plugins-common.jar
 Bundle-Vendor: JFrog
-Export-Package: com.jfrog.ide.eclipse.scan,
+Export-Package: com.jfrog.ide.eclipse.configuration,
+ com.jfrog.ide.eclipse.log,
+ com.jfrog.ide.eclipse.npm,
+ com.jfrog.ide.eclipse.scan,
  com.jfrog.ide.eclipse.scheduling,
+ com.jfrog.ide.eclipse.ui,
+ com.jfrog.ide.eclipse.ui.actions,
+ com.jfrog.ide.eclipse.ui.issues,
+ com.jfrog.ide.eclipse.ui.licenses,
  com.jfrog.ide.eclipse.utils
