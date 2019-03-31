@@ -4,16 +4,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 
 /**
  * @author yahavi
  */
-public class IssuesTab extends CTabItem {
+public class IssuesTab {
 
 	public IssuesTab(CTabFolder parent) {
-		super(parent, SWT.NONE);
-		setText("Issues");
+		CTabItem tab = new CTabItem(parent, SWT.NONE);
+		tab.setText("Issues");
 
 		SashForm horizontalDivision = new SashForm(parent, SWT.HORIZONTAL);
 
@@ -27,20 +28,13 @@ public class IssuesTab extends CTabItem {
 
 		registerTreeListeners(componentDetails, componentIssueTable);
 		horizontalDivision.setWeights(new int[] { 1, 2 });
-		parent.setSelection(this);
-		setControl(horizontalDivision);
+		parent.setSelection(tab);
+		tab.setControl(horizontalDivision);
 	}
-	
+
 	private void registerTreeListeners(ComponentDetails componentDetails, ComponentIssueTable componentIssueTable) {
 		IssuesTree issuesTree = IssuesTree.getIssuesTree();
 		issuesTree.setComponentDetails(componentDetails);
 		issuesTree.setComponentIssueTable(componentIssueTable);
-	}
-	
-	@Override
-	public void dispose() {
-		ComponentIssueDetails.disposeComponentDetails();
-		IssuesTree.disposeTree();
-		super.dispose();
 	}
 }

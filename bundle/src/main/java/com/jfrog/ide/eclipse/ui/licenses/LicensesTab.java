@@ -4,16 +4,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 
 /**
  * @author yahavi
  */
-public class LicensesTab extends CTabItem {
+public class LicensesTab {
 
 	public LicensesTab(CTabFolder parent) {
-		super(parent, SWT.NONE);
-		setText("Licenses Info");
+		CTabItem tab = new CTabItem(parent, SWT.NONE);
+		tab.setText("Licenses Info");
 		SashForm horizontalDivision = new SashForm(parent, SWT.HORIZONTAL);
 
 		// Left
@@ -25,13 +26,6 @@ public class LicensesTab extends CTabItem {
 		LicensesTree licensesTree = LicensesTree.getLicensesTree();
 		licensesTree.setComponentDetails(componentDetails);
 		horizontalDivision.setWeights(new int[] { 1, 2 });
-		setControl(horizontalDivision);
-	}
-	
-	@Override
-	public void dispose() {
-		ComponentLicenseDetails.disposeComponentDetails();
-		LicensesTree.disposeTree();
-		super.dispose();
+		tab.setControl(horizontalDivision);
 	}
 }

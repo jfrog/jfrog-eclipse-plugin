@@ -9,11 +9,16 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.scan.ScanManagersFactory;
 import com.jfrog.ide.eclipse.ui.actions.Filter.FilterType;
+import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTab;
+import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
+import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTab;
+import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 
 /**
  * The entry point of the plug-in. Creates the UI and perform a quick scan if
@@ -54,6 +59,10 @@ public class PartControl {
 
 	@PreDestroy
 	public void dispose() {
+		ComponentIssueDetails.disposeComponentDetails();
+		ComponentLicenseDetails.disposeComponentDetails();
+		IssuesTree.disposeTree();
+		LicensesTree.disposeTree();
 		IconManager.dispose();
 	}
 }
