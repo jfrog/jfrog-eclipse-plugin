@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.missedone:gradle-bintray-p2-plugin:1.2.0'
+    }
+}
+
+apply plugin: 'bintray-p2'
+
+defaultTasks 'publishP2Repo'
+
+publishP2Repo {
+    repoOwner = 'yahav'
+    repoName = 'jfrog-eclipse-plugin-yahav'
+    mainFeatureId = 'com.jfrog.ide.eclipse'
+    subCompositeStrategy = 'MICRO'
+    repoDir = new File("target/repository")
+    zippedRepoFile = new File("target/com.jfrog.ide.eclipse.releng.update-site-1.0.0.zip")
+}
+
