@@ -11,7 +11,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.osgi.framework.FrameworkUtil;
 
@@ -101,11 +100,9 @@ public class TestConnectionButton extends FieldEditor {
 						throw new IOException(testComponentPermissionRes.getRight());
 					}
 					connectionResults.setText(XrayConnectionUtils.Results.success(xrayVersion));
-					connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
 				}
 			} catch (IOException | IllegalArgumentException exeption) {
 				connectionResults.setText(XrayConnectionUtils.Results.error(exeption));
-				connectionResults.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 			}
 			panel.pack();
 		}
