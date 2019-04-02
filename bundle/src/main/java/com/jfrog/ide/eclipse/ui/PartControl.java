@@ -42,11 +42,10 @@ public class PartControl {
 		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		new IssuesTab(tabFolder);
-		LicensesTab licensesTab = new LicensesTab(tabFolder);
+		new LicensesTab(tabFolder);
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				xrayScanToolbar.setFilterType(
-						tabFolder.getSelection().equals(licensesTab) ? FilterType.License : FilterType.Severity);
+				xrayScanToolbar.setFilterType(FilterType.values()[tabFolder.getSelectionIndex()]);
 			}
 		});
 	}
