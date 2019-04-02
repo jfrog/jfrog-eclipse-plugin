@@ -26,7 +26,7 @@ public class IssuesTree extends SearchableTree {
 		instance = new IssuesTree(parent);
 	}
 
-	public static IssuesTree getIssuesTree() {
+	public static IssuesTree getInstance() {
 		return instance;
 	}
 

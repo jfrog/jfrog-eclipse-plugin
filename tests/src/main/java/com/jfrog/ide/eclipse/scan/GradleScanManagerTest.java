@@ -28,7 +28,7 @@ public class GradleScanManagerTest extends TestCase {
 		IProject project = getGradleProject("gradleIsApplicable");
 		GradleScanManager gradleScanManager = new GradleScanManager(project);
 		String gradleFileLocation = Utils.getGradleInitScriptLocation(gradleScanManager);
-		File gradleScriptExpectedLocation = Paths.get(System.getProperty("user.home"), "jfrog-eclipse-plugin", GradleScanManager.GRADLESCRIPTDIR, GradleScanManager.GRADLE_INIT_SCRIPT).toFile();
+		File gradleScriptExpectedLocation = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin", GradleScanManager.GRADLESCRIPTDIR, GradleScanManager.GRADLE_INIT_SCRIPT).toFile();
 		assertTrue(gradleScriptExpectedLocation.exists());
 		assertEquals(gradleScriptExpectedLocation.getAbsolutePath(), gradleFileLocation);
 	}

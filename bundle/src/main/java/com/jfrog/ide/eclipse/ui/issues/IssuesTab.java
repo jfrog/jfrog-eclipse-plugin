@@ -33,7 +33,7 @@ public class IssuesTab {
 	}
 
 	private void registerTreeListeners(ComponentDetails componentDetails, ComponentIssueTable componentIssueTable) {
-		IssuesTree issuesTree = IssuesTree.getIssuesTree();
+		IssuesTree issuesTree = IssuesTree.getInstance();
 		issuesTree.setComponentDetails(componentDetails);
 		issuesTree.setComponentIssueTable(componentIssueTable);
 	}

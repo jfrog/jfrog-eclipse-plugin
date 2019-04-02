@@ -16,7 +16,7 @@ public class ComponentLicenseDetails extends ComponentDetails {
 		return instance;
 	}
 	
-	public static ComponentLicenseDetails get() {
+	public static ComponentLicenseDetails getInstance() {
 		return instance;
 	}
 	

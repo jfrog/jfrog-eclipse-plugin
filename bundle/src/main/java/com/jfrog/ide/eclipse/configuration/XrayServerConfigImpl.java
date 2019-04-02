@@ -23,20 +23,20 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 
 	@Override
 	public String getUrl() {
-		return getString(PreferenceConstants.XRAY_URL);
+		return getValue(PreferenceConstants.XRAY_URL);
 	}
 
 	@Override
 	public String getUsername() {
-		return getString(PreferenceConstants.XRAY_USERNAME);
+		return getValue(PreferenceConstants.XRAY_USERNAME);
 	}
 
 	@Override
 	public String getPassword() {
-		return getString(PreferenceConstants.XRAY_PASSWORD);
+		return getValue(PreferenceConstants.XRAY_PASSWORD);
 	}
 
-	private String getString(String key) {
+	private String getValue(String key) {
 		String str = service.getString(PreferenceConstants.XRAY_QUALIFIER, key, "", null);
 		return StringUtils.trim(str);
 	}

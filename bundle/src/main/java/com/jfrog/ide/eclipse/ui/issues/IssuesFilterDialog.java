@@ -37,7 +37,7 @@ public class IssuesFilterDialog extends FilterDialog {
 		FilterManager.getInstance().getSelectedSeverities().replaceAll((severity, isSelected) -> {
 			return selectAllButton.getSelection();
 		});
-		IssuesTree.getIssuesTree().applyFiltersForAllProjects();
+		IssuesTree.getInstance().applyFiltersForAllProjects();
 	}
 
 	private class SeverityButton extends FilterButton {
@@ -49,7 +49,7 @@ public class IssuesFilterDialog extends FilterDialog {
 					super.widgetSelected(event);
 					Button button = (Button) event.getSource();
 					FilterManager.getInstance().getSelectedSeverities().replace(severity, button.getSelection());
-					IssuesTree.getIssuesTree().applyFiltersForAllProjects();
+					IssuesTree.getInstance().applyFiltersForAllProjects();
 				}
 			});
 		}

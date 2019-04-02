@@ -44,9 +44,8 @@ public class MavenScanManager extends ScanManager {
 		try {
 			return project.hasNature("org.eclipse.m2e.core.maven2Nature");
 		} catch (CoreException ce) {
-			// Ignore
+			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -110,8 +109,8 @@ public class MavenScanManager extends ScanManager {
 						return;
 					}
 				}
-				IssuesTree issuesTree = IssuesTree.getIssuesTree();
-				LicensesTree licensesTree = LicensesTree.getLicensesTree();
+				IssuesTree issuesTree = IssuesTree.getInstance();
+				LicensesTree licensesTree = LicensesTree.getInstance();
 				if (issuesTree != null && licensesTree != null) {
 					scanAndUpdateResults(false, issuesTree, licensesTree, parent);
 				}

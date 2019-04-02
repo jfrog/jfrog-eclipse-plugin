@@ -23,7 +23,7 @@ public class LicensesTab {
 		// Right
 		ComponentDetails componentDetails = ComponentLicenseDetails.create(horizontalDivision);
 
-		LicensesTree licensesTree = LicensesTree.getLicensesTree();
+		LicensesTree licensesTree = LicensesTree.getInstance();
 		licensesTree.setComponentDetails(componentDetails);
 		horizontalDivision.setWeights(new int[] { 1, 2 });
 		tab.setControl(horizontalDivision);

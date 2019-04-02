@@ -31,12 +31,13 @@ import com.jfrog.xray.client.services.summary.Components;
  */
 public abstract class ScanManager extends ScanManagerBase {
 
-	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), "jfrog-eclipse-plugin");
+	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private IProgressMonitor monitor;
 	IProject project;
 
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getLogger(), XrayServerConfigImpl.getInstance(), prefix);
+		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getLogger(), XrayServerConfigImpl.getInstance(),
+				prefix);
 		this.project = project;
 		Files.createDirectories(HOME_PATH);
 	}
@@ -68,60 +69,91 @@ public abstract class ScanManager extends ScanManagerBase {
 		}
 	}
 
+	public IProject getIProject() {
+		return project;
+	}
+	
+	public void setMonitor(IProgressMonitor monitor) {
+		this.monitor = monitor;
+	}
+
 	/**
-	 * Launch dependency scan.
+	 * Schedule a dependency scan.
 	 * 
-	 * @param event
-	 * 
-	 * @throws CoreException
+	 * @param quickScan - True iff this is a quick scan.
+	 * @param parent    - The parent UI composite. Cancel the scan if the parent is
+	 *                  disposed.
 	 */
-	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, LicensesTree licensesTree,
-			Composite parent) {
-		ScanJob.doSchedule(project.getName(), new ICoreRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				ScanManager.this.monitor = monitor;
-				if (parent == null || parent.isDisposed()) {
-					return;
-				}
-				getLog().info("Performing scan for " + getProjectName());
-				try {
-					refreshDependencies(monitor);
-					buildTree();
-				} catch (IOException e) {
-					Logger.getLogger().error(e.getMessage(), e);
-					return;
-				}
-				if (parent == null || parent.isDisposed() || getScanResults() == null) {
+	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, LicensesTree licensesTree, Composite parent) {
+		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, licensesTree, quickScan));
+	}
+
+	/**
+	 * Start a dependency scan.
+	 */
+	private class ScanRunnable implements ICoreRunnable {
+		private LicensesTree licensesTree;
+		private IssuesTree issuesTree;
+		private boolean quickScan;
+		private Composite parent;
+
+		private ScanRunnable(Composite parent, IssuesTree issuesTree, LicensesTree licensesTree, boolean quickScan) {
+			this.parent = parent;
+			this.issuesTree = issuesTree;
+			this.licensesTree = licensesTree;
+			this.quickScan = quickScan;
+		}
+
+		@Override
+		public void run(IProgressMonitor monitor) throws CoreException {
+			ScanManager.this.monitor = monitor;
+			if (isDisposed()) {
+				return;
+			}
+			getLog().info("Performing scan for " + getProjectName());
+			try {
+				refreshDependencies(monitor);
+				buildTree();
+				if (isDisposed() || getScanResults() == null) {
 					return;
 				}
 				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
 				scanAndCacheArtifacts(indicator, quickScan);
 				addXrayInfoToTree(getScanResults());
-				if (!getScanResults().isLeaf()) {
-					addFilterMangerLicenses();
-				}
-				DependenciesTree scanResults = getScanResults();
-				issuesTree.addScanResults(getProjectName(), scanResults);
-				licensesTree.addScanResults(getProjectName(), scanResults);
-				if (parent == null || parent.isDisposed()) {
-					return;
-				}
-				parent.getDisplay().syncExec(new Runnable() {
-					public void run() {
-						if (monitor.isCanceled()) {
-							return;
-						}
-						ProjectsMap.ProjectKey projectKey = ProjectsMap.createKey(getProjectName(), scanResults.getGeneralInfo());
-						licensesTree.applyFilters(projectKey);
-						issuesTree.applyFilters(projectKey);	
-					}
-				});
+				setScanResults();
+			} catch (IOException e) {
+				Logger.getLogger().error(e.getMessage(), e);
+				return;
 			}
-		});
+		}
+
+		private void setScanResults() {
+			if (!getScanResults().isLeaf()) {
+				addFilterMangerLicenses();
+			}
+			DependenciesTree scanResults = getScanResults();
+			issuesTree.addScanResults(getProjectName(), scanResults);
+			licensesTree.addScanResults(getProjectName(), scanResults);
+			if (isDisposed()) {
+				return;
+			}
+			parent.getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (monitor.isCanceled()) {
+						return;
+					}
+					ProjectsMap.ProjectKey projectKey = ProjectsMap.createKey(getProjectName(),
+							scanResults.getGeneralInfo());
+					licensesTree.applyFilters(projectKey);
+					issuesTree.applyFilters(projectKey);
+				}
+			});
+		}
+		
+		private boolean isDisposed() {
+			return parent == null || parent.isDisposed();
+		}
 	}
 
-	public IProject getIProject() {
-		return project;
-	}
 }

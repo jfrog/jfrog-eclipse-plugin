@@ -48,9 +48,8 @@ public class GradleScanManager extends ScanManager {
 		try {
 			return project.hasNature("org.eclipse.buildship.core.gradleprojectnature");
 		} catch (CoreException ce) {
-			// Ignore
+			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -115,7 +114,7 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	/**
-	 * Create dependencies.gradle file for the project in the homeDir/jfrog-eclipse-plugin/gradleScriptDir dir
+	 * Create dependencies.gradle file for the project in the homeDir/.jfrog-eclipse-plugin/gradleScriptDir dir
 	 * 
 	 * @param in - File descriptor for the Gradle file.
 	 * @return the Gradle file.

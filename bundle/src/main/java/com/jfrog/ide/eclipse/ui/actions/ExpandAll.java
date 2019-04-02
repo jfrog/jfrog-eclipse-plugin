@@ -18,7 +18,7 @@ public class ExpandAll extends Action {
 
 	@Override
 	public void execute(SelectionEvent event) {
-		IssuesTree.getIssuesTree().expandAll();
-		LicensesTree.getLicensesTree().expandAll();
+		IssuesTree.getInstance().expandAll();
+		LicensesTree.getInstance().expandAll();
 	}
 }

@@ -36,7 +36,7 @@ allprojects {
 				jsonOutput = jsonOutput.substring(0, jsonOutput.length() - 1)
 			}
 			jsonOutput += "]}"
-			File homeDir = java.nio.file.Paths.get(System.getProperty("user.home"), "jfrog-eclipse-plugin", name, project.getName()).toFile();
+			File homeDir = java.nio.file.Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin", name, project.getName()).toFile();
 			if (!homeDir.exists()) {
 				homeDir.mkdirs();
 			}

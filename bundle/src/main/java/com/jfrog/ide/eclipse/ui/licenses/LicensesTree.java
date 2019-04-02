@@ -22,7 +22,7 @@ public class LicensesTree extends SearchableTree {
 		instance = new LicensesTree(parent);
 	}
 
-	public static LicensesTree getLicensesTree() {
+	public static LicensesTree getInstance() {
 		return instance;
 	}
 

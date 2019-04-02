@@ -41,7 +41,7 @@ public class LicensesFilterDialog extends FilterDialog {
 					super.widgetSelected(event);
 					Button button = (Button) event.getSource();
 					FilterManager.getInstance().getSelectedLicenses().replace(license, button.getSelection());
-					LicensesTree.getLicensesTree().applyFiltersForAllProjects();
+					LicensesTree.getInstance().applyFiltersForAllProjects();
 				}
 			});
 		}
@@ -52,7 +52,7 @@ public class LicensesFilterDialog extends FilterDialog {
 		FilterManager.getInstance().getSelectedLicenses().replaceAll((license, isSelected) -> {
 			return selectAllButton.getSelection();
 		});
-		LicensesTree.getLicensesTree().applyFiltersForAllProjects();
+		LicensesTree.getInstance().applyFiltersForAllProjects();
 	}
 
 }

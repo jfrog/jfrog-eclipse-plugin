@@ -18,7 +18,7 @@ public class CollapseAll extends Action {
 
 	@Override
 	public void execute(SelectionEvent event) {
-		IssuesTree.getIssuesTree().collapseAll();
-		LicensesTree.getLicensesTree().collapseAll();
+		IssuesTree.getInstance().collapseAll();
+		LicensesTree.getInstance().collapseAll();
 	}
 }

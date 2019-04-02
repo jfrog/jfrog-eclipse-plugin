@@ -74,8 +74,8 @@ public class ScanManagersFactory {
 		if (scanManagers.size() > 0) {
 			scanInProgress.compareAndSet(false, true);
 		}
-		IssuesTree issuesTree = IssuesTree.getIssuesTree();
-		LicensesTree licensesTree = LicensesTree.getLicensesTree();
+		IssuesTree issuesTree = IssuesTree.getInstance();
+		LicensesTree licensesTree = LicensesTree.getInstance();
 		if (issuesTree == null || licensesTree == null) {
 			return;
 		}
