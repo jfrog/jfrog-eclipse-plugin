@@ -32,20 +32,31 @@ public class ProblemsLogger {
 	}
 
 	private void writeMessage(String message, int severity) {
-		IWorkspaceRunnable editorMarker = new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				IMarker marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
-				marker.setAttribute(IMarker.MESSAGE, message);
-				marker.setAttribute(IMarker.LOCATION, "jfrog-eclipse-plugin");
-				marker.setAttribute(IMarker.TRANSIENT, true);
-				marker.setAttribute(IMarker.SEVERITY, severity);
-			}
-		};
-
+		IWorkspaceRunnable editorMarker = new WorkspaceRunnabe(message, severity);
 		try {
 			ResourcesPlugin.getWorkspace().run(editorMarker, new NullProgressMonitor());
 		} catch (CoreException e) {
-			System.err.println("Some error set marker: " + e);
+			Logger.getLogger().info("Some error set marker: " + e);
+		}
+	}
+	
+	class WorkspaceRunnabe implements IWorkspaceRunnable {
+		
+		private String message;
+		private int severity;
+		
+		public WorkspaceRunnabe(String message, int severity) {
+			this.message = message;
+			this.severity = severity;
+		}
+
+		@Override
+		public void run(IProgressMonitor monitor) throws CoreException {
+			IMarker marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
+			marker.setAttribute(IMarker.MESSAGE, message);
+			marker.setAttribute(IMarker.LOCATION, "jfrog-eclipse-plugin");
+			marker.setAttribute(IMarker.TRANSIENT, true);
+			marker.setAttribute(IMarker.SEVERITY, severity);
 		}
 	}
 }

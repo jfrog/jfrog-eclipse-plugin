@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -31,8 +32,8 @@ import com.jfrog.ide.eclipse.utils.GradleArtifact;
 public class GradleScanManager extends ScanManager {
 
 	private static final String TASK_NAME = "generateDependenciesGraphAsJson";
-	public static final String GRADLE_FILE_NAME = "dependencies.gradle";
-	public static final String VERSION = "01";
+	public static final String GRADLE_INIT_SCRIPT = "dependencies.gradle";
+	public static final String GRADLESCRIPTDIR = "gradleScript";
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private GradleArtifact gradleArtifact;
@@ -60,12 +61,14 @@ public class GradleScanManager extends ScanManager {
 			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();
 		}
 
-		String gradleFileNameFullPath = "/gradle/" + GRADLE_FILE_NAME;
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		String gradleFileNameFullPath = "/gradle/" + GRADLE_INIT_SCRIPT;
+		ClassLoader classLoader = GradleScanManager.class.getClassLoader();
+		// classLoader.getResourceAsStream(gradleFileNameFullPath) will work on all the
+		// OSes
 		try (InputStream res = classLoader.getResourceAsStream(gradleFileNameFullPath)) {
 			String gradleFile = createGradleFile(res);
 			if (StringUtils.isBlank(gradleFile)) {
-				getLog().warn("Gradle File wasn't created.");
+				getLog().warn("Gradle init script wasn't created.");
 				return;
 			}
 			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
@@ -86,7 +89,7 @@ public class GradleScanManager extends ScanManager {
 		}
 		setScanResults(rootNode);
 	}
-	
+
 	public GradleArtifact getGradleArtifact() {
 		return gradleArtifact;
 	}
@@ -112,18 +115,16 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	/**
-	 * Create dependencies.gradle file for the project if it doesn't exist.
+	 * Create dependencies.gradle file for the project in the homeDir/jfrog-eclipse-plugin/gradleScriptDir dir
 	 * 
 	 * @param in - File descriptor for the Gradle file.
 	 * @return the Gradle file.
 	 * @throws IOException in case of any IO failure.
 	 */
 	public String createGradleFile(InputStream in) throws IOException {
-		Path versionDir = Files.createDirectories(HOME_PATH.resolve(VERSION));
-		Path gradleFile = versionDir.resolve(GRADLE_FILE_NAME);
-		if (!Files.exists(gradleFile)) {
-			Files.copy(in, gradleFile);
-		}
+		Path gradleScriptDir = Files.createDirectories(HOME_PATH.resolve(GRADLESCRIPTDIR));
+		Path gradleFile = gradleScriptDir.resolve(GRADLE_INIT_SCRIPT);
+		Files.copy(in, gradleFile, StandardCopyOption.REPLACE_EXISTING);
 		return gradleFile.toAbsolutePath().toString();
 	}
 
@@ -143,8 +144,6 @@ public class GradleScanManager extends ScanManager {
 					+ ": gradle --init-script " + gradleFile + " " + TASK_NAME + " ");
 			connection.newBuild().withArguments("--init-script", gradleFile).forTasks(TASK_NAME).setStandardOutput(out)
 					.addProgressListener(new GradleProgressListener()).run();
-		} catch (RuntimeException re) {
-			getLog().error("Gradle run finished with the following error: " + re.getCause(), re);
 		} finally {
 			connection.close();
 		}

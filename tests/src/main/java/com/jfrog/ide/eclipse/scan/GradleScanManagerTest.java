@@ -2,6 +2,7 @@ package com.jfrog.ide.eclipse.scan;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -26,10 +27,8 @@ public class GradleScanManagerTest extends TestCase {
 	public void testCreateGradleFile() throws IOException, CoreException {
 		IProject project = getGradleProject("gradleIsApplicable");
 		GradleScanManager gradleScanManager = new GradleScanManager(project);
-		String gradleFileLocation = Utils.getGradleScriptFileLocation(gradleScanManager);
-		File gradleScriptExpectedLocation = new File(
-				System.getProperty("user.home") + File.separator + "jfrog-eclipse-plugin" + File.separator
-						+ GradleScanManager.VERSION + File.separator + GradleScanManager.GRADLE_FILE_NAME);
+		String gradleFileLocation = Utils.getGradleInitScriptLocation(gradleScanManager);
+		File gradleScriptExpectedLocation = Paths.get(System.getProperty("user.home"), "jfrog-eclipse-plugin", GradleScanManager.GRADLESCRIPTDIR, GradleScanManager.GRADLE_INIT_SCRIPT).toFile();
 		assertTrue(gradleScriptExpectedLocation.exists());
 		assertEquals(gradleScriptExpectedLocation.getAbsolutePath(), gradleFileLocation);
 	}
@@ -84,7 +83,7 @@ public class GradleScanManagerTest extends TestCase {
 	private GradleScanManager generateDependenciesGraph(String projectName) throws IOException, CoreException {
 		IProject project = getGradleProject(projectName);
 		GradleScanManager gradleScanManager = new GradleScanManager(project);
-		String gradleFileLocation = Utils.getGradleScriptFileLocation(gradleScanManager);
+		String gradleFileLocation = Utils.getGradleInitScriptLocation(gradleScanManager);
 		String rootProjectDir = project.getLocation().toPortableString();
 		if (project.getLocation().toFile().isDirectory()) {
 			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();

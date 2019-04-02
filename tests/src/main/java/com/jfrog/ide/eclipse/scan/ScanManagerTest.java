@@ -74,7 +74,6 @@ public class ScanManagerTest extends TestCase {
 
 		@Override
 		public void done(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
 			if (event.getJob().belongsTo(ScanJob.FAMILY)) {
 				jobExists.set(true);
 			}
