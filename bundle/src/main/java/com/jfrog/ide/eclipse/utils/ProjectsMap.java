@@ -1,4 +1,4 @@
-package com.jfrog.ide.eclipse.ui;
+package com.jfrog.ide.eclipse.utils;
 
 import java.util.Comparator;
 import java.util.TreeMap;

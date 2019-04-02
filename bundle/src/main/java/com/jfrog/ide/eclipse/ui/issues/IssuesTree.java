@@ -8,8 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 import com.jfrog.ide.common.filter.FilterManager;
-import com.jfrog.ide.eclipse.ui.ProjectsMap.ProjectKey;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
+import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
 
 /**
  * @author yahavi
