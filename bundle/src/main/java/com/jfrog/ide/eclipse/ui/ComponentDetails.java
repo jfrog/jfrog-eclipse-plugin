@@ -87,8 +87,10 @@ public abstract class ComponentDetails extends Panel {
 	protected void createComponentsPanel() {
 		createLabel(this, title);
 		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		scrolledComposite.setBackground(getBackground());
 		setGridLayout(scrolledComposite, 1, false);
 		componentDetailsPanel = new Panel(scrolledComposite);
+		componentDetailsPanel.setBackground(scrolledComposite.getBackground());
 		setGridLayout(componentDetailsPanel, 2, false);
 		UiUtils.createDisabledTextLabel(componentDetailsPanel, "Component information is not available");
 		scrolledComposite.setContent(componentDetailsPanel);
@@ -103,7 +105,6 @@ public abstract class ComponentDetails extends Panel {
 		for (Control control : componentDetailsPanel.getChildren()) {
 			control.dispose();
 		}
-		componentDetailsPanel.setBackground(scrolledComposite.getBackground());
 		GeneralInfo generalInfo = ObjectUtils.defaultIfNull(node.getGeneralInfo(), new GeneralInfo());
 		if (!StringUtils.equalsIgnoreCase("Npm", generalInfo.getPkgType())) {
 			addSection("Group:", generalInfo.getGroupId());
