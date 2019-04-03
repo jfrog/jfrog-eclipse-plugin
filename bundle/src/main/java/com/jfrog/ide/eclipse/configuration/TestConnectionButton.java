@@ -3,20 +3,18 @@ package com.jfrog.ide.eclipse.configuration;
 import java.io.IOException;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
-import com.jfrog.ide.eclipse.ui.Panel;
-import com.jfrog.ide.eclipse.ui.UiUtils;
 import com.jfrog.xray.client.Xray;
 import com.jfrog.xray.client.impl.XrayClient;
 import com.jfrog.xray.client.services.system.Version;
@@ -31,9 +29,8 @@ public class TestConnectionButton extends FieldEditor {
 	private static final String USER_AGENT = "jfrog-eclipse-plugin/"
 			+ FrameworkUtil.getBundle(XrayGlobalConfiguration.class).getVersion().toString();
 	private StringFieldEditor urlEditor, usernameEditor, passwordEditor;
-	private Button button;
 	private Label connectionResults;
-	private Panel panel;
+	private Button button;
 
 	public TestConnectionButton(StringFieldEditor urlEditor, StringFieldEditor usernameEditor,
 			StringFieldEditor passwordEditor, Composite parent) {
@@ -41,20 +38,20 @@ public class TestConnectionButton extends FieldEditor {
 		this.urlEditor = urlEditor;
 		this.usernameEditor = usernameEditor;
 		this.passwordEditor = passwordEditor;
-		createPanel(parent);
-		createButton(panel);
-		connectionResults = UiUtils.createLabel(panel, "");
-	}
-
-	private void createPanel(Composite parent) {
-		panel = new Panel(parent);
-		panel.setLayout(new RowLayout(SWT.VERTICAL));
+		createButton(parent);
+		createConnectionResults(parent);
 	}
 
 	private void createButton(Composite parent) {
 		button = new Button(parent, SWT.PUSH);
 		button.setText(getLabelText());
 		button.addSelectionListener(new ButtonSelection());
+		button.setLayoutData(GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.TOP).create());
+	}
+
+	private void createConnectionResults(Composite parent) {
+		connectionResults = new Label(parent, SWT.WRAP);
+		connectionResults.setLayoutData(GridDataFactory.fillDefaults().grab(false, true).create());
 	}
 
 	@Override
@@ -104,7 +101,6 @@ public class TestConnectionButton extends FieldEditor {
 			} catch (IOException | IllegalArgumentException exeption) {
 				connectionResults.setText(XrayConnectionUtils.Results.error(exeption));
 			}
-			panel.pack();
 		}
 	}
 }
