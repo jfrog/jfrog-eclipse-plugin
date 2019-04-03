@@ -23,7 +23,7 @@ public class IssuesTab {
 
 		// Right
 		SashForm verticalDivision = new SashForm(horizontalDivision, SWT.VERTICAL);
-		ComponentDetails componentDetails = ComponentIssueDetails.create(verticalDivision);
+		ComponentDetails componentDetails = ComponentIssueDetails.createComponentIssueDetails(verticalDivision);
 		ComponentIssueTable componentIssueTable = new ComponentIssueTable(verticalDivision);
 
 		registerTreeListeners(componentDetails, componentIssueTable);

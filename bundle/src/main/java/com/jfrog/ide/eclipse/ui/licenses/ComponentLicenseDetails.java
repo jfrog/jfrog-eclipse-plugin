@@ -11,7 +11,7 @@ public class ComponentLicenseDetails extends ComponentDetails {
 	
 	private static ComponentLicenseDetails instance;
 	
-	public static ComponentLicenseDetails create(Composite parent) {
+	public static ComponentLicenseDetails createComponentLicenseDetails(Composite parent) {
 		instance = new ComponentLicenseDetails(parent);
 		return instance;
 	}

@@ -105,7 +105,7 @@ public class MavenScanManager extends ScanManager {
 					boolean alreadyRun = Arrays.stream(jobs)
 							.anyMatch(job -> StringUtils.equals(job.getName(), getProjectName()));
 					if (alreadyRun) {
-						Logger.getLogger().info("Found existing job: " + getProjectName());
+						Logger.getInstance().info("Found existing job: " + getProjectName());
 						return;
 					}
 				}

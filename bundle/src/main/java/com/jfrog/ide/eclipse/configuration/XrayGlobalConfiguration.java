@@ -49,7 +49,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			return true;
 		}
 		boolean doQuickScan = false;
-		ComponentDetails[] componentsDetails = { ComponentIssueDetails.get(), ComponentLicenseDetails.getInstance() };
+		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance(), ComponentLicenseDetails.getInstance() };
 		for (ComponentDetails componentsDetail : componentsDetails) {
 			if (componentsDetail != null) {
 				componentsDetail.credentialsSet();

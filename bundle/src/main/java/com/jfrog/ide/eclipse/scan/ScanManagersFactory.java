@@ -57,7 +57,7 @@ public class ScanManagersFactory {
 	 */
 	public void startScan(Composite parent, boolean quickScan) {
 		if (isScanInProgress()) {
-			Logger.getLogger().info("Previous scan still running...");
+			Logger.getInstance().info("Previous scan still running...");
 			return;
 		}
 		refreshScanManagers(parent);
@@ -66,7 +66,7 @@ public class ScanManagersFactory {
 		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
 		if (ArrayUtils.isNotEmpty(jobs)) {
 			for (Job job : jobs) {
-				Logger.getLogger().info("Cancling previous running scan: " + job.getName());
+				Logger.getInstance().info("Cancling previous running scan: " + job.getName());
 				job.cancel();
 			}
 		}
@@ -101,7 +101,7 @@ public class ScanManagersFactory {
 				Set<Path> paths = Sets.newHashSet();
 				for (IProject project : projects) {
 					if (!project.isOpen()) {
-						Logger.getLogger().info("Project is closed: " + project.getName());
+						Logger.getInstance().info("Project is closed: " + project.getName());
 						continue;
 					}
 					if (MavenScanManager.isApplicable(project)) {
@@ -118,7 +118,7 @@ public class ScanManagersFactory {
 					scanManagers.add(new NpmScanManager(npmProject));
 				}
 			} catch (IOException e) {
-				Logger.getLogger().error(e.getMessage(), e);
+				Logger.getInstance().error(e.getMessage(), e);
 			}
 		}
 	}

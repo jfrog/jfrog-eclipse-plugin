@@ -21,7 +21,7 @@ public class LicensesTab {
 		LicensesTree.createLicensesTree(horizontalDivision);
 
 		// Right
-		ComponentDetails componentDetails = ComponentLicenseDetails.create(horizontalDivision);
+		ComponentDetails componentDetails = ComponentLicenseDetails.createComponentLicenseDetails(horizontalDivision);
 
 		LicensesTree licensesTree = LicensesTree.getInstance();
 		licensesTree.setComponentDetails(componentDetails);

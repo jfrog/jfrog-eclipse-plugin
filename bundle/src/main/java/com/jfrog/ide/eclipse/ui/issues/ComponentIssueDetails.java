@@ -13,12 +13,12 @@ public class ComponentIssueDetails extends ComponentDetails {
 
 	private static ComponentIssueDetails instance;
 
-	public static ComponentIssueDetails create(Composite parent) {
+	public static ComponentIssueDetails createComponentIssueDetails(Composite parent) {
 		instance = new ComponentIssueDetails(parent);
 		return instance;
 	}
 
-	public static ComponentIssueDetails get() {
+	public static ComponentIssueDetails getInstance() {
 		return instance;
 	}
 

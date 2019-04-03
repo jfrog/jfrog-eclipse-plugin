@@ -17,7 +17,7 @@ public class Logger implements Log {
 		ilog = ResourcesPlugin.getPlugin().getLog();
 	}
 
-	public static Logger getLogger() {
+	public static Logger getInstance() {
 		if (instance == null) {
 			instance = new Logger();
 		}
@@ -54,7 +54,7 @@ public class Logger implements Log {
 
 	private void logToProblemsLogger(String message, int status) {
 		if (viewLogger == null) {
-				viewLogger = ProblemsLogger.getProblemsLogger();
+				viewLogger = ProblemsLogger.getInstance();
 		}
 		switch (status) {
 		case Status.WARNING:

@@ -36,7 +36,7 @@ public abstract class ScanManager extends ScanManagerBase {
 	IProject project;
 
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getLogger(), XrayServerConfigImpl.getInstance(),
+		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getInstance(), XrayServerConfigImpl.getInstance(),
 				prefix);
 		this.project = project;
 		Files.createDirectories(HOME_PATH);
@@ -122,7 +122,7 @@ public abstract class ScanManager extends ScanManagerBase {
 				addXrayInfoToTree(getScanResults());
 				setScanResults();
 			} catch (IOException e) {
-				Logger.getLogger().error(e.getMessage(), e);
+				Logger.getInstance().error(e.getMessage(), e);
 				return;
 			}
 		}

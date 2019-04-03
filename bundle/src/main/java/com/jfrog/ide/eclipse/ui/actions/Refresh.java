@@ -20,7 +20,7 @@ public class Refresh extends Action {
 	@Override
 	public void execute(SelectionEvent event) {
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
-			Logger.getLogger().error("Xray server is not configured.");
+			Logger.getInstance().error("Xray server is not configured.");
 			return;
 		}
 		ScanManagersFactory.getInstance().startScan(getParent(), false);

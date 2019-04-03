@@ -14,7 +14,7 @@ public class ProblemsLogger {
 	public ProblemsLogger() {
 	}
 
-	public static ProblemsLogger getProblemsLogger() {
+	public static ProblemsLogger getInstance() {
 		if (instance == null) {
 			instance = new ProblemsLogger();
 		}
@@ -36,7 +36,7 @@ public class ProblemsLogger {
 		try {
 			ResourcesPlugin.getWorkspace().run(editorMarker, new NullProgressMonitor());
 		} catch (CoreException e) {
-			Logger.getLogger().info("Some error set marker: " + e);
+			Logger.getInstance().info("Some error set marker: " + e);
 		}
 	}
 	
