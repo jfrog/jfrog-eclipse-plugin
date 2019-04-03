@@ -20,7 +20,10 @@ import com.jfrog.ide.common.utils.Utils;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.npm.NpmProject;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
+import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
+import com.jfrog.ide.eclipse.ui.issues.ComponentIssueTable;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
+import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 
 /**
@@ -71,7 +74,7 @@ public class ScanManagersFactory {
 			}
 		}
 
-		if (scanManagers.size() > 0) {
+		if (!scanManagers.isEmpty()) {
 			scanInProgress.compareAndSet(false, true);
 		}
 		IssuesTree issuesTree = IssuesTree.getInstance();
@@ -79,8 +82,7 @@ public class ScanManagersFactory {
 		if (issuesTree == null || licensesTree == null) {
 			return;
 		}
-		issuesTree.reset();
-		licensesTree.reset();
+		resetViews(issuesTree, licensesTree);
 		for (ScanManager scanManager : getScanManagers()) {
 			scanManager.scanAndUpdateResults(quickScan, issuesTree, licensesTree, parent);
 		}
@@ -133,5 +135,12 @@ public class ScanManagersFactory {
 	
 	public AtomicBoolean getScanInProgress() {
 		return scanInProgress;
+	}
+	
+	private void resetViews(IssuesTree issuesTree, LicensesTree licensesTree) {
+		ComponentIssueDetails.getInstance().recreateComponentDetails();
+		ComponentLicenseDetails.getInstance().recreateComponentDetails();
+		issuesTree.reset();
+		licensesTree.reset();
 	}
 }

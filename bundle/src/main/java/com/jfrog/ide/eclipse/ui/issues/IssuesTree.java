@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
+import com.google.common.collect.Lists;
 import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
@@ -78,6 +79,8 @@ public class IssuesTree extends SearchableTree {
 	@Override
 	public void reset() {
 		super.reset();
+		componentIssueTable.updateIssuesTable(Lists.newArrayList());
+		issuesCountColumn.getColumn().setText("Issues (0)");
 		root = new DependenciesTree();
 		treeViewer.setInput(root);
 	}

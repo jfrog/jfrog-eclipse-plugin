@@ -47,14 +47,25 @@ public abstract class ComponentDetails extends Panel {
 		super(parent);
 		this.title = title;
 		setGridLayout(this, 1, false);
+		recreateComponentDetails();
+	}
+
+	public abstract void createDetailsView(DependenciesTree node);
+	
+	public void recreateComponentDetails() {
+		if (isDisposed()) {
+			return;
+		}
+		for (Control control : getChildren()) {
+			control.dispose();
+		}
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			createMissingCredentialsPanel();
 			return;
 		}
 		createComponentsPanel();
+		refreshPanel();
 	}
-
-	public abstract void createDetailsView(DependenciesTree node);
 
 	/**
 	 * Create this panel if there are missing credentials.
@@ -79,9 +90,7 @@ public abstract class ComponentDetails extends Panel {
 		if (credentialsConfigLink == null || credentialsConfigLink.isDisposed()) {
 			return;
 		}
-		credentialsConfigLink.dispose();
-		createComponentsPanel();
-		refreshPanel();
+		recreateComponentDetails();
 	}
 
 	protected void createComponentsPanel() {
