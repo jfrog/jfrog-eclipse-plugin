@@ -5,13 +5,9 @@
       version="1.0.0"
       provider-name="JFrog">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="https://www.jfrog.com/confluence/display/XRAY/IDE+Integration">
+      JFrog Eclipse plugin.
    </description>
-
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
 
    <license url="https://www.apache.org/licenses/LICENSE-2.0">
       Apache License
