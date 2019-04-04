@@ -104,17 +104,23 @@ public class GradleScanManager extends ScanManager {
 		return gradleArtifact.getGroupId() + ":" + gradleArtifact.getArtifactId() + ":" + gradleArtifact.getVersion();
 	}
 
+	/**
+	 * Populate root modules DependenciesTree with issues, licenses and general info
+	 * from the scan cache.
+	 */
 	private void populateDependenciesTree(DependenciesTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
 			DependenciesTree child = new DependenciesTree(componentId);
+			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());
 		}
 	}
 
 	/**
-	 * Create dependencies.gradle file for the project in the homeDir/.jfrog-eclipse-plugin/gradleScriptDir dir
+	 * Create dependencies.gradle file for the project in the
+	 * homeDir/.jfrog-eclipse-plugin/gradleScriptDir dir
 	 * 
 	 * @param in - File descriptor for the Gradle file.
 	 * @return the Gradle file.
@@ -160,7 +166,7 @@ public class GradleScanManager extends ScanManager {
 			removeDuplicateDependencies();
 		}
 	}
-	
+
 	public byte[] readGeneratedJson() throws IOException {
 		Path pathToTaskOutputDir = HOME_PATH.resolve(TASK_NAME).resolve(project.getName());
 		if (!Files.exists(pathToTaskOutputDir)) {

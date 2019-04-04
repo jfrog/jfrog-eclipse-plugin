@@ -76,13 +76,14 @@ public class MavenScanManager extends ScanManager {
 	}
 
 	/**
-	 * Populate root modules ScanTreeNode with issues, licenses and general info
+	 * Populate root modules DependenciesTree with issues, licenses and general info
 	 * from the scan cache.
 	 */
 	private void populateScanTreeNode(DependenciesTree scanTreeNode, DependencyNode dependencyNode) {
 		dependencyNode.getChildren().forEach(dependencyChild -> {
 			String componentId = getComponentId(dependencyChild);
 			DependenciesTree child = new DependenciesTree(componentId);
+			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
 			scanTreeNode.add(child);
 			populateScanTreeNode(child, dependencyChild);
 		});
