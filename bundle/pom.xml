@@ -11,6 +11,13 @@
 		<version>1.0.0</version>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<url>https://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
