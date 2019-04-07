@@ -18,7 +18,7 @@ publishP2Repo {
     compositePackage = ''
     mainFeatureId = 'com.jfrog.ide.eclipse'
     subCompositeStrategy = 'MICRO'
-    repoDir = new File("target/repository")
-    zippedRepoFile = new File("target/com.jfrog.ide.eclipse.releng.update-site.zip")
+    repoDir = new File("releng/update-site/target/repository")
+    zippedRepoFile = new File("releng/update-site/target/com.jfrog.ide.eclipse.releng.update-site.zip")
 }
 
