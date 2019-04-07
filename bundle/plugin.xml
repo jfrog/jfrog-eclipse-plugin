@@ -1,0 +1,28 @@
+<plugin>
+   <extension
+         id="jfrogeclipseplugin.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+   
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+         
+      <product
+            application="org.eclipse.e4.ui.workbench.swt.E4Application"
+            name="com.jfrog.ide.eclipse.rcp">
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.jfrog.ide.eclipse.configuration.XrayGlobalConfiguration"
+            id="com.jfrog.ide.eclipse.ui.preferences.XrayServerConfig"
+            name="JFrog Xray">
+      </page>
+   </extension>
+
+</plugin>

@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>com.jfrog.ide.eclipse</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<parent>
+		<groupId>com.jfrog.ide.eclipse</groupId>
+		<artifactId>com.jfrog.ide.eclipse.parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<url>https://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.jfrog.ide</groupId>
+									<artifactId>ide-plugins-common</artifactId>
+									<version>1.0.0</version>
+									<destFileName>ide-plugins-common.jar</destFileName>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.jfrog.ide</groupId>
+									<artifactId>ide-plugins-common</artifactId>
+									<version>1.0.0</version>
+									<classifier>sources</classifier>
+									<destFileName>ide-plugins-common-sources.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>lib</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>lib</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

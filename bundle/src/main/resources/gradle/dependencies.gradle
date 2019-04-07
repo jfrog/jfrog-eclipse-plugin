@@ -1,0 +1,93 @@
+allprojects {
+	task generateDependenciesGraphAsJson() {
+		doLast {
+			Set<Configuration> configurationSet = project.getConfigurations();
+			String jsonOutput = String.format(format, getGroupId(), project.getGroup(), getArtifactId(), project.getName(), getVersionString(), project.getVersion(), getDependenciesString())
+			Spec<Object> SATISFIES_ALL = new Spec<Object>() {
+						public boolean isSatisfiedBy(Object element) {
+							return true;
+						}
+					};
+
+			for (Configuration configuration : configurationSet) {
+				try {
+					ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
+					LenientConfiguration lenientConfiguration = resolvedConfiguration.getLenientConfiguration();
+					Set<ResolvedDependency> firstLevelModuleDependencies = lenientConfiguration.getFirstLevelModuleDependencies(SATISFIES_ALL);
+					for (ResolvedDependency resolvedDependency : firstLevelModuleDependencies) {
+						jsonOutput += String.format(format, getGroupId(), resolvedDependency.getModuleGroup(), getArtifactId(), resolvedDependency.getModuleName(), getVersionString(), resolvedDependency.getModuleVersion(), getDependenciesString())
+						Set<ResolvedDependency> childrens = resolvedDependency.getChildren();
+						jsonOutput = printChildrens(childrens, jsonOutput);
+						jsonOutput += "]\n"
+						jsonOutput += "},"
+					}
+					Set<UnresolvedDependency> unresolvedDependencies = lenientConfiguration.getUnresolvedModuleDependencies();
+					for (UnresolvedDependency unresolvedDependency : unresolvedDependencies) {
+						ModuleVersionSelector selector = unresolvedDependency.getSelector();
+						jsonOutput += String.format(format, getGroupId(), selector.getGroup(), getArtifactId(), selector.getName(), getVersionString(), selector.getVersion(), getDependenciesString())
+						jsonOutput += "]\n"
+						jsonOutput += "},"
+					}
+				} catch (RuntimeException e) {
+					// Some Configurations cannot be directly accessed due to Gradle limitations. Ignore
+				}
+			}
+			if (jsonOutput.endsWith(",")) {
+				jsonOutput = jsonOutput.substring(0, jsonOutput.length() - 1)
+			}
+			jsonOutput += "]}"
+			File homeDir = java.nio.file.Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin", name, project.getName()).toFile();
+			if (!homeDir.exists()) {
+				homeDir.mkdirs();
+			}
+			FileWriter fileWriter;
+			try {
+				fileWriter = new FileWriter(java.nio.file.Paths.get(homeDir.getAbsolutePath(), project.getName() + ".txt").toFile());
+				fileWriter.write(jsonOutput);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (fileWriter != null) {
+					fileWriter.flush();
+					fileWriter.close();
+				}
+			}
+		}
+	}
+}
+
+private String printChildrens(Set<ResolvedDependency> childrens, String jsonOutput) {
+	for (ResolvedDependency children : childrens) {
+		jsonOutput += String.format(format, getGroupId(), children.getModuleGroup(), getArtifactId(), children.getModuleName(), getVersionString(), children.getModuleVersion(), getDependenciesString())
+		if (children.getChildren().size() > 0) {
+			jsonOutput += printChildrens(children.getChildren(), "")
+		}
+		jsonOutput += "]\n"
+		jsonOutput += "}\n,"
+	}
+
+	if (jsonOutput.endsWith(",")) {
+		jsonOutput = jsonOutput.substring(0, jsonOutput.length() - 1) + "\n"
+	}
+	return jsonOutput
+}
+
+private String getFormat() {
+	return "{%s:\"%s\",%s:\"%s\",%s:\"%s\",%s:[";
+}
+
+private String getGroupId() {
+	return "\"groupId\""
+}
+
+private String getArtifactId() {
+	return "\"artifactId\""
+}
+
+private String getVersionString() {
+	return "\"version\""
+}
+
+private String getDependenciesString() {
+	return "\"dependencies\""
+}
