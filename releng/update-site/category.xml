@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.jfrog.ide.eclipse_1.0.0.jar" id="com.jfrog.ide.eclipse" version="1.0.0">
+   <feature url="features/com.jfrog.ide.eclipse_1.0.0.qualifier.jar" id="com.jfrog.ide.eclipse" version="1.0.0.qualifier">
       <category name="com.jfrog.ide.eclipse.update"/>
    </feature>
    <category-def name="com.jfrog.ide.eclipse.update" label="JFrog"/>
