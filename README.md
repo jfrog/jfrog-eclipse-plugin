@@ -47,4 +47,4 @@ We welcome community contribution through pull requests.
 To learn how to use JFrog Eclipse plugin, please visit the [JFrog Eclipse Plugin User Guide](https://www.jfrog.com/confluence/display/XRAY/IDE+Integration).
 
 # Release Notes
-
+The release notes are available on [Bintray](https://bintray.com/beta/#/jfrog/jfrog-eclipse-plugin/zipped?tab=releaseNotes).
