@@ -27,7 +27,7 @@ public class IssuesTab {
 		ComponentIssueTable componentIssueTable = new ComponentIssueTable(verticalDivision);
 
 		registerTreeListeners(componentDetails, componentIssueTable);
-		horizontalDivision.setWeights(new int[] { 1, 2 });
+		horizontalDivision.setWeights(new int[] { 1, 4 });
 		parent.setSelection(tab);
 		tab.setControl(horizontalDivision);
 	}

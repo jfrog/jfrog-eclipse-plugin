@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -98,6 +100,15 @@ public class ComponentIssueTable extends Panel {
 			public String getText(Object element) {
 				Issue issue = (Issue) element;
 				return issue.getComponent();
+			}
+		});
+		
+		createTableViewerColumn("Fixed Versions", 0, new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				Issue issue = (Issue) element;
+                List<String> fixedVersions = ListUtils.emptyIfNull(issue.getFixedVersions());
+                return StringUtils.defaultIfEmpty(String.join(", ", fixedVersions), "[]");                
 			}
 		});
 	}
