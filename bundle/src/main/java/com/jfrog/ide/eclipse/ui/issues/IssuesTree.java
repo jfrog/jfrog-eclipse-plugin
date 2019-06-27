@@ -9,6 +9,7 @@ import org.jfrog.build.extractor.scan.DependenciesTree;
 
 import com.google.common.collect.Lists;
 import com.jfrog.ide.common.filter.FilterManager;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
 
@@ -53,7 +54,7 @@ public class IssuesTree extends SearchableTree {
 		if (project != null) {
 			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
 			filteredRoot.getIssues().clear();
-			FilterManager filterManager = FilterManager.getInstance();
+			FilterManager filterManager = FilterManagerSingletone.getInstance();
 			filterManager.applyFilters(project, filteredRoot, new DependenciesTree());
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
 			root.add(filteredRoot);

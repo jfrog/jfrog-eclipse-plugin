@@ -85,7 +85,7 @@ public class TestConnectionButton extends FieldEditor {
 			try {
 				connectionResults.setText("Connecting to Xray...");
 				Xray xrayClient = XrayClient.create(urlEditor.getStringValue(), usernameEditor.getStringValue(),
-						passwordEditor.getStringValue(), USER_AGENT);
+						passwordEditor.getStringValue(), USER_AGENT, null);
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {

@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.common.log.ProgressIndicator;
 import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.common.scan.ScanManagerBase;
@@ -21,6 +22,7 @@ import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
@@ -128,8 +130,9 @@ public abstract class ScanManager extends ScanManagerBase {
 		}
 
 		private void setScanResults() {
+			FilterManager filterManager = FilterManagerSingletone.getInstance();
 			if (!getScanResults().isLeaf()) {
-				addFilterMangerLicenses();
+				addFilterMangerLicenses(filterManager);
 			}
 			DependenciesTree scanResults = getScanResults();
 			issuesTree.addScanResults(getProjectName(), scanResults);

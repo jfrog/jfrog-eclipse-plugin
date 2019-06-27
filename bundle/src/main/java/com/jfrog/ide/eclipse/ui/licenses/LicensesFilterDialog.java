@@ -9,8 +9,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.jfrog.build.extractor.scan.License;
 
-import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.FilterDialog;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
 
 /**
  * @author yahavi
@@ -26,7 +26,7 @@ public class LicensesFilterDialog extends FilterDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		FilterManager.getInstance().getSelectedLicenses().forEach((license, isSelected) -> {
+		FilterManagerSingletone.getInstance().getSelectedLicenses().forEach((license, isSelected) -> {
 			buttons.add(new LicenseButton(container, license, isSelected));
 		});
 		return container;
@@ -40,7 +40,7 @@ public class LicensesFilterDialog extends FilterDialog {
 				public void widgetSelected(SelectionEvent event) {
 					super.widgetSelected(event);
 					Button button = (Button) event.getSource();
-					FilterManager.getInstance().getSelectedLicenses().replace(license, button.getSelection());
+					FilterManagerSingletone.getInstance().getSelectedLicenses().replace(license, button.getSelection());
 					LicensesTree.getInstance().applyFiltersForAllProjects();
 				}
 			});
@@ -49,7 +49,7 @@ public class LicensesFilterDialog extends FilterDialog {
 
 	@Override
 	protected void selectAll() {
-		FilterManager.getInstance().getSelectedLicenses().replaceAll((license, isSelected) -> {
+		FilterManagerSingletone.getInstance().getSelectedLicenses().replaceAll((license, isSelected) -> {
 			return selectAllButton.getSelection();
 		});
 		LicensesTree.getInstance().applyFiltersForAllProjects();

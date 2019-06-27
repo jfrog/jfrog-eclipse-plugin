@@ -9,8 +9,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.jfrog.build.extractor.scan.Severity;
 
-import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.FilterDialog;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
 
 /**
  * @author yahavi
@@ -26,7 +26,7 @@ public class IssuesFilterDialog extends FilterDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		FilterManager.getInstance().getSelectedSeverities().forEach((severity, isSelected) -> {
+		FilterManagerSingletone.getInstance().getSelectedSeverities().forEach((severity, isSelected) -> {
 			buttons.add(new SeverityButton(container, severity, isSelected));
 		});
 		return container;
@@ -34,7 +34,7 @@ public class IssuesFilterDialog extends FilterDialog {
 
 	@Override
 	protected void selectAll() {
-		FilterManager.getInstance().getSelectedSeverities().replaceAll((severity, isSelected) -> {
+		FilterManagerSingletone.getInstance().getSelectedSeverities().replaceAll((severity, isSelected) -> {
 			return selectAllButton.getSelection();
 		});
 		IssuesTree.getInstance().applyFiltersForAllProjects();
@@ -48,7 +48,8 @@ public class IssuesFilterDialog extends FilterDialog {
 				public void widgetSelected(SelectionEvent event) {
 					super.widgetSelected(event);
 					Button button = (Button) event.getSource();
-					FilterManager.getInstance().getSelectedSeverities().replace(severity, button.getSelection());
+					FilterManagerSingletone.getInstance().getSelectedSeverities().replace(severity,
+							button.getSelection());
 					IssuesTree.getInstance().applyFiltersForAllProjects();
 				}
 			});

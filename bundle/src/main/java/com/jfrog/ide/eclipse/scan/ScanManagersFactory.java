@@ -21,7 +21,6 @@ import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.npm.NpmProject;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
-import com.jfrog.ide.eclipse.ui.issues.ComponentIssueTable;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
@@ -132,11 +131,11 @@ public class ScanManagersFactory {
 	public void scanFinished() {
 		scanInProgress.set(false);
 	}
-	
+
 	public AtomicBoolean getScanInProgress() {
 		return scanInProgress;
 	}
-	
+
 	private void resetViews(IssuesTree issuesTree, LicensesTree licensesTree) {
 		ComponentIssueDetails.getInstance().recreateComponentDetails();
 		ComponentLicenseDetails.getInstance().recreateComponentDetails();
