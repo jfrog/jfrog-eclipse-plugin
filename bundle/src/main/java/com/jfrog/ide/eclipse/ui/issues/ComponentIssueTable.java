@@ -25,7 +25,7 @@ import org.jfrog.build.extractor.scan.Severity;
 
 import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.scan.ScanManagersFactory;
-import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.IconManager;
 import com.jfrog.ide.eclipse.ui.Panel;
 
@@ -114,7 +114,7 @@ public class ComponentIssueTable extends Panel {
 
 	public void updateIssuesTable(List<DependenciesTree> selectedNodes) {
 		Set<Issue> issuesSet = Sets.newHashSet();
-		FilterManager filterManager = FilterManagerSingletone.getInstance();
+		FilterManager filterManager = FilterManagerSingleton.getInstance();
 		ScanManagersFactory.getInstance().getScanManagers().forEach(scanManager -> {
 			issuesSet.addAll(scanManager.getFilteredScanIssues(filterManager, selectedNodes));
 		});

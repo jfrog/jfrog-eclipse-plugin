@@ -22,7 +22,7 @@ import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
-import com.jfrog.ide.eclipse.ui.FilterManagerSingletone;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
@@ -130,7 +130,7 @@ public abstract class ScanManager extends ScanManagerBase {
 		}
 
 		private void setScanResults() {
-			FilterManager filterManager = FilterManagerSingletone.getInstance();
+			FilterManager filterManager = FilterManagerSingleton.getInstance();
 			if (!getScanResults().isLeaf()) {
 				addFilterMangerLicenses(filterManager);
 			}
