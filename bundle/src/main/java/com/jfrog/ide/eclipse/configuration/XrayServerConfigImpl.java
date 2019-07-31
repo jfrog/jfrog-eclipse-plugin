@@ -43,7 +43,7 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 	}
 
 	@Override
-	public ProxyConfig getProxyConfig() {
+	public ProxyConfig getProxyConfForTargetUrl(String xrayUrl) {
 		return null;
 	}
 }
