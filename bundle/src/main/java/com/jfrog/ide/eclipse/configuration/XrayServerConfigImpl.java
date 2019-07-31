@@ -1,6 +1,14 @@
 package com.jfrog.ide.eclipse.configuration;
 
+import static org.apache.commons.lang3.StringUtils.trim;
+
+import java.net.URI;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.internal.net.ProxyManager;
+import org.eclipse.core.net.proxy.IProxyData;
+import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jfrog.client.http.model.ProxyConfig;
@@ -10,6 +18,7 @@ import com.jfrog.ide.common.configuration.XrayServerConfig;
 /**
  * @author yahavi
  */
+@SuppressWarnings("restriction")
 public class XrayServerConfigImpl implements XrayServerConfig {
 
 	private static XrayServerConfigImpl instance;
@@ -38,12 +47,25 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 	}
 
 	private String getValue(String key) {
-		String str = service.getString(PreferenceConstants.XRAY_QUALIFIER, key, "", null);
-		return StringUtils.trim(str);
+		return trim(service.getString(PreferenceConstants.XRAY_QUALIFIER, key, "", null));
 	}
 
 	@Override
 	public ProxyConfig getProxyConfForTargetUrl(String xrayUrl) {
-		return null;
+		xrayUrl = StringUtils.defaultIfBlank(xrayUrl, getUrl());
+		IProxyService service = ProxyManager.getProxyManager();
+		IProxyData[] proxyData = service.select(URI.create(xrayUrl));
+		if (ArrayUtils.isEmpty(proxyData)) {
+			return null;
+		}
+
+		ProxyConfig proxyConfig = new ProxyConfig();
+		proxyConfig.setHost(trim(proxyData[0].getHost()));
+		proxyConfig.setPort(proxyData[0].getPort());
+		if (proxyData[0].isRequiresAuthentication()) {
+			proxyConfig.setUsername(trim(proxyData[0].getUserId()));
+			proxyConfig.setPassword(proxyData[0].getPassword());
+		}
+		return proxyConfig;
 	}
 }
