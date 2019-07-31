@@ -17,6 +17,10 @@
 			<url>https://jcenter.bintray.com/</url>
 		</repository>
 	</repositories>
+	
+	<properties>
+		<ide-plugins-common-version>1.1.x-SNAPSHOT</ide-plugins-common-version>
+	</properties>
 
 	<build>
 		<plugins>
@@ -36,13 +40,14 @@
 								<artifactItem>
 									<groupId>com.jfrog.ide</groupId>
 									<artifactId>ide-plugins-common</artifactId>
-									<version>1.0.0</version>
+									<version>${ide-plugins-common-version}</version>
+									<classifier>uber</classifier>
 									<destFileName>ide-plugins-common.jar</destFileName>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.jfrog.ide</groupId>
 									<artifactId>ide-plugins-common</artifactId>
-									<version>1.0.0</version>
+									<version>${ide-plugins-common-version}</version>
 									<classifier>sources</classifier>
 									<destFileName>ide-plugins-common-sources.jar</destFileName>
 								</artifactItem>

@@ -3,6 +3,7 @@ package com.jfrog.ide.eclipse.configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.jfrog.client.http.model.ProxyConfig;
 
 import com.jfrog.ide.common.configuration.XrayServerConfig;
 
@@ -39,5 +40,10 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 	private String getValue(String key) {
 		String str = service.getString(PreferenceConstants.XRAY_QUALIFIER, key, "", null);
 		return StringUtils.trim(str);
+	}
+
+	@Override
+	public ProxyConfig getProxyConfForTargetUrl(String xrayUrl) {
+		return null;
 	}
 }

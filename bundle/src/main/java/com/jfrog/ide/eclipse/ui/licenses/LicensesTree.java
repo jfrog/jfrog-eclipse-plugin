@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependenciesTree;
 
 import com.jfrog.ide.common.filter.FilterManager;
+import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 
@@ -41,7 +42,7 @@ public class LicensesTree extends SearchableTree {
 		DependenciesTree project = projects.get(projectName);
 		if (project != null) {
 			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
-			FilterManager filterManager = FilterManager.getInstance();
+			FilterManager filterManager = FilterManagerSingleton.getInstance();
 			filterManager.applyFilters(project, new DependenciesTree(), filteredRoot);
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
