@@ -16,6 +16,12 @@
 			<id>jcenter</id>
 			<url>https://jcenter.bintray.com/</url>
 		</repository>
+		<repository>
+			<snapshots />
+			<id>snapshots</id>
+			<name>libs-snapshot</name>
+			<url>http://oss.jfrog.org/artifactory/libs-snapshot</url>
+		</repository>
 	</repositories>
 
 	<properties>
