@@ -88,7 +88,7 @@ public class TestConnectionButton extends FieldEditor {
 				String url = urlEditor.getStringValue();
 				ProxyConfig proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
 				Xray xrayClient = XrayClient.create(url, usernameEditor.getStringValue(),
-						passwordEditor.getStringValue(), USER_AGENT, proxyConfig);
+						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {
