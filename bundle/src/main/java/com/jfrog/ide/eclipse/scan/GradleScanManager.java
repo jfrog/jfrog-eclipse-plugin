@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -17,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProgressEvent;
 import org.gradle.tooling.ProgressListener;
@@ -27,6 +29,7 @@ import org.jfrog.build.extractor.scan.GeneralInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
+import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
 import com.jfrog.ide.eclipse.utils.GradleArtifact;
 
 public class GradleScanManager extends ScanManager {
@@ -141,9 +144,7 @@ public class GradleScanManager extends ScanManager {
 	 * @throws IOException in case of any IO failures in the eclipse logs.
 	 */
 	public void generateDependenciesGraphAsJsonTask(String rootProjectDir, String gradleFile) throws IOException {
-		GradleConnector connector = GradleConnector.newConnector();
-		connector.forProjectDirectory(new File(project.getLocation().toString()));
-		ProjectConnection connection = connector.connect();
+		ProjectConnection connection = createGradleConnector().connect();
 		try (OutputStream out = new FileOutputStream(Platform.getLogFileLocation().toOSString())) {
 			getLog().info("Running the following command at " + project.getLocation().toString()
 					+ ": gradle --init-script " + gradleFile + " " + TASK_NAME + " ");
@@ -175,6 +176,45 @@ public class GradleScanManager extends ScanManager {
 		}
 		Path jsonOutputFile = pathToTaskOutputDir.resolve(getProjectName() + ".txt");
 		return Files.readAllBytes(jsonOutputFile);
+	}
+
+	/**
+	 * Create a Gradle connector according to the Gradle distribution chosen in
+	 * 'Preferences' -> 'Gradle' -> 'Gradle distribution'.
+	 *
+	 * @return Gradle connector
+	 */
+	private GradleConnector createGradleConnector() {
+		GradleConnector connector = GradleConnector.newConnector();
+		connector.forProjectDirectory(new File(project.getLocation().toString()));
+		IPreferencesService service = Platform.getPreferencesService();
+		String gradleDistribution = service.getString(PreferenceConstants.GRADLE_PLUGIN_QUALIFIER, PreferenceConstants.GRADLE_DISTRIBUTION, "", null);
+
+		gradleDistribution = StringUtils.removeStart(gradleDistribution, "GRADLE_DISTRIBUTION(");
+		if (StringUtils.startsWith(gradleDistribution, "WRAPPER")) {
+			getLog().info("Using Gradle wrapper");
+			return connector; // Wrapper is the default behavior
+		}
+		gradleDistribution = StringUtils.removeEnd(gradleDistribution, "))");
+		if (StringUtils.startsWith(gradleDistribution, "VERSION")) {
+			String gradleVersion = StringUtils.removeStart(gradleDistribution, "VERSION(");
+			getLog().info("Using Gradle version " + gradleVersion);
+			return connector.useGradleVersion(gradleVersion);
+		}
+		if (StringUtils.startsWith(gradleDistribution, "LOCAL_INSTALLATION")) {
+			String gradleLocalInstallation = StringUtils.removeStart(gradleDistribution, "LOCAL_INSTALLATION(");
+			getLog().info("Using Gradle local installation at " + gradleLocalInstallation);
+			return connector.useInstallation(new File(gradleLocalInstallation));
+		}
+		if (StringUtils.startsWith(gradleDistribution, "REMOTE_DISTRIBUTION")) {
+			String gradleRemoveDistribution = StringUtils.removeStart(gradleDistribution, "REMOTE_DISTRIBUTION(");
+			getLog().info("Using Gradle remote distribution at " + gradleRemoveDistribution);
+			return connector.useDistribution(URI.create(gradleRemoveDistribution));
+		}
+		getLog().warn(
+				"Couldn't find Gradle distribution type. Fallback to use Gradle wrapper. Configure Gradle distribution type in 'Preferences' -> 'Gradle' -> 'Gradle distribution'.");
+
+		return connector;
 	}
 
 	/**
