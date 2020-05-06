@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -13,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.buildship.core.GradleDistribution;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -188,31 +188,16 @@ public class GradleScanManager extends ScanManager {
 		GradleConnector connector = GradleConnector.newConnector();
 		connector.forProjectDirectory(new File(project.getLocation().toString()));
 		IPreferencesService service = Platform.getPreferencesService();
-		String gradleDistribution = service.getString(PreferenceConstants.GRADLE_PLUGIN_QUALIFIER, PreferenceConstants.GRADLE_DISTRIBUTION, "", null);
-
-		gradleDistribution = StringUtils.removeStart(gradleDistribution, "GRADLE_DISTRIBUTION(");
-		if (StringUtils.startsWith(gradleDistribution, "WRAPPER")) {
-			getLog().info("Using Gradle wrapper");
-			return connector; // Wrapper is the default behavior
+		String gradleDistributionStr = service.getString(PreferenceConstants.GRADLE_PLUGIN_QUALIFIER,
+				PreferenceConstants.GRADLE_DISTRIBUTION, "", null);
+		try {
+			GradleDistribution gradleDistribution = GradleDistribution.fromString(gradleDistributionStr);
+			getLog().info("Gradle distribution type: " + gradleDistribution.getDisplayName());
+			gradleDistribution.apply(connector);
+		} catch (IllegalArgumentException exception) {
+			getLog().info(
+					"Couldn't find Gradle distribution type. Fallback to use Gradle wrapper. Configure Gradle distribution type in 'Preferences' -> 'Gradle' -> 'Gradle distribution.");
 		}
-		gradleDistribution = StringUtils.removeEnd(gradleDistribution, "))");
-		if (StringUtils.startsWith(gradleDistribution, "VERSION")) {
-			String gradleVersion = StringUtils.removeStart(gradleDistribution, "VERSION(");
-			getLog().info("Using Gradle version " + gradleVersion);
-			return connector.useGradleVersion(gradleVersion);
-		}
-		if (StringUtils.startsWith(gradleDistribution, "LOCAL_INSTALLATION")) {
-			String gradleLocalInstallation = StringUtils.removeStart(gradleDistribution, "LOCAL_INSTALLATION(");
-			getLog().info("Using Gradle local installation at " + gradleLocalInstallation);
-			return connector.useInstallation(new File(gradleLocalInstallation));
-		}
-		if (StringUtils.startsWith(gradleDistribution, "REMOTE_DISTRIBUTION")) {
-			String gradleRemoveDistribution = StringUtils.removeStart(gradleDistribution, "REMOTE_DISTRIBUTION(");
-			getLog().info("Using Gradle remote distribution at " + gradleRemoveDistribution);
-			return connector.useDistribution(URI.create(gradleRemoveDistribution));
-		}
-		getLog().warn(
-				"Couldn't find Gradle distribution type. Fallback to use Gradle wrapper. Configure Gradle distribution type in 'Preferences' -> 'Gradle' -> 'Gradle distribution'.");
 
 		return connector;
 	}
