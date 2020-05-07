@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="JFrog Eclipse Photon Target Platform" sequenceNumber="1">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="JFrog Eclipse Target Platform" sequenceNumber="1">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<repository location="http://download.eclipse.org/releases/photon/"/>
-	<unit id="org.eclipse.m2e.sdk.feature.feature.group" version="1.9.0.20180606-2036"/>
-	<unit id="org.eclipse.sdk.feature.group" version="4.8.0.v20180611-0826"/>
-	<unit id="org.eclipse.m2e.feature.feature.group" version="1.9.0.20180606-2036"/>
-	<unit id="org.eclipse.buildship.feature.group" version="2.2.1.v20180125-1441"/>
+<repository location="http://download.eclipse.org/releases/2018-12/"/>
+	<unit id="org.eclipse.m2e.sdk.feature.feature.group" version="1.10.0.20181127-2120"/>
+	<unit id="org.eclipse.sdk.feature.group" version="4.10.0.v20181206-1038"/>
+	<unit id="org.eclipse.m2e.feature.feature.group" version="1.10.0.20181127-2120"/>
+	<unit id="org.eclipse.buildship.feature.group" version="3.0.0.v20181106-1441-m"/>
 </location>
 </locations>
 </target>
