@@ -196,7 +196,7 @@ public class GradleScanManager extends ScanManager {
 			gradleDistribution.apply(connector);
 		} catch (IllegalArgumentException exception) {
 			getLog().info(
-					"Couldn't find Gradle distribution type. Fallback to use Gradle wrapper. Configure Gradle distribution type in 'Preferences' -> 'Gradle' -> 'Gradle distribution.");
+					"Couldn't find Gradle distribution type. Falling back to using Gradle wrapper. Configure Gradle distribution type in 'Preferences' -> 'Gradle' -> 'Gradle distribution.");
 		}
 
 		return connector;
