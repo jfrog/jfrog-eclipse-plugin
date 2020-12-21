@@ -1,0 +1,93 @@
+updateCommitStatus: &UPDATE_COMMIT_STATUS update_commit_status eclipseReleaseGit --context "$step_name"
+
+pipelines:
+  - name: release_eclipse
+    configuration:
+      runtime:
+        type: image
+        image:
+          auto:
+            language: java
+            versions:
+              - "8.0.0"
+      environmentVariables:
+        readOnly:
+          NEXT_VERSION: 0.0.0
+          NEXT_DEVELOPMENT_VERSION: 0.0.0-SNAPSHOT
+
+    steps:
+      - name: Release
+        type: Bash
+        configuration:
+          inputResources:
+            - name: eclipseReleaseGit
+          integrations:
+            - name: ojo
+            - name: github_generic
+            - name: jfrog
+        execution:
+          onStart:
+            - *UPDATE_COMMIT_STATUS
+            - restore_cache_files m2_home ${HOME}/.m2
+          onExecute:
+            - cd $res_eclipseReleaseGit_resourcePath
+
+            # Set env
+            - export CI=true
+            - export JFROG_CLI_BUILD_NAME=jfrog-eclipse-plugin
+            - export JFROG_CLI_BUILD_NUMBER=$run_number
+            # Set M2_HOME
+            - MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
+
+            # Configure git
+            - git checkout master
+            - git remote set-url origin https://$int_github_generic_token@github.com/jfrog/jfrog-eclipse-plugin.git
+
+            # Make sure versions provided
+            - echo "Checking variables"
+            - test -n "$NEXT_VERSION" -a "$NEXT_VERSION" != "0.0.0"
+            - test -n "$NEXT_DEVELOPMENT_VERSION" -a "$NEXT_DEVELOPMENT_VERSION" != "0.0.0-SNAPSHOT"
+
+            # Download JFrog CLI
+            - curl -fL https://getcli.jfrog.io | sh && chmod +x jfrog
+
+            # Configure JFrog CLI
+            - ./jfrog rt c ojo --url $int_ojo_rt_url --access-token=$int_ojo_rt_token
+            - ./jfrog rt mvnc
+              --server-id-resolve ojo --repo-resolve-releases libs-release --repo-resolve-snapshots libs-snapshot
+              --server-id-deploy ojo --repo-deploy-releases oss-release-local --repo-deploy-snapshots oss-snapshot-local
+
+            # Update version - tycho-versions-plugin:1.7.0 is the max version supported by Java 8
+            - env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME mvn org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT_VERSION -B
+            - git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
+            - git tag ${NEXT_VERSION}
+            - git push
+            - git push --tags
+
+            # Run install and publish
+            - ./jfrog rt bc
+            - >
+              env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME
+              JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME
+              JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER
+              ./jfrog rt mvn clean install -U -B
+            - ./jfrog rt bp
+
+            # Distribute
+            - pushd releng/update-site
+            - env -i PATH=$PATH HOME=$HOME BINTRAY_USER=$int_jfrog_bintray_user BINTRAY_API_KEY=$int_jfrog_bintray_apikey ./gradlew publishP2Repo
+            - popd
+
+            # Update next development version
+            - env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME mvn org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT_DEVELOPMENT_VERSION -B
+            - git commit -am "[artifactory-release] Next development version [skipRun]"
+            - git push
+
+          onComplete:
+            # Show tests in the *Tests* tab
+            - save_tests $res_eclipseReleaseGit_resourcePath/tests/target/surefire-reports/
+
+            - *UPDATE_COMMIT_STATUS
+
+            # Save .m2 cache
+            - add_cache_files ${HOME}/.m2 m2_home
