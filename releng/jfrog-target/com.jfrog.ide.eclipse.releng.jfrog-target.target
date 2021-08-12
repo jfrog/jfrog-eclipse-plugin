@@ -2,12 +2,12 @@
 <?pde version="3.8"?>
 <target name="JFrog Eclipse Target Platform" sequenceNumber="1">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<repository location="http://download.eclipse.org/releases/2018-12/"/>
-	<unit id="org.eclipse.m2e.sdk.feature.feature.group" version="1.10.0.20181127-2120"/>
-	<unit id="org.eclipse.sdk.feature.group" version="4.10.0.v20181206-1038"/>
-	<unit id="org.eclipse.m2e.feature.feature.group" version="1.10.0.20181127-2120"/>
-	<unit id="org.eclipse.buildship.feature.group" version="3.0.0.v20181106-1441-m"/>
-</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+		<repository location="http://download.eclipse.org/releases/2019-09/"/>
+		<unit id="org.eclipse.buildship.feature.group" version="3.1.2.v20190903-1802"/>
+		<unit id="org.eclipse.m2e.feature.feature.group" version="1.13.0.20190716-1624"/>
+		<unit id="org.eclipse.m2e.sdk.feature.feature.group" version="1.13.0.20190716-1624"/>
+		<unit id="org.eclipse.sdk.feature.group" version="4.13.0.v20190916-1323"/>
+	</location>
 </locations>
 </target>
