@@ -1,15 +1,4 @@
 resources:
-  - name: eclipseGit
-    type: GitRepo
-    configuration:
-      path: jfrog/jfrog-eclipse-plugin
-      gitProvider: github
-      buildOn:
-        commit: true
-        pullRequestCreate: true
-      cancelPendingRunsOn:
-        pullRequestUpdate: true
-
   - name: eclipseReleaseGit
     type: GitRepo
     configuration:

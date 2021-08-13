@@ -22,22 +22,13 @@ pipelines:
           inputResources:
             - name: eclipseReleaseGit
           integrations:
-            - name: ojo
             - name: github_generic
-            - name: jfrog
         execution:
           onStart:
             - *UPDATE_COMMIT_STATUS
             - restore_cache_files m2_home ${HOME}/.m2
           onExecute:
             - cd $res_eclipseReleaseGit_resourcePath
-
-            # Set env
-            - export CI=true
-            - export JFROG_CLI_BUILD_NAME=jfrog-eclipse-plugin
-            - export JFROG_CLI_BUILD_NUMBER=$run_number
-            # Set M2_HOME
-            - MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
 
             # Configure git
             - git checkout master
@@ -48,35 +39,12 @@ pipelines:
             - test -n "$NEXT_VERSION" -a "$NEXT_VERSION" != "0.0.0"
             - test -n "$NEXT_DEVELOPMENT_VERSION" -a "$NEXT_DEVELOPMENT_VERSION" != "0.0.0-SNAPSHOT"
 
-            # Download JFrog CLI
-            - curl -fL https://getcli.jfrog.io | sh && chmod +x jfrog
-
-            # Configure JFrog CLI
-            - ./jfrog rt c ojo --url $int_ojo_rt_url --access-token=$int_ojo_rt_token
-            - ./jfrog rt mvnc
-              --server-id-resolve ojo --repo-resolve-releases libs-release --repo-resolve-snapshots libs-snapshot
-              --server-id-deploy ojo --repo-deploy-releases oss-release-local --repo-deploy-snapshots oss-snapshot-local
-
             # Update version - tycho-versions-plugin:1.7.0 is the max version supported by Java 8
             - env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME mvn org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT_VERSION -B
             - git commit -am "[artifactory-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
             - git tag ${NEXT_VERSION}
             - git push
             - git push --tags
-
-            # Run install and publish
-            - ./jfrog rt bc
-            - >
-              env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME
-              JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME
-              JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER
-              ./jfrog rt mvn clean install -U -B
-            - ./jfrog rt bp
-
-            # Distribute
-            - pushd releng/update-site
-            - env -i PATH=$PATH HOME=$HOME BINTRAY_USER=$int_jfrog_bintray_user BINTRAY_API_KEY=$int_jfrog_bintray_apikey ./gradlew publishP2Repo
-            - popd
 
             # Update next development version
             - env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME mvn org.eclipse.tycho:tycho-versions-plugin:1.7.0:set-version -DnewVersion=$NEXT_DEVELOPMENT_VERSION -B
