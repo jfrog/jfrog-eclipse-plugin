@@ -1,3 +1,6 @@
+## 1.1.2 (16 August 2021)
+- Support for Eclipse 4.20
+
 ## 1.1.1 (07 May 2020)
 - Support choosing the Gradle distribution type between wrapper, local, remote and version
 
