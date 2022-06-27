@@ -1,10 +1,13 @@
+<div align="center">
+
 # JFrog Eclipse Plugin 
 
-![JFrog Extension Marketplace Installs](https://img.shields.io/eclipse-marketplace/dt/jfrog-eclipse-plugin?label=marketplace%20installs&style=for-the-badge)
+![JFrog Extension Marketplace Installs](https://img.shields.io/eclipse-marketplace/dt/jfrog-eclipse-plugin?label=marketplace%20installs&color=blue&style=for-the-badge)
 
 [![Marketplace](https://img.shields.io/badge/marketplace-eclipse-blue)](https://marketplace.eclipse.org/content/jfrog-eclipse-plugin)
 [![Build status](https://ci.appveyor.com/api/projects/status/3x4apxgugex3b4hp?svg=true)](https://ci.appveyor.com/project/jfrog-ecosystem/jfrog-eclipse-plugin)
 
+</div>
 
 JFrog Eclipse plugin adds JFrog Xray scanning of Maven, Gradle and Npm project dependencies to your Eclipse.
 
