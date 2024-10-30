@@ -1,7 +1,7 @@
 package com.jfrog.ide.eclipse.ui.licenses;
 
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 
 /**
@@ -25,7 +25,7 @@ public class ComponentLicenseDetails extends ComponentDetails {
 	}
 
 	@Override
-	public void createDetailsView(DependenciesTree node) {
+	public void createDetailsView(DependencyTree node) {
 		createCommonInfo(node);
 		refreshPanel();
 	}

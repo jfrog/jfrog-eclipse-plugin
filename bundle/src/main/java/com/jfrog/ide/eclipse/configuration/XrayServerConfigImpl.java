@@ -13,13 +13,13 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jfrog.client.http.model.ProxyConfig;
 
-import com.jfrog.ide.common.configuration.XrayServerConfig;
+import com.jfrog.ide.common.configuration.ServerConfig;
 
 /**
  * @author yahavi
  */
 @SuppressWarnings("restriction")
-public class XrayServerConfigImpl implements XrayServerConfig {
+public class XrayServerConfigImpl implements ServerConfig {
 
 	private static XrayServerConfigImpl instance;
 	private IPreferencesService service = Platform.getPreferencesService();

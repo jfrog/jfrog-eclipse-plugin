@@ -23,7 +23,7 @@ import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProgressEvent;
 import org.gradle.tooling.ProgressListener;
 import org.gradle.tooling.ProjectConnection;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,7 +80,7 @@ public class GradleScanManager extends ScanManager {
 
 	@Override
 	void buildTree() {
-		DependenciesTree rootNode = new DependenciesTree(getProjectName());
+		DependencyTree rootNode = new DependencyTree(getProjectName());
 		GeneralInfo generalInfo = new GeneralInfo();
 		generalInfo.groupId(gradleArtifact.getGroupId()).artifactId(gradleArtifact.getArtifactId())
 				.version(gradleArtifact.getVersion());
@@ -108,13 +108,13 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	/**
-	 * Populate root modules DependenciesTree with issues, licenses and general info
+	 * Populate root modules DependencyTree with issues, licenses and general info
 	 * from the scan cache.
 	 */
-	private void populateDependenciesTree(DependenciesTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
+	private void populateDependenciesTree(DependencyTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
-			DependenciesTree child = new DependenciesTree(componentId);
+			DependencyTree child = new DependencyTree(componentId);
 			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());

@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.Issue;
 import org.jfrog.build.extractor.scan.Severity;
 
@@ -123,7 +123,7 @@ public class ComponentIssueTable extends Panel {
 		return viewerColumn;
 	}
 
-	public void updateIssuesTable(List<DependenciesTree> selectedNodes) {
+	public void updateIssuesTable(List<DependencyTree> selectedNodes) {
 		Set<Issue> issuesSet = Sets.newHashSet();
 		FilterManager filterManager = FilterManagerSingleton.getInstance();
 		ScanManagersFactory.getInstance().getScanManagers().forEach(scanManager -> {
