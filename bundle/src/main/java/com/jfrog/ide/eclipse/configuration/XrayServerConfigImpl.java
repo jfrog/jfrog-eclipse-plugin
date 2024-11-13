@@ -4,6 +4,8 @@ import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.net.URI;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.internal.net.ProxyManager;
@@ -67,5 +69,41 @@ public class XrayServerConfigImpl implements ServerConfig {
 			proxyConfig.setPassword(proxyData[0].getPassword());
 		}
 		return proxyConfig;
+	}
+
+	@Override
+	public String getArtifactoryUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getConnectionRetries() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getConnectionTimeout() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public SSLContext getSslContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getXrayUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInsecureTls() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
