@@ -12,7 +12,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.jfrog.client.http.model.ProxyConfig;
+//import org.jfrog.client.http.model.ProxyConfig;
+import org.jfrog.build.client.ProxyConfiguration;
 import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
@@ -86,7 +87,7 @@ public class TestConnectionButton extends FieldEditor {
 			try {
 				connectionResults.setText("Connecting to Xray...");
 				String url = urlEditor.getStringValue();
-				ProxyConfig proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
+				ProxyConfiguration proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
 				Xray xrayClient = XrayClient.create(url, usernameEditor.getStringValue(),
 						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
 				Version xrayVersion = xrayClient.system().version();
