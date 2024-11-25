@@ -41,9 +41,9 @@ public class LicensesTree extends SearchableTree {
 	public void applyFilters(ProjectsMap.ProjectKey projectName) {
 		DependencyTree project = projects.get(projectName);
 		if (project != null) {
-			DependencyTree filteredRoot = (DependencyTree) project.clone();
+//			DependencyTree filteredRoot = (DependencyTree) project.clone(); TODO: delete if code works
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			filterManager.applyFilters(project, new DependencyTree(), filteredRoot);
+			DependencyTree filteredRoot = filterManager.applyFilters(project);
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
 				// If there is only one project - Show only its dependencies in the tree viewer.

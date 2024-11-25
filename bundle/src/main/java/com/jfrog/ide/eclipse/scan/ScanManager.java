@@ -130,10 +130,13 @@ public abstract class ScanManager extends ScanManagerBase {
 
 		private void setScanResults() {
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			if (!getScanResults().isLeaf()) {
-				addFilterManagerLicenses(filterManager);
-			}
 			DependencyTree scanResults = getScanResults();
+			
+			if (!getScanResults().isLeaf()) {
+				filterManager.collectsFiltersInformation(scanResults);
+//				addFilterManagerLicenses(filterManager);  TODO: delete if code works
+			}
+
 			issuesTree.addScanResults(getProjectName(), scanResults);
 			licensesTree.addScanResults(getProjectName(), scanResults);
 			if (isDisposed()) {

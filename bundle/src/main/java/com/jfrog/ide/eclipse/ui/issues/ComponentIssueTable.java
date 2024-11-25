@@ -135,3 +135,15 @@ public class ComponentIssueTable extends Panel {
 						.collect(Collectors.toList()));
 	}
 }
+
+/**
+ * Return filtered issues according to the selected component and user filters.
+ *
+ * @param selectedNodes - Selected tree nodes that the user chose from the ui.
+ * @return filtered issues according to the selected component and user filters.
+ */
+public Set<Issue> getFilteredScanIssues(FilterManager filterManager, List<DependenciesTree> selectedNodes) {
+    Set<Issue> filteredIssues = Sets.newHashSet();
+    selectedNodes.forEach(node -> filteredIssues.addAll(filterManager.filterIssues(node.getIssues())));
+    return filteredIssues;
+}

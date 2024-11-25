@@ -52,10 +52,10 @@ public class IssuesTree extends SearchableTree {
 	public void applyFilters(ProjectKey projectKey) {
 		DependencyTree project = projects.get(projectKey);
 		if (project != null) {
-			DependencyTree filteredRoot = (DependencyTree) project.clone();
-			filteredRoot.getIssues().clear();
+//			DependencyTree filteredRoot = (DependencyTree) project.clone(); TODO: delete if code works
+//			filteredRoot.getIssues().clear();
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			filterManager.applyFilters(project, filteredRoot, new DependencyTree());
+			DependencyTree filteredRoot = filterManager.applyFilters(project);
 			filteredRoot.setIssues(filteredRoot.processTreeIssues());
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
