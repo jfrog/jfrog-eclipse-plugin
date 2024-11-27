@@ -27,7 +27,7 @@
 	</repositories>
 
 	<properties>
-		<ide-plugins-common-version>1.5.2</ide-plugins-common-version>
+		<ide-plugins-common-version>1.6.1</ide-plugins-common-version>
 	</properties>
 
 	<build>

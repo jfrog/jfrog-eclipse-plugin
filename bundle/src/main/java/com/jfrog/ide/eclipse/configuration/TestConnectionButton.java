@@ -13,14 +13,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 //import org.jfrog.client.http.model.ProxyConfig; TODO: delete if works
-import org.jfrog.build.client.ProxyConfiguration;
 import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
 import com.jfrog.xray.client.Xray;
-import com.jfrog.xray.client.impl.XrayClient;
 import com.jfrog.xray.client.impl.XrayClientBuilder;
 import com.jfrog.xray.client.services.system.Version;
+import com.jfrog.ide.eclipse.log.Logger;
 
 /**
  * Button in the configuration panel for testing connection with Xray.
@@ -83,17 +82,18 @@ public class TestConnectionButton extends FieldEditor {
 	}
 	
     private Xray createXrayClient() {
-    	String url = urlEditor.getStringValue();
-    	ProxyConfiguration proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
-        return (Xray) new XrayClientBuilder()
+    	String url = this.urlEditor.getStringValue();
+    	XrayServerConfigImpl serverConfig = XrayServerConfigImpl.getInstance();
+    	
+    	return (Xray) new XrayClientBuilder()
                 .setUrl(url)
-                .setUserName(usernameEditor.getStringValue())
-                .setPassword(passwordEditor.getStringValue())
+                .setUserName(this.usernameEditor.getStringValue())
+                .setPassword(this.passwordEditor.getStringValue())
                 .setUserAgent(USER_AGENT)
                 .setInsecureTls(false)
                 .setSslContext(serverConfig.getSslContext())
-                .setProxyConfiguration(proxyConfig)
-                .setLog(Logger.getInstance())
+                .setProxyConfiguration(serverConfig.getProxyConfForTargetUrl(url))
+                .setLog(Logger.getInstance()) 
                 .build();
     }
 
@@ -102,11 +102,13 @@ public class TestConnectionButton extends FieldEditor {
 		public void widgetSelected(SelectionEvent e) {
 			try {
 				connectionResults.setText("Connecting to Xray...");
-//				String url = urlEditor.getStringValue();
+//				String url = urlEditor.getStringValue(); TODO: delete if works
 //				ProxyConfiguration proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
-	
-				Xray xrayClient = XrayClient.create(url, usernameEditor.getStringValue(),
-						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
+				
+				Xray xrayClient = createXrayClient();
+				
+//				Xray client = XrayClient.create(url, usernameEditor.getStringValue(), TODO: delete
+//						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {

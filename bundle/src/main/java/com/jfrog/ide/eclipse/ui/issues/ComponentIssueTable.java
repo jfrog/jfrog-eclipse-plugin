@@ -127,23 +127,12 @@ public class ComponentIssueTable extends Panel {
 		Set<Issue> issuesSet = Sets.newHashSet();
 		FilterManager filterManager = FilterManagerSingleton.getInstance();
 		ScanManagersFactory.getInstance().getScanManagers().forEach(scanManager -> {
-			issuesSet.addAll(scanManager.getFilteredScanIssues(filterManager, selectedNodes));
+			issuesSet.addAll(filterManager.getFilteredScanIssues(selectedNodes));
 		});
 
 		tableViewer.setInput(
 				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
 						.collect(Collectors.toList()));
 	}
-}
-
-/**
- * Return filtered issues according to the selected component and user filters.
- *
- * @param selectedNodes - Selected tree nodes that the user chose from the ui.
- * @return filtered issues according to the selected component and user filters.
- */
-public Set<Issue> getFilteredScanIssues(FilterManager filterManager, List<DependenciesTree> selectedNodes) {
-    Set<Issue> filteredIssues = Sets.newHashSet();
-    selectedNodes.forEach(node -> filteredIssues.addAll(filterManager.filterIssues(node.getIssues())));
-    return filteredIssues;
+	
 }

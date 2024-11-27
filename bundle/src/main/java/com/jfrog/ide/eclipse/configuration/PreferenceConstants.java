@@ -17,4 +17,7 @@ public class PreferenceConstants {
 	public static final String GRADLE_PLUGIN_QUALIFIER = "org.eclipse.buildship.core";
 	public static final String GRADLE_DISTRIBUTION = "gradle.distribution";
 	
+	// Default exluded paths pattern
+	public static final String DEFAULT_EXCLUSIONS = "**/*{.idea,test,node_modules}*";
+	
 }

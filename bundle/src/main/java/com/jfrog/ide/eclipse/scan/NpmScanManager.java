@@ -29,6 +29,6 @@ public class NpmScanManager extends ScanManager {
 
 	@Override
 	void buildTree() throws CoreException, JsonProcessingException, IOException {
-		setScanResults(npmTreeBuilder.buildTree(getLog()));
+		setScanResults(npmTreeBuilder.buildTree(getLog(), false));
 	}
 }

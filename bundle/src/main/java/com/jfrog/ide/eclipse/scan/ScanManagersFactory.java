@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.jfrog.ide.common.utils.Utils;
+import com.jfrog.ide.common.utils.PackageFileFinder;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.npm.NpmProject;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
@@ -24,6 +24,7 @@ import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
+import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
 
 /**
  * @author yahavi
@@ -99,6 +100,7 @@ public class ScanManagersFactory {
 		IProject[] projects = iworkspace.getRoot().getProjects();
 		if (projects.length > 0) {
 			try {
+				// refresh Maven and Gradle managers
 				Set<Path> paths = Sets.newHashSet();
 				for (IProject project : projects) {
 					if (!project.isOpen()) {
@@ -113,7 +115,10 @@ public class ScanManagersFactory {
 					}
 					paths.add(project.getLocation().toFile().toPath());
 				}
-				Set<String> packageJsonDirs = Utils.findPackageJsonDirs(paths);
+				
+				// refresh Npm manager
+				PackageFileFinder packageFileFinder = new PackageFileFinder(paths, PreferenceConstants.DEFAULT_EXCLUSIONS, Logger.getInstance());
+				Set<String> packageJsonDirs = packageFileFinder.getNpmPackagesFilePairs();
 				for (String dir : packageJsonDirs) {
 					IProject npmProject = new NpmProject(dir, iworkspace);
 					scanManagers.add(new NpmScanManager(npmProject));
