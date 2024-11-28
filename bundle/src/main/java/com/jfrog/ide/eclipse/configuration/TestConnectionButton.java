@@ -12,7 +12,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-//import org.jfrog.client.http.model.ProxyConfig; TODO: delete if works
 import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
@@ -82,13 +81,14 @@ public class TestConnectionButton extends FieldEditor {
 	}
 	
     private Xray createXrayClient() {
-    	String url = this.urlEditor.getStringValue();
+    	String url = urlEditor.getStringValue();
+    	String xrayUrl = url.endsWith("/") ? url + "xray" : url + "/xray";
     	XrayServerConfigImpl serverConfig = XrayServerConfigImpl.getInstance();
     	
     	return (Xray) new XrayClientBuilder()
-                .setUrl(url)
-                .setUserName(this.usernameEditor.getStringValue())
-                .setPassword(this.passwordEditor.getStringValue())
+                .setUrl(xrayUrl)
+                .setUserName(usernameEditor.getStringValue())
+                .setPassword(passwordEditor.getStringValue())
                 .setUserAgent(USER_AGENT)
                 .setInsecureTls(false)
                 .setSslContext(serverConfig.getSslContext())
@@ -102,13 +102,8 @@ public class TestConnectionButton extends FieldEditor {
 		public void widgetSelected(SelectionEvent e) {
 			try {
 				connectionResults.setText("Connecting to Xray...");
-//				String url = urlEditor.getStringValue(); TODO: delete if works
-//				ProxyConfiguration proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
 				
 				Xray xrayClient = createXrayClient();
-				
-//				Xray client = XrayClient.create(url, usernameEditor.getStringValue(), TODO: delete
-//						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {
