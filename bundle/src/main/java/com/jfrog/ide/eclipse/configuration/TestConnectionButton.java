@@ -1,5 +1,7 @@
 package com.jfrog.ide.eclipse.configuration;
 
+import static com.jfrog.ide.common.utils.XrayConnectionUtils.createXrayClientBuilder;
+
 import java.io.IOException;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -16,6 +18,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
 import com.jfrog.xray.client.Xray;
+import org.jfrog.build.client.ProxyConfiguration;
 import com.jfrog.xray.client.impl.XrayClientBuilder;
 import com.jfrog.xray.client.services.system.Version;
 import com.jfrog.ide.eclipse.log.Logger;
@@ -92,7 +95,7 @@ public class TestConnectionButton extends FieldEditor {
                 .setUserAgent(USER_AGENT)
                 .setInsecureTls(false)
                 .setSslContext(serverConfig.getSslContext())
-                .setProxyConfiguration(serverConfig.getProxyConfForTargetUrl(url))
+                .setProxyConfiguration(serverConfig.getProxyConfForTargetUrl(xrayUrl))
                 .setLog(Logger.getInstance()) 
                 .build();
     }
@@ -102,8 +105,7 @@ public class TestConnectionButton extends FieldEditor {
 		public void widgetSelected(SelectionEvent e) {
 			try {
 				connectionResults.setText("Connecting to Xray...");
-				
-				Xray xrayClient = createXrayClient();
+				Xray xrayClient = createXrayClient(); 
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {

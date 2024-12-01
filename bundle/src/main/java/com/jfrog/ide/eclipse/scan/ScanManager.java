@@ -134,7 +134,6 @@ public abstract class ScanManager extends ScanManagerBase {
 			
 			if (!getScanResults().isLeaf()) {
 				filterManager.collectsFiltersInformation(scanResults);
-//				addFilterManagerLicenses(filterManager);  TODO: delete if code works
 			}
 
 			issuesTree.addScanResults(getProjectName(), scanResults);

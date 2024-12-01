@@ -14,7 +14,6 @@ import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.jfrog.build.client.ProxyConfiguration;
-//import org.jfrog.client.http.model.ProxyConfig;
 
 import com.jfrog.ide.common.configuration.ServerConfig;
 
@@ -57,7 +56,7 @@ public class XrayServerConfigImpl implements ServerConfig {
 	public ProxyConfiguration getProxyConfForTargetUrl(String xrayUrl) {
 		xrayUrl = StringUtils.defaultIfBlank(xrayUrl, getUrl());
 		IProxyService service = ProxyManager.getProxyManager();
-		IProxyData[] proxyData = service.select(URI.create(xrayUrl));
+		IProxyData[] proxyData = service.select(URI.create(xrayUrl)); // TODO: check why we get error msg: WinHttp.GetProxyForUrl for pac failed with error 'The handle is invalid. 
 		if (ArrayUtils.isEmpty(proxyData)) {
 			return null;
 		}
@@ -98,8 +97,9 @@ public class XrayServerConfigImpl implements ServerConfig {
 
 	@Override
 	public String getXrayUrl() {
-		// TODO Auto-generated method stub
-		return null;
+		String url = getUrl();
+		String xrayUrl = url.endsWith("/") ? url + "xray" : url + "/xray";
+		return xrayUrl;
 	}
 
 	@Override

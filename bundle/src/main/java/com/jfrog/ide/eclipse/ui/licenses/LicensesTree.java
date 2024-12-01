@@ -41,7 +41,6 @@ public class LicensesTree extends SearchableTree {
 	public void applyFilters(ProjectsMap.ProjectKey projectName) {
 		DependencyTree project = projects.get(projectName);
 		if (project != null) {
-//			DependencyTree filteredRoot = (DependencyTree) project.clone(); TODO: delete if code works
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
 			DependencyTree filteredRoot = filterManager.applyFilters(project);
 			root.add(filteredRoot);
