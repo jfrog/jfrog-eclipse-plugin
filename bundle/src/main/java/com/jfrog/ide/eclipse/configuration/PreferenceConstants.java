@@ -18,6 +18,6 @@ public class PreferenceConstants {
 	public static final String GRADLE_DISTRIBUTION = "gradle.distribution";
 	
 	// Default exluded paths pattern
-	public static final String DEFAULT_EXCLUSIONS = "**/*{.idea,test,node_modules}*";
+	public static final String DEFAULT_EXCLUSIONS = "**/*{.git,test,node_modules,target}*";
 	
 }
