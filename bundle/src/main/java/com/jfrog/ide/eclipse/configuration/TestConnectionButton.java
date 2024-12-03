@@ -1,7 +1,5 @@
 package com.jfrog.ide.eclipse.configuration;
 
-import static com.jfrog.ide.common.utils.XrayConnectionUtils.createXrayClientBuilder;
-
 import java.io.IOException;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,7 +16,6 @@ import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
 import com.jfrog.xray.client.Xray;
-import org.jfrog.build.client.ProxyConfiguration;
 import com.jfrog.xray.client.impl.XrayClientBuilder;
 import com.jfrog.xray.client.services.system.Version;
 import com.jfrog.ide.eclipse.log.Logger;
