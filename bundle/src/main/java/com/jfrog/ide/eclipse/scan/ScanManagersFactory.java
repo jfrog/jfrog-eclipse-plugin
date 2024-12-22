@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -87,6 +88,7 @@ public class ScanManagersFactory {
 			scanManager.scanAndUpdateResults(quickScan, issuesTree, licensesTree, parent);
 		}
 	}
+	
 
 	/**
 	 * Initialize scan managers list.
@@ -100,8 +102,9 @@ public class ScanManagersFactory {
 		IProject[] projects = iworkspace.getRoot().getProjects();
 		if (projects.length > 0) {
 			try {
-				// refresh Maven and Gradle managers
 				Set<Path> paths = Sets.newHashSet();
+				
+				// refresh Maven and Gradle managers
 				for (IProject project : projects) {
 					if (!project.isOpen()) {
 						Logger.getInstance().info("Project is closed: " + project.getName());

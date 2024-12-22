@@ -29,6 +29,7 @@ import org.jfrog.build.extractor.scan.GeneralInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
+import com.jfrog.ide.common.gradle.GradleTreeBuilder;
 import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
 import com.jfrog.ide.eclipse.utils.GradleArtifact;
 
@@ -37,6 +38,7 @@ public class GradleScanManager extends ScanManager {
 	private static final String TASK_NAME = "generateDependenciesGraphAsJson";
 	public static final String GRADLE_INIT_SCRIPT = "dependencies.gradle";
 	public static final String GRADLESCRIPTDIR = "gradleScript";
+	private final GradleTreeBuilder gradleTreeBuilder;
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private GradleArtifact gradleArtifact;
@@ -45,6 +47,7 @@ public class GradleScanManager extends ScanManager {
 	public GradleScanManager(IProject project) throws IOException {
 		super(project, ComponentPrefix.GAV);
 		getLog().info("Found Gradle project: " + getProjectName());
+		gradleTreeBuilder = new GradleTreeBuilder(project.getLocation().toFile().toPath(), System.getenv());
 	}
 
 	public static boolean isApplicable(IProject project) {
@@ -79,7 +82,7 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	@Override
-	void buildTree() {
+	void buildTree() throws IOException {
 		DependencyTree rootNode = new DependencyTree(getProjectName());
 		GeneralInfo generalInfo = new GeneralInfo();
 		generalInfo.groupId(gradleArtifact.getGroupId()).artifactId(gradleArtifact.getArtifactId())
@@ -89,7 +92,7 @@ public class GradleScanManager extends ScanManager {
 		if (ArrayUtils.isNotEmpty(dependencies)) {
 			populateDependenciesTree(rootNode, dependencies);
 		}
-		setScanResults(rootNode);
+		setScanResults(gradleTreeBuilder.buildTree(getLog()));
 	}
 
 	public GradleArtifact getGradleArtifact() {
@@ -115,7 +118,11 @@ public class GradleScanManager extends ScanManager {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
 			DependencyTree child = new DependencyTree(componentId);
-			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
+			String componentName = artifact.getArtifactId();
+			child.setGeneralInfo(new GeneralInfo(componentId, componentName, "", "Gradle"));
+			// set dependency scope
+//			String componentScope = dependencyChild.getDependency().getScope(); TODO: get scope info
+//			child.setScopes(Sets.newHashSet(new Scope(componentScope)));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());
 		}
