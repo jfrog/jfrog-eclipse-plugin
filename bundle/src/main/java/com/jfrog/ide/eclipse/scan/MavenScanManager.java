@@ -18,7 +18,9 @@ import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
+import org.jfrog.build.extractor.scan.Scope;
 
+import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
@@ -38,6 +40,7 @@ public class MavenScanManager extends ScanManager {
 		super(project, ComponentPrefix.GAV);
 		getLog().info("Found Maven project: " + getProjectName());
 		this.parent = parent;
+		
 	}
 
 	public static boolean isApplicable(IProject project) {
@@ -67,12 +70,12 @@ public class MavenScanManager extends ScanManager {
 		if (mavenProject == null) {
 			return;
 		}
-		DependencyTree rootNode = new DependencyTree(mavenProject.getName());
+		DependencyTree rootNode = new DependencyTree(mavenProject.getName()); 
+		populateScanTreeNode(rootNode, mavenDependenciesRoot);
 		GeneralInfo generalInfo = new GeneralInfo().groupId(mavenProject.getGroupId())
 				.artifactId(mavenProject.getArtifactId()).version(mavenProject.getVersion());
 		rootNode.setGeneralInfo(generalInfo);
-		populateScanTreeNode(rootNode, mavenDependenciesRoot);
-		setScanResults(rootNode);
+		setScanResults(rootNode); 
 	}
 
 	/**
@@ -83,7 +86,12 @@ public class MavenScanManager extends ScanManager {
 		dependencyNode.getChildren().forEach(dependencyChild -> {
 			String componentId = getComponentId(dependencyChild);
 			DependencyTree child = new DependencyTree(componentId);
-			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
+			String componentName = dependencyChild.getArtifact().getArtifactId();
+			child.setGeneralInfo(new GeneralInfo(componentId, componentName, "", "Maven"));
+			// set dependency scope
+			String componentScope = dependencyChild.getDependency().getScope();
+			child.setScopes(Sets.newHashSet(new Scope(componentScope)));
+			
 			scanTreeNode.add(child);
 			populateScanTreeNode(child, dependencyChild);
 		});

@@ -120,7 +120,7 @@ public abstract class ScanManager extends ScanManagerBase {
 				}
 				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
 				scanAndCacheArtifacts(indicator, quickScan);
-				addXrayInfoToTree(getScanResults());
+				addXrayInfoToTree(getScanResults()); // TODO: check why not getting inside
 				setScanResults();
 			} catch (IOException e) {
 				Logger.getInstance().error(e.getMessage(), e);
@@ -132,11 +132,11 @@ public abstract class ScanManager extends ScanManagerBase {
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
 			DependencyTree scanResults = getScanResults();
 			
-			if (!getScanResults().isLeaf()) {
+			if (!scanResults.isLeaf()) {
 				filterManager.collectsFiltersInformation(scanResults);
 			}
 
-			issuesTree.addScanResults(getProjectName(), scanResults);
+			issuesTree.addScanResults(getProjectName(), scanResults); 
 			licensesTree.addScanResults(getProjectName(), scanResults);
 			if (isDisposed()) {
 				return;
