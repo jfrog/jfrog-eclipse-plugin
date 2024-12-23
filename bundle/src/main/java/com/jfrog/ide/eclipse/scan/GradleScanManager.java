@@ -31,6 +31,7 @@ import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.common.gradle.GradleTreeBuilder;
 import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
+import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.utils.GradleArtifact;
 
 public class GradleScanManager extends ScanManager {
@@ -60,39 +61,36 @@ public class GradleScanManager extends ScanManager {
 
 	@Override
 	void refreshDependencies(IProgressMonitor monitor) throws IOException {
-		this.monitor = monitor;
-		String rootProjectDir = project.getLocation().toPortableString();
-		if (project.getLocation().toFile().isDirectory()) {
-			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();
-		}
-
-		String gradleFileNameFullPath = "/gradle/" + GRADLE_INIT_SCRIPT;
-		ClassLoader classLoader = GradleScanManager.class.getClassLoader();
-		// classLoader.getResourceAsStream(gradleFileNameFullPath) will work on all the
-		// OSes
-		try (InputStream res = classLoader.getResourceAsStream(gradleFileNameFullPath)) {
-			String gradleFile = createGradleFile(res);
-			if (StringUtils.isBlank(gradleFile)) {
-				getLog().warn("Gradle init script wasn't created.");
-				return;
-			}
-			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
-			parseJsonResult();
-		}
+//		this.monitor = monitor;
+//		String rootProjectDir = project.getLocation().toPortableString();
+//		if (project.getLocation().toFile().isDirectory()) {
+//			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();
+//		}
+//
+//		String gradleFileNameFullPath = "/gradle/" + GRADLE_INIT_SCRIPT;
+//		ClassLoader classLoader = GradleScanManager.class.getClassLoader();
+//		// classLoader.getResourceAsStream(gradleFileNameFullPath) will work on all the
+//		// OSes
+//		try (InputStream res = classLoader.getResourceAsStream(gradleFileNameFullPath)) {
+//			String gradleFile = createGradleFile(res);
+//			if (StringUtils.isBlank(gradleFile)) {
+//				getLog().warn("Gradle init script wasn't created.");
+//				return;
+//			}
+//			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
+//			parseJsonResult();
+//		}
 	}
 
 	@Override
-	void buildTree() throws IOException {
-		DependencyTree rootNode = new DependencyTree(getProjectName());
-		GeneralInfo generalInfo = new GeneralInfo();
-		generalInfo.groupId(gradleArtifact.getGroupId()).artifactId(gradleArtifact.getArtifactId())
-				.version(gradleArtifact.getVersion());
-		rootNode.setGeneralInfo(generalInfo);
-		GradleArtifact[] dependencies = gradleArtifact.getDependencies();
-		if (ArrayUtils.isNotEmpty(dependencies)) {
-			populateDependenciesTree(rootNode, dependencies);
+	void buildTree() throws IOException {		
+		try {
+			setScanResults(gradleTreeBuilder.buildTree(getLog()));
+		} 
+		catch (IOException ex) {
+			Logger.getInstance().error("Could not scan project: " + getProjectName() + ". Reason is: " + ex.getMessage());
 		}
-		setScanResults(gradleTreeBuilder.buildTree(getLog()));
+
 	}
 
 	public GradleArtifact getGradleArtifact() {
@@ -120,9 +118,6 @@ public class GradleScanManager extends ScanManager {
 			DependencyTree child = new DependencyTree(componentId);
 			String componentName = artifact.getArtifactId();
 			child.setGeneralInfo(new GeneralInfo(componentId, componentName, "", "Gradle"));
-			// set dependency scope
-//			String componentScope = dependencyChild.getDependency().getScope(); TODO: get scope info
-//			child.setScopes(Sets.newHashSet(new Scope(componentScope)));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());
 		}

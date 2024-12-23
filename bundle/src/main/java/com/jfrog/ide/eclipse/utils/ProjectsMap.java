@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 
-import com.google.common.base.Objects;
 
 /**
  * Map of projects. Used in the UI to show the projects sorted by project name

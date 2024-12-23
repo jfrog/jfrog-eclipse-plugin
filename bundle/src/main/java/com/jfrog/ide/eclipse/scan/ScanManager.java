@@ -120,7 +120,7 @@ public abstract class ScanManager extends ScanManagerBase {
 				}
 				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
 				scanAndCacheArtifacts(indicator, quickScan);
-				addXrayInfoToTree(getScanResults()); // TODO: check why not getting inside
+				addXrayInfoToTree(getScanResults());
 				setScanResults();
 			} catch (IOException e) {
 				Logger.getInstance().error(e.getMessage(), e);
