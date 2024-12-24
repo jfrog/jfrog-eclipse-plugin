@@ -11,7 +11,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.buildship.core.GradleDistribution;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -61,25 +60,6 @@ public class GradleScanManager extends ScanManager {
 
 	@Override
 	void refreshDependencies(IProgressMonitor monitor) throws IOException {
-//		this.monitor = monitor;
-//		String rootProjectDir = project.getLocation().toPortableString();
-//		if (project.getLocation().toFile().isDirectory()) {
-//			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();
-//		}
-//
-//		String gradleFileNameFullPath = "/gradle/" + GRADLE_INIT_SCRIPT;
-//		ClassLoader classLoader = GradleScanManager.class.getClassLoader();
-//		// classLoader.getResourceAsStream(gradleFileNameFullPath) will work on all the
-//		// OSes
-//		try (InputStream res = classLoader.getResourceAsStream(gradleFileNameFullPath)) {
-//			String gradleFile = createGradleFile(res);
-//			if (StringUtils.isBlank(gradleFile)) {
-//				getLog().warn("Gradle init script wasn't created.");
-//				return;
-//			}
-//			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
-//			parseJsonResult();
-//		}
 	}
 
 	@Override
@@ -112,6 +92,7 @@ public class GradleScanManager extends ScanManager {
 	 * Populate root modules DependencyTree with issues, licenses and general info
 	 * from the scan cache.
 	 */
+	@SuppressWarnings("unused")
 	private void populateDependenciesTree(DependencyTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
