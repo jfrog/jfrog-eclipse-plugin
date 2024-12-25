@@ -56,7 +56,7 @@ public class XrayServerConfigImpl implements ServerConfig {
 	public ProxyConfiguration getProxyConfForTargetUrl(String xrayUrl) {
 		xrayUrl = StringUtils.defaultIfBlank(xrayUrl, getUrl());
 		IProxyService service = ProxyManager.getProxyManager();
-		IProxyData[] proxyData = service.select(URI.create(xrayUrl)); // TODO: check why we get error msg: WinHttp.GetProxyForUrl for pac failed with error 'The handle is invalid. 
+		IProxyData[] proxyData = service.select(URI.create(xrayUrl));
 		if (ArrayUtils.isEmpty(proxyData)) {
 			return null;
 		}
