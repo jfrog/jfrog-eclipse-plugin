@@ -59,16 +59,12 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	@Override
-	void refreshDependencies(IProgressMonitor monitor) throws IOException {
-	}
-
-	@Override
 	void buildTree() throws IOException {		
 		try {
 			setScanResults(gradleTreeBuilder.buildTree(getLog()));
 		} 
 		catch (IOException ex) {
-			Logger.getInstance().error("Could not scan project: " + getProjectName() + ". Reason is: " + ex.getMessage());
+			Logger.getInstance().warn("Could not scan project: " + getProjectName() + ". Reason is: " + ex.getMessage());
 		}
 
 	}
@@ -97,8 +93,7 @@ public class GradleScanManager extends ScanManager {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
 			DependencyTree child = new DependencyTree(componentId);
-			String componentName = artifact.getArtifactId();
-			child.setGeneralInfo(new GeneralInfo(componentId, componentName, "", "Gradle"));
+			child.setGeneralInfo(new GeneralInfo(componentId, artifact.getArtifactId(), "", "Gradle"));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());
 		}

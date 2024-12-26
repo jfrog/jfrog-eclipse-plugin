@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfrog.ide.common.npm.NpmTreeBuilder;
@@ -25,10 +24,6 @@ public class NpmScanManager extends ScanManager {
 	}
 
 	@Override
-	void refreshDependencies(IProgressMonitor monitor) throws IOException {
-	}
-
-	@Override
 	void buildTree() throws CoreException, JsonProcessingException, IOException {
 		try {
 			setScanResults(npmTreeBuilder.buildTree(getLog(), false));
@@ -36,6 +31,5 @@ public class NpmScanManager extends ScanManager {
 		catch (IOException ex) {
 			Logger.getInstance().error("Could not scan project: " + getProjectName() + ". Reason is: " + ex.getMessage());
 		}
-	}
-		
+	}	
 }

@@ -87,7 +87,7 @@ public class ScanManagersFactory {
 			scanManager.scanAndUpdateResults(quickScan, issuesTree, licensesTree, parent);
 		}
 	}
-	
+
 	/**
 	 * Initialize scan managers list.
 	 * 

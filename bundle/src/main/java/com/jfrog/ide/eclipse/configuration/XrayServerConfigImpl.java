@@ -87,21 +87,23 @@ public class XrayServerConfigImpl implements ServerConfig {
 
 	@Override
 	public int getConnectionRetries() {
-		return 0;
+		return PreferenceConstants.CONNECTION_RETRIES;
 	}
 
 	@Override
 	public int getConnectionTimeout() {
-		return 0;
+		return PreferenceConstants.CONNECTION_TIMEOUT;
 	}
 
 	@Override
 	public SSLContext getSslContext() {
+		// TODO: implement
 		return null;
 	}
 
 	@Override
 	public boolean isInsecureTls() {
+		// TODO: implement
 		return false;
 	}
 

@@ -44,14 +44,6 @@ public abstract class ScanManager extends ScanManagerBase {
 	}
 
 	/**
-	 * Refresh project dependencies.
-	 * 
-	 * @throws IOException
-	 * @throws CoreException
-	 */
-	abstract void refreshDependencies(IProgressMonitor monitor) throws IOException, CoreException;
-
-	/**
 	 * Collect and return {@link Components} to be scanned by JFrog Xray.
 	 * Implementation should be project type specific.
 	 * 
@@ -76,6 +68,10 @@ public abstract class ScanManager extends ScanManagerBase {
 	
 	public void setMonitor(IProgressMonitor monitor) {
 		this.monitor = monitor;
+	}
+	
+	public IProgressMonitor getMonitor(){
+		return monitor;
 	}
 
 	/**
@@ -113,7 +109,6 @@ public abstract class ScanManager extends ScanManagerBase {
 			}
 			getLog().info("Performing scan for " + getProjectName());
 			try {
-				refreshDependencies(monitor);
 				buildTree();
 				if (isDisposed() || getScanResults() == null) {
 					return;

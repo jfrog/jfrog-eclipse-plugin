@@ -91,7 +91,7 @@ public class TestConnectionButton extends FieldEditor {
                 .setPassword(passwordEditor.getStringValue())
                 .setUserAgent(USER_AGENT)
                 .setInsecureTls(false)
-                .setSslContext(serverConfig.getSslContext())
+                .setSslContext(serverConfig.getSslContext()) 
                 .setProxyConfiguration(serverConfig.getProxyConfForTargetUrl(xrayUrl))
                 .setLog(Logger.getInstance()) 
                 .build();

@@ -51,7 +51,6 @@ public class MavenScanManager extends ScanManager {
 		}
 	}
 
-	@Override
 	void refreshDependencies(IProgressMonitor monitor) throws CoreException {
 		IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
 		if (facade == null) {
@@ -67,6 +66,7 @@ public class MavenScanManager extends ScanManager {
 
 	@Override
 	void buildTree() throws CoreException {
+		refreshDependencies(getMonitor());
 		if (mavenProject == null) {
 			return;
 		}
