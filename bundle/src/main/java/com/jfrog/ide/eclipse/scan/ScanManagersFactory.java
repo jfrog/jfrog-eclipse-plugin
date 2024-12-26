@@ -88,7 +88,6 @@ public class ScanManagersFactory {
 		}
 	}
 	
-
 	/**
 	 * Initialize scan managers list.
 	 * 

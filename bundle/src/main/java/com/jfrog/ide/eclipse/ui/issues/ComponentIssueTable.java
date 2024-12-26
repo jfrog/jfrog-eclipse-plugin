@@ -134,5 +134,4 @@ public class ComponentIssueTable extends Panel {
 				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
 						.collect(Collectors.toList()));
 	}
-	
 }

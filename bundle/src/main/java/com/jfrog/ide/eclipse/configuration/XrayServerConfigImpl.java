@@ -72,30 +72,6 @@ public class XrayServerConfigImpl implements ServerConfig {
 	}
 
 	@Override
-	public String getArtifactoryUrl() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getConnectionRetries() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getConnectionTimeout() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public SSLContext getSslContext() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getXrayUrl() {
 		String url = getUrl();
 		String xrayUrl = url.endsWith("/") ? url + "xray" : url + "/xray";
@@ -103,8 +79,30 @@ public class XrayServerConfigImpl implements ServerConfig {
 	}
 
 	@Override
+	public String getArtifactoryUrl() {
+		String url = getUrl();
+		String artifactoryUrl = url.endsWith("/") ? url + "artifactory" : url + "/artifactory";
+		return artifactoryUrl;
+	}
+
+	@Override
+	public int getConnectionRetries() {
+		return 0;
+	}
+
+	@Override
+	public int getConnectionTimeout() {
+		return 0;
+	}
+
+	@Override
+	public SSLContext getSslContext() {
+		return null;
+	}
+
+	@Override
 	public boolean isInsecureTls() {
-		// TODO Auto-generated method stub
 		return false;
 	}
+
 }
