@@ -20,8 +20,4 @@ public class PreferenceConstants {
 	// Eclipse Buildship plugins
 	public static final String GRADLE_PLUGIN_QUALIFIER = "org.eclipse.buildship.core";
 	public static final String GRADLE_DISTRIBUTION = "gradle.distribution";
-	
-	// Default exluded paths pattern
-	public static final String DEFAULT_EXCLUSIONS = "**/*{.git,test,node_modules,target}*";
-	
 }

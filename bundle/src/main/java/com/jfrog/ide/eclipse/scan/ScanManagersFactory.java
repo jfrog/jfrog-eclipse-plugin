@@ -118,7 +118,7 @@ public class ScanManagersFactory {
 				}
 				
 				// refresh Npm manager
-				PackageFileFinder packageFileFinder = new PackageFileFinder(paths, PreferenceConstants.DEFAULT_EXCLUSIONS, Logger.getInstance());
+				PackageFileFinder packageFileFinder = new PackageFileFinder(paths, "", Logger.getInstance());
 				Set<String> packageJsonDirs = packageFileFinder.getNpmPackagesFilePairs();
 				for (String dir : packageJsonDirs) {
 					IProject npmProject = new NpmProject(dir, iworkspace);
