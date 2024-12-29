@@ -130,7 +130,6 @@ public abstract class ScanManager extends ScanManagerBase {
 			if (!scanResults.isLeaf()) {
 				filterManager.collectsFiltersInformation(scanResults);
 			}
-
 			issuesTree.addScanResults(getProjectName(), scanResults);
 			licensesTree.addScanResults(getProjectName(), scanResults);
 			if (isDisposed()) {

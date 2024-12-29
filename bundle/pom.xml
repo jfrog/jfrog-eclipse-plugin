@@ -20,6 +20,10 @@
 			<id>releases</id>
 			<url>https://releases.jfrog.io/artifactory/oss-releases</url>
 		</repository>
+		<repository>
+			<id>gradle</id>
+			<url>https://repo.gradle.org/gradle/libs-releases</url>
+		</repository>
 	</repositories>
 
 	<properties>

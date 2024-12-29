@@ -126,7 +126,6 @@ public class ComponentIssueTable extends Panel {
 		Set<Issue> issuesSet = Sets.newHashSet();
 		FilterManager filterManager = FilterManagerSingleton.getInstance();
 		issuesSet.addAll(filterManager.getFilteredScanIssues(selectedNodes));
-		
 		tableViewer.setInput(
 				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
 						.collect(Collectors.toList()));

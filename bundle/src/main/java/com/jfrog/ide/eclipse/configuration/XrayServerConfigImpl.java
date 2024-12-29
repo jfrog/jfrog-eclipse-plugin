@@ -97,7 +97,7 @@ public class XrayServerConfigImpl implements ServerConfig {
 
 	@Override
 	public SSLContext getSslContext() {
-		// TODO: implement
+		// This plugin does not use SSL connection
 		return null;
 	}
 

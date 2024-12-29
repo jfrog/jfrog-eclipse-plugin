@@ -40,7 +40,6 @@ public class MavenScanManager extends ScanManager {
 		super(project, ComponentPrefix.GAV);
 		getLog().info("Found Maven project: " + getProjectName());
 		this.parent = parent;
-		
 	}
 
 	public static boolean isApplicable(IProject project) {
