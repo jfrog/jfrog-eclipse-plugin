@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 
 /**
@@ -13,18 +13,18 @@ import org.jfrog.build.extractor.scan.GeneralInfo;
  * 
  * @author yahavi
  */
-public class ProjectsMap extends TreeMap<ProjectsMap.ProjectKey, DependenciesTree> {
+public class ProjectsMap extends TreeMap<ProjectsMap.ProjectKey, DependencyTree> {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Put a project in the map.
 	 * 
 	 * @param projectName      - The project name.
-	 * @param dependenciesTree - The dependencies tree.
-	 * @return dependenciesTree.
+	 * @param dependencyTree - The dependencies tree.
+	 * @return dependencyTree.
 	 */
-	public DependenciesTree put(String projectName, DependenciesTree dependenciesTree) {
-		return super.put(createKey(projectName, dependenciesTree.getGeneralInfo()), dependenciesTree);
+	public DependencyTree put(String projectName, DependencyTree dependencyTree) {
+		return super.put(createKey(projectName, dependencyTree.getGeneralInfo()), dependencyTree);
 	}
 	
 	public static ProjectKey createKey(String projectName, GeneralInfo generalInfo) {

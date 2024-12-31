@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfrog.ide.common.filter.FilterManager;
@@ -38,19 +38,10 @@ public abstract class ScanManager extends ScanManagerBase {
 	IProject project;
 
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getInstance(), XrayServerConfigImpl.getInstance(),
-				prefix);
+		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getInstance(), XrayServerConfigImpl.getInstance(), prefix);
 		this.project = project;
 		Files.createDirectories(HOME_PATH);
 	}
-
-	/**
-	 * Refresh project dependencies.
-	 * 
-	 * @throws IOException
-	 * @throws CoreException
-	 */
-	abstract void refreshDependencies(IProgressMonitor monitor) throws IOException, CoreException;
 
 	/**
 	 * Collect and return {@link Components} to be scanned by JFrog Xray.
@@ -77,6 +68,10 @@ public abstract class ScanManager extends ScanManagerBase {
 	
 	public void setMonitor(IProgressMonitor monitor) {
 		this.monitor = monitor;
+	}
+	
+	public IProgressMonitor getMonitor(){
+		return monitor;
 	}
 
 	/**
@@ -114,7 +109,6 @@ public abstract class ScanManager extends ScanManagerBase {
 			}
 			getLog().info("Performing scan for " + getProjectName());
 			try {
-				refreshDependencies(monitor);
 				buildTree();
 				if (isDisposed() || getScanResults() == null) {
 					return;
@@ -131,10 +125,11 @@ public abstract class ScanManager extends ScanManagerBase {
 
 		private void setScanResults() {
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			if (!getScanResults().isLeaf()) {
-				addFilterManagerLicenses(filterManager);
+			DependencyTree scanResults = getScanResults();
+			
+			if (!scanResults.isLeaf()) {
+				filterManager.collectsFiltersInformation(scanResults);
 			}
-			DependenciesTree scanResults = getScanResults();
 			issuesTree.addScanResults(getProjectName(), scanResults);
 			licensesTree.addScanResults(getProjectName(), scanResults);
 			if (isDisposed()) {

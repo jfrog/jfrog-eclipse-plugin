@@ -12,13 +12,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.jfrog.client.http.model.ProxyConfig;
 import org.osgi.framework.FrameworkUtil;
 
 import com.jfrog.ide.common.utils.XrayConnectionUtils;
 import com.jfrog.xray.client.Xray;
-import com.jfrog.xray.client.impl.XrayClient;
+import com.jfrog.xray.client.impl.XrayClientBuilder;
 import com.jfrog.xray.client.services.system.Version;
+import com.jfrog.ide.eclipse.log.Logger;
 
 /**
  * Button in the configuration panel for testing connection with Xray.
@@ -79,16 +79,28 @@ public class TestConnectionButton extends FieldEditor {
 	public int getNumberOfControls() {
 		return 1;
 	}
+	
+    private Xray createXrayClient() {
+    	String url = urlEditor.getStringValue();
+    	String xrayUrl = url.endsWith("/") ? url + "xray" : url + "/xray";
+    	XrayServerConfigImpl serverConfig = XrayServerConfigImpl.getInstance();
+    	
+    	return (Xray) new XrayClientBuilder()
+                .setUrl(xrayUrl)
+                .setUserName(usernameEditor.getStringValue())
+                .setPassword(passwordEditor.getStringValue())
+                .setUserAgent(USER_AGENT)
+                .setProxyConfiguration(serverConfig.getProxyConfForTargetUrl(xrayUrl))
+                .setLog(Logger.getInstance()) 
+                .build();
+    }
 
 	private class ButtonSelection extends SelectionAdapter {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			try {
 				connectionResults.setText("Connecting to Xray...");
-				String url = urlEditor.getStringValue();
-				ProxyConfig proxyConfig = XrayServerConfigImpl.getInstance().getProxyConfForTargetUrl(url);
-				Xray xrayClient = XrayClient.create(url, usernameEditor.getStringValue(),
-						passwordEditor.getStringValue(), USER_AGENT, false, proxyConfig);
+				Xray xrayClient = createXrayClient(); 
 				Version xrayVersion = xrayClient.system().version();
 
 				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {

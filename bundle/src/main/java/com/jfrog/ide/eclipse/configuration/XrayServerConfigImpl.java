@@ -4,6 +4,8 @@ import static org.apache.commons.lang3.StringUtils.trim;
 
 import java.net.URI;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.internal.net.ProxyManager;
@@ -11,15 +13,15 @@ import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.jfrog.client.http.model.ProxyConfig;
+import org.jfrog.build.client.ProxyConfiguration;
 
-import com.jfrog.ide.common.configuration.XrayServerConfig;
+import com.jfrog.ide.common.configuration.ServerConfig;
 
 /**
  * @author yahavi
  */
 @SuppressWarnings("restriction")
-public class XrayServerConfigImpl implements XrayServerConfig {
+public class XrayServerConfigImpl implements ServerConfig {
 
 	private static XrayServerConfigImpl instance;
 	private IPreferencesService service = Platform.getPreferencesService();
@@ -51,7 +53,7 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 	}
 
 	@Override
-	public ProxyConfig getProxyConfForTargetUrl(String xrayUrl) {
+	public ProxyConfiguration getProxyConfForTargetUrl(String xrayUrl) {
 		xrayUrl = StringUtils.defaultIfBlank(xrayUrl, getUrl());
 		IProxyService service = ProxyManager.getProxyManager();
 		IProxyData[] proxyData = service.select(URI.create(xrayUrl));
@@ -59,13 +61,50 @@ public class XrayServerConfigImpl implements XrayServerConfig {
 			return null;
 		}
 
-		ProxyConfig proxyConfig = new ProxyConfig();
-		proxyConfig.setHost(trim(proxyData[0].getHost()));
-		proxyConfig.setPort(proxyData[0].getPort());
+		ProxyConfiguration proxyConfig = new ProxyConfiguration();
+		proxyConfig.host = trim(proxyData[0].getHost());
+		proxyConfig.port = proxyData[0].getPort();
 		if (proxyData[0].isRequiresAuthentication()) {
-			proxyConfig.setUsername(trim(proxyData[0].getUserId()));
-			proxyConfig.setPassword(proxyData[0].getPassword());
+			proxyConfig.username = trim(proxyData[0].getUserId());
+			proxyConfig.password = proxyData[0].getPassword();
 		}
 		return proxyConfig;
 	}
+
+	@Override
+	public String getXrayUrl() {
+		String url = getUrl();
+		String xrayUrl = url.endsWith("/") ? url + "xray" : url + "/xray";
+		return xrayUrl;
+	}
+
+	@Override
+	public String getArtifactoryUrl() {
+		String url = getUrl();
+		String artifactoryUrl = url.endsWith("/") ? url + "artifactory" : url + "/artifactory";
+		return artifactoryUrl;
+	}
+
+	@Override
+	public int getConnectionRetries() {
+		return PreferenceConstants.CONNECTION_RETRIES;
+	}
+
+	@Override
+	public int getConnectionTimeout() {
+		return PreferenceConstants.CONNECTION_TIMEOUT_MILLISECONDS;
+	}
+
+	@Override
+	public SSLContext getSslContext() {
+		// This method is not used by the plug-in.
+		return null;
+	}
+
+	@Override
+	public boolean isInsecureTls() {
+		// This method is not used by the plug-in.
+		return false;
+	}
+
 }

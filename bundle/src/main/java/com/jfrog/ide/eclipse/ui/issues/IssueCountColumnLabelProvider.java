@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 
 /**
  * The issues count component in the issues tree.
@@ -22,7 +22,7 @@ public class IssueCountColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		int issueCount = ((DependenciesTree) element).getIssueCount();
+		int issueCount = ((DependencyTree) element).getIssueCount();
 		return issueCount == 0 ? "" : "(" + issueCount + ")";
 	}
 

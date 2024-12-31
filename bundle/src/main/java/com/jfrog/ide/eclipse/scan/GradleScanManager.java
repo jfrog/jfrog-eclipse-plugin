@@ -11,7 +11,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.buildship.core.GradleDistribution;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -23,13 +22,15 @@ import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProgressEvent;
 import org.gradle.tooling.ProgressListener;
 import org.gradle.tooling.ProjectConnection;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
+import com.jfrog.ide.common.gradle.GradleTreeBuilder;
 import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
+import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.utils.GradleArtifact;
 
 public class GradleScanManager extends ScanManager {
@@ -37,6 +38,7 @@ public class GradleScanManager extends ScanManager {
 	private static final String TASK_NAME = "generateDependenciesGraphAsJson";
 	public static final String GRADLE_INIT_SCRIPT = "dependencies.gradle";
 	public static final String GRADLESCRIPTDIR = "gradleScript";
+	private final GradleTreeBuilder gradleTreeBuilder;
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private GradleArtifact gradleArtifact;
@@ -45,6 +47,7 @@ public class GradleScanManager extends ScanManager {
 	public GradleScanManager(IProject project) throws IOException {
 		super(project, ComponentPrefix.GAV);
 		getLog().info("Found Gradle project: " + getProjectName());
+		gradleTreeBuilder = new GradleTreeBuilder(project.getLocation().toFile().toPath(), System.getenv());
 	}
 
 	public static boolean isApplicable(IProject project) {
@@ -56,40 +59,14 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	@Override
-	void refreshDependencies(IProgressMonitor monitor) throws IOException {
-		this.monitor = monitor;
-		String rootProjectDir = project.getLocation().toPortableString();
-		if (project.getLocation().toFile().isDirectory()) {
-			rootProjectDir = project.getLocation().addTrailingSeparator().toPortableString();
+	void buildTree() throws IOException {		
+		try {
+			setScanResults(gradleTreeBuilder.buildTree(getLog()));
+		} 
+		catch (IOException ex) {
+			Logger.getInstance().warn("Could not scan project: " + getProjectName() + ". Reason is: " + ex.getMessage());
 		}
 
-		String gradleFileNameFullPath = "/gradle/" + GRADLE_INIT_SCRIPT;
-		ClassLoader classLoader = GradleScanManager.class.getClassLoader();
-		// classLoader.getResourceAsStream(gradleFileNameFullPath) will work on all the
-		// OSes
-		try (InputStream res = classLoader.getResourceAsStream(gradleFileNameFullPath)) {
-			String gradleFile = createGradleFile(res);
-			if (StringUtils.isBlank(gradleFile)) {
-				getLog().warn("Gradle init script wasn't created.");
-				return;
-			}
-			generateDependenciesGraphAsJsonTask(rootProjectDir, gradleFile);
-			parseJsonResult();
-		}
-	}
-
-	@Override
-	void buildTree() {
-		DependenciesTree rootNode = new DependenciesTree(getProjectName());
-		GeneralInfo generalInfo = new GeneralInfo();
-		generalInfo.groupId(gradleArtifact.getGroupId()).artifactId(gradleArtifact.getArtifactId())
-				.version(gradleArtifact.getVersion());
-		rootNode.setGeneralInfo(generalInfo);
-		GradleArtifact[] dependencies = gradleArtifact.getDependencies();
-		if (ArrayUtils.isNotEmpty(dependencies)) {
-			populateDependenciesTree(rootNode, dependencies);
-		}
-		setScanResults(rootNode);
 	}
 
 	public GradleArtifact getGradleArtifact() {
@@ -108,14 +85,15 @@ public class GradleScanManager extends ScanManager {
 	}
 
 	/**
-	 * Populate root modules DependenciesTree with issues, licenses and general info
+	 * Populate root modules DependencyTree with issues, licenses and general info
 	 * from the scan cache.
 	 */
-	private void populateDependenciesTree(DependenciesTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
+	@SuppressWarnings("unused")
+	private void populateDependenciesTree(DependencyTree scanTreeNode, GradleArtifact[] gradleArtifacts) {
 		for (GradleArtifact artifact : gradleArtifacts) {
 			String componentId = getComponentId(artifact);
-			DependenciesTree child = new DependenciesTree(componentId);
-			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
+			DependencyTree child = new DependencyTree(componentId);
+			child.setGeneralInfo(new GeneralInfo(componentId, artifact.getArtifactId(), "", "Gradle"));
 			scanTreeNode.add(child);
 			populateDependenciesTree(child, artifact.getDependencies());
 		}

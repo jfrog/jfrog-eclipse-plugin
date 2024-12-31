@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
@@ -68,7 +68,7 @@ public abstract class SearchableTree extends FilteredTree {
 				if (event.getSelection().isEmpty()) {
 					return;
 				}
-				DependenciesTree selection = (DependenciesTree) treeViewer.getStructuredSelection().getFirstElement();
+				DependencyTree selection = (DependencyTree) treeViewer.getStructuredSelection().getFirstElement();
 				onClick(selection);
 			}
 		});
@@ -78,7 +78,7 @@ public abstract class SearchableTree extends FilteredTree {
 		this.componentDetails = componentDetails;
 	}
 
-	protected abstract void onClick(DependenciesTree selection);
+	protected abstract void onClick(DependencyTree selection);
 
 	private static PatternFilter createFilter() {
 		PatternFilter patternFilter = new PatternFilter();
@@ -86,12 +86,12 @@ public abstract class SearchableTree extends FilteredTree {
 		return patternFilter;
 	}
 
-	public List<DependenciesTree> getSelectedNodes() {
-		List<DependenciesTree> selectedNodes = Lists.newArrayList();
+	public List<DependencyTree> getSelectedNodes() {
+		List<DependencyTree> selectedNodes = Lists.newArrayList();
 		TreePath[] selectionPaths = treeViewer.getStructuredSelection().getPaths();
 		if (selectionPaths != null) {
 			selectedNodes = Arrays.stream(selectionPaths)
-					.map(selectedPath -> (DependenciesTree) selectedPath.getLastSegment()).collect(Collectors.toList());
+					.map(selectedPath -> (DependencyTree) selectedPath.getLastSegment()).collect(Collectors.toList());
 		}
 
 		return selectedNodes;
@@ -109,8 +109,8 @@ public abstract class SearchableTree extends FilteredTree {
 		projects.clear();
 	}
 
-	public void addScanResults(String projectName, DependenciesTree dependenciesTree) {
-		projects.put(projectName, dependenciesTree);
+	public void addScanResults(String projectName, DependencyTree dependencyTree) {
+		projects.put(projectName, dependencyTree);
 	}
 
 	public abstract void applyFilters(ProjectsMap.ProjectKey projectName);

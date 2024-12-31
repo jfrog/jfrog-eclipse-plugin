@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
@@ -17,7 +17,7 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap;
 public class LicensesTree extends SearchableTree {
 
 	private static LicensesTree instance;
-	private DependenciesTree root = new DependenciesTree();;
+	private DependencyTree root = new DependencyTree();;
 
 	public static void createLicensesTree(Composite parent) {
 		instance = new LicensesTree(parent);
@@ -33,17 +33,16 @@ public class LicensesTree extends SearchableTree {
 	}
 
 	@Override
-	protected void onClick(DependenciesTree selection) {
+	protected void onClick(DependencyTree selection) {
 		componentDetails.createDetailsView(selection);
 	}
 
 	@Override
 	public void applyFilters(ProjectsMap.ProjectKey projectName) {
-		DependenciesTree project = projects.get(projectName);
+		DependencyTree project = projects.get(projectName);
 		if (project != null) {
-			DependenciesTree filteredRoot = (DependenciesTree) project.clone();
 			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			filterManager.applyFilters(project, new DependenciesTree(), filteredRoot);
+			DependencyTree filteredRoot = filterManager.applyFilters(project);
 			root.add(filteredRoot);
 			if (root.getChildCount() == 1) {
 				// If there is only one project - Show only its dependencies in the tree viewer.
@@ -57,7 +56,7 @@ public class LicensesTree extends SearchableTree {
 	@Override
 	public void applyFiltersForAllProjects() {
 		root.removeAllChildren();
-		for (Entry<ProjectsMap.ProjectKey, DependenciesTree> entry : projects.entrySet()) {
+		for (Entry<ProjectsMap.ProjectKey, DependencyTree> entry : projects.entrySet()) {
 			applyFilters(entry.getKey());
 		}
 	}

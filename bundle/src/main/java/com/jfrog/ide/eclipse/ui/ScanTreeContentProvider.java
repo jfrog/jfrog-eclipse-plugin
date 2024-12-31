@@ -1,7 +1,7 @@
 package com.jfrog.ide.eclipse.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 
 /**
  * Content provider for DependenciesTree.
@@ -9,7 +9,7 @@ import org.jfrog.build.extractor.scan.DependenciesTree;
  * @author yahavi
  */
 public class ScanTreeContentProvider implements ITreeContentProvider {
-	private static final DependenciesTree[] EMPTY_NODE = new DependenciesTree[0];
+	private static final DependencyTree[] EMPTY_NODE = new DependencyTree[0];
 
 	@Override
 	public Object[] getElements(Object element) {
@@ -18,16 +18,16 @@ public class ScanTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object element) {
-		return (((DependenciesTree) element).getChildren()).toArray(EMPTY_NODE);
+		return (((DependencyTree) element).getChildren()).toArray(EMPTY_NODE);
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		return ((DependenciesTree) element).getParent();
+		return ((DependencyTree) element).getParent();
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		return !((DependenciesTree) element).isLeaf();
+		return !((DependencyTree) element).isLeaf();
 	}
 }

@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.jfrog.ide.common.utils.Utils;
+import com.jfrog.ide.common.utils.PackageFileFinder;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.npm.NpmProject;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
@@ -100,6 +100,8 @@ public class ScanManagersFactory {
 		if (projects.length > 0) {
 			try {
 				Set<Path> paths = Sets.newHashSet();
+				
+				// refresh Maven and Gradle managers
 				for (IProject project : projects) {
 					if (!project.isOpen()) {
 						Logger.getInstance().info("Project is closed: " + project.getName());
@@ -113,7 +115,10 @@ public class ScanManagersFactory {
 					}
 					paths.add(project.getLocation().toFile().toPath());
 				}
-				Set<String> packageJsonDirs = Utils.findPackageJsonDirs(paths);
+				
+				// refresh Npm manager
+				PackageFileFinder packageFileFinder = new PackageFileFinder(paths, "", Logger.getInstance());
+				Set<String> packageJsonDirs = packageFileFinder.getNpmPackagesFilePairs();
 				for (String dir : packageJsonDirs) {
 					IProject npmProject = new NpmProject(dir, iworkspace);
 					scanManagers.add(new NpmScanManager(npmProject));

@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
 import org.jfrog.build.extractor.scan.License;
 
@@ -50,7 +50,7 @@ public abstract class ComponentDetails extends Panel {
 		recreateComponentDetails();
 	}
 
-	public abstract void createDetailsView(DependenciesTree node);
+	public abstract void createDetailsView(DependencyTree node);
 	
 	public void recreateComponentDetails() {
 		if (isDisposed()) {
@@ -110,7 +110,7 @@ public abstract class ComponentDetails extends Panel {
 	 * 
 	 * @param node - Extract the component information from this node.
 	 */
-	protected void createCommonInfo(DependenciesTree node) {
+	protected void createCommonInfo(DependencyTree node) {
 		for (Control control : componentDetailsPanel.getChildren()) {
 			control.dispose();
 		}

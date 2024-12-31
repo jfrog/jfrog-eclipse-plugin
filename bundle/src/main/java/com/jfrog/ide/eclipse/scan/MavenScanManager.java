@@ -16,9 +16,11 @@ import org.eclipse.m2e.core.project.IMavenProjectChangedListener;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependenciesTree;
+import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
+import org.jfrog.build.extractor.scan.Scope;
 
+import com.google.common.collect.Sets;
 import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
@@ -48,7 +50,6 @@ public class MavenScanManager extends ScanManager {
 		}
 	}
 
-	@Override
 	void refreshDependencies(IProgressMonitor monitor) throws CoreException {
 		IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
 		if (facade == null) {
@@ -64,26 +65,32 @@ public class MavenScanManager extends ScanManager {
 
 	@Override
 	void buildTree() throws CoreException {
+		refreshDependencies(getMonitor());
 		if (mavenProject == null) {
 			return;
 		}
-		DependenciesTree rootNode = new DependenciesTree(mavenProject.getName());
+		DependencyTree rootNode = new DependencyTree(mavenProject.getName()); 
+		populateScanTreeNode(rootNode, mavenDependenciesRoot);
 		GeneralInfo generalInfo = new GeneralInfo().groupId(mavenProject.getGroupId())
 				.artifactId(mavenProject.getArtifactId()).version(mavenProject.getVersion());
 		rootNode.setGeneralInfo(generalInfo);
-		populateScanTreeNode(rootNode, mavenDependenciesRoot);
-		setScanResults(rootNode);
+		setScanResults(rootNode); 
 	}
 
 	/**
-	 * Populate root modules DependenciesTree with issues, licenses and general info
+	 * Populate root modules DependencyTree with issues, licenses and general info
 	 * from the scan cache.
 	 */
-	private void populateScanTreeNode(DependenciesTree scanTreeNode, DependencyNode dependencyNode) {
+	private void populateScanTreeNode(DependencyTree scanTreeNode, DependencyNode dependencyNode) {
 		dependencyNode.getChildren().forEach(dependencyChild -> {
 			String componentId = getComponentId(dependencyChild);
-			DependenciesTree child = new DependenciesTree(componentId);
-			child.setGeneralInfo(new GeneralInfo(componentId, "", "", "Maven"));
+			DependencyTree child = new DependencyTree(componentId);
+			String componentName = dependencyChild.getArtifact().getArtifactId();
+			child.setGeneralInfo(new GeneralInfo(componentId, componentName, "", "Maven"));
+			// set dependency scope
+			String componentScope = dependencyChild.getDependency().getScope();
+			child.setScopes(Sets.newHashSet(new Scope(componentScope)));
+			
 			scanTreeNode.add(child);
 			populateScanTreeNode(child, dependencyChild);
 		});
