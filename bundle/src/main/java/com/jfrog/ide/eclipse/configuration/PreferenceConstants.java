@@ -14,7 +14,7 @@ public class PreferenceConstants {
 	public static final String XRAY_PASSWORD = "Password";
 	
 	// Connection constants
-	public static final int CONNECTION_TIMEOUT = 60;
+	public static final int CONNECTION_TIMEOUT_MILLISECONDS = 300 * 1000;
 	public static final int CONNECTION_RETRIES = 5;
 
 	// Eclipse Buildship plugins

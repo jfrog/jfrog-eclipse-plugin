@@ -92,18 +92,18 @@ public class XrayServerConfigImpl implements ServerConfig {
 
 	@Override
 	public int getConnectionTimeout() {
-		return PreferenceConstants.CONNECTION_TIMEOUT;
+		return PreferenceConstants.CONNECTION_TIMEOUT_MILLISECONDS;
 	}
 
 	@Override
 	public SSLContext getSslContext() {
-		// This plugin does not use SSL connection
+		// This method is not used by the plug-in.
 		return null;
 	}
 
 	@Override
 	public boolean isInsecureTls() {
-		// TODO: implement
+		// This method is not used by the plug-in.
 		return false;
 	}
 

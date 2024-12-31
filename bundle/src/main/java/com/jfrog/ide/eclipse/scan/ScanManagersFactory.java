@@ -24,7 +24,6 @@ import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
-import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
 
 /**
  * @author yahavi
