@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.jfrog.ide.eclipse.releng</groupId>
 		<artifactId>com.jfrog.ide.eclipse.releng</artifactId>
-		<version>1.1.2</version>
+		<version>1.2.0</version>
 	</parent>
 
 	<build>
