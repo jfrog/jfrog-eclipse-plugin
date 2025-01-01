@@ -1,5 +1,5 @@
 ## 1.2.0 (31 December 2024)
-- Upgrade ide-plugins-common dependency to v1.6.1 in order to support 'Critical' severity.
+- Support 'Critical' severity.
 
 ## 1.1.2 (16 August 2021)
 - Support for Eclipse 4.20
