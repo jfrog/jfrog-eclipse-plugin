@@ -1,4 +1,4 @@
-## 1.2.0 (31 December 2024)
+## 1.2.0 (1 January 2025)
 - Support 'Critical' severity.
 
 ## 1.1.2 (16 August 2021)
