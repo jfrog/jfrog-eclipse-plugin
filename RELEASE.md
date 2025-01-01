@@ -1,3 +1,6 @@
+## 1.2.0 (1 January 2025)
+- Support 'Critical' severity.
+
 ## 1.1.2 (16 August 2021)
 - Support for Eclipse 4.20
 
