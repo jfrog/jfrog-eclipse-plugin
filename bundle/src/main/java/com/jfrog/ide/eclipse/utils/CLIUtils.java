@@ -3,8 +3,14 @@ package com.jfrog.ide.eclipse.utils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.IOException;
 import org.apache.commons.lang3.SystemUtils;
+import org.jfrog.build.extractor.executor.CommandExecutor;
+import org.jfrog.build.extractor.executor.CommandResults;
 import org.apache.commons.lang3.StringUtils;
 
 import com.jfrog.ide.eclipse.log.Logger;
@@ -43,6 +49,18 @@ public class CLIUtils {
         } else {
         	logger.info("'jf.exe' file is cached locally. File location: " + jfrogExeFilePath);
         	// run jf.exe --version in a process to verify correct CLI version
+        	CommandExecutor commandExecutor = new CommandExecutor(jfrogExeFilePath.toString(), null);
+        	List<String> versionCommand = Arrays.asList("--version");
+        	try {
+				CommandResults versionCommandOutput = commandExecutor.exeCommand(null, versionCommand, null, logger);
+				String cliVersion = extractVersion(versionCommandOutput.getRes());
+	        	downloadCliFromReleases(osName, cliVersion);
+			} catch (InterruptedException | IOException e) {
+				// TODO: should we fail in case of error or download a new cli exe ?
+				logger.error("Failed to verify CLI version. Downloading v"+ JFROG_CLI_FIXED_VERSION);
+				downloadCliFromReleases(osName, JFROG_CLI_FIXED_VERSION);
+			}
+        
         }
 	}
 	
@@ -52,7 +70,7 @@ public class CLIUtils {
 		String fullCLIPath = JFROG_CLI_RELEASES_URL + cliVersion + "/jfrog-cli-" + osAndArch + "/jf.exe";
 		String destinationPath = ""; // where we want to save the file? 
 		
-		// download jf.exe from 'fullCLIPath' and save it at 'destinationPath'
+		// TODO: download jf.exe from 'fullCLIPath' and save it at 'destinationPath'
 		
 	}
 	
@@ -95,5 +113,16 @@ public class CLIUtils {
             }
         }
         throw new IOException(String.format("Unsupported OS: %s-%s", SystemUtils.OS_NAME, arch));
+    }
+    
+    public static String extractVersion(String input) {
+        String regex = "\\d+(\\.\\d+)*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
     }
 }
