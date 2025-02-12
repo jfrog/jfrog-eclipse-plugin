@@ -12,13 +12,16 @@ import org.apache.commons.lang3.SystemUtils;
 import org.jfrog.build.extractor.executor.CommandExecutor;
 import org.jfrog.build.extractor.executor.CommandResults;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import com.jfrog.ide.eclipse.log.Logger;
 
 public class CLIUtils {
 	
 	public static final String JFROG_CLI_RELEASES_URL = "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/";
-	public static final String JFROG_CLI_FIXED_VERSION = "2.73.3";
+	public static final String MINIMUM_JFROG_CLI_VERSION = "2.69.0"; // TODO: TBD
+	public static final String MAXIMUM_JFROG_CLI_VERSION = "2.73.3"; // TODO: TBD
+	public static final String DEFAULT_CLI_DESTINATION_PATH = ""; // TODO: determine where we would like to download and save the cli exe
 	
 	public static Logger logger = Logger.getInstance();
 	
@@ -37,38 +40,46 @@ public class CLIUtils {
             // For Unix/Linux, system folders can be different, typically /usr or /usr/local
             systemFolderPath = "/usr/bin";
         } else {
-            systemFolderPath = "Unsupported Operating System";
+            logger.error("Unsupported Operating System " + osName);
+            throw new UnsupportedOperationException("Unsupported Operating System " + osName);
         }
         
         Path jfrogExeFilePath = Paths.get(systemFolderPath, "jf.exe");
         
-        // check if jfrog.exe file exist in system folder. if not download it
-        if (!Files.exists(jfrogExeFilePath)) {
-        	logger.info("'jf.exe' file is not cached locally. Downloading it now...");
-        	downloadCliFromReleases(osName, JFROG_CLI_FIXED_VERSION);
-        } else {
+        // Check if 'jf.exe' exists locally
+        if (Files.exists(jfrogExeFilePath)) {
         	logger.info("'jf.exe' file is cached locally. File location: " + jfrogExeFilePath);
-        	// run jf.exe --version in a process to verify correct CLI version
+        	
+        	// Execute 'jf.exe --version' to verify CLI version
         	CommandExecutor commandExecutor = new CommandExecutor(jfrogExeFilePath.toString(), null);
         	List<String> versionCommand = Arrays.asList("--version");
+        	
         	try {
 				CommandResults versionCommandOutput = commandExecutor.exeCommand(null, versionCommand, null, logger);
 				String cliVersion = extractVersion(versionCommandOutput.getRes());
-	        	downloadCliFromReleases(osName, cliVersion);
+				
+				if (validateCLIVersion(cliVersion)) {
+					logger.debug("Local CLI version is: " + cliVersion);
+					logger.info("Local 'jf.exe' file version has been verified and is compatible. Proceeding with its usage.");
+				} else {
+					logger.info("Local 'jf.exe' file version is not compatible. Downloading v" + MAXIMUM_JFROG_CLI_VERSION);
+					downloadCliFromReleases(osName, MAXIMUM_JFROG_CLI_VERSION, systemFolderPath);
+				}
 			} catch (InterruptedException | IOException e) {
 				// TODO: should we fail in case of error or download a new cli exe ?
-				logger.error("Failed to verify CLI version. Downloading v"+ JFROG_CLI_FIXED_VERSION);
-				downloadCliFromReleases(osName, JFROG_CLI_FIXED_VERSION);
+				logger.error("Failed to verify CLI version. Downloading v"+ MAXIMUM_JFROG_CLI_VERSION);
+				downloadCliFromReleases(osName, MAXIMUM_JFROG_CLI_VERSION, systemFolderPath);
 			}
-        
+        } else {
+        	logger.info("'jf.exe' file is not cached locally. Downloading it now...");
+        	downloadCliFromReleases(osName, MAXIMUM_JFROG_CLI_VERSION, systemFolderPath);
         }
 	}
 	
 	
-	public static void downloadCliFromReleases(String osName, String cliVersion) throws IOException {
+	public static void downloadCliFromReleases(String osName, String cliVersion, String destinationPath) throws IOException {
 		String osAndArch = getOSAndArc();
 		String fullCLIPath = JFROG_CLI_RELEASES_URL + cliVersion + "/jfrog-cli-" + osAndArch + "/jf.exe";
-		String destinationPath = ""; // where we want to save the file? 
 		
 		// TODO: download jf.exe from 'fullCLIPath' and save it at 'destinationPath'
 		
@@ -124,5 +135,13 @@ public class CLIUtils {
             return matcher.group();
         }
         return null;
+    }
+    
+    public static Boolean validateCLIVersion(String cliVersion) {
+    	 ComparableVersion currentCLIVersion = new ComparableVersion(cliVersion);
+    	 ComparableVersion maxCLIVersion = new ComparableVersion(MAXIMUM_JFROG_CLI_VERSION);
+    	 ComparableVersion minCLIVersion = new ComparableVersion(MINIMUM_JFROG_CLI_VERSION);
+    	 
+    	 return currentCLIVersion.compareTo(minCLIVersion) >=0 && currentCLIVersion.compareTo(maxCLIVersion) <= 0;
     }
 }
