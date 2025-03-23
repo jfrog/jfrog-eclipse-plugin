@@ -22,6 +22,7 @@ import com.jfrog.ide.common.configuration.ServerConfig;
  */
 @SuppressWarnings("restriction")
 public class XrayServerConfigImpl implements ServerConfig {
+	// TODO: change implementation to configure the server using JfrogCliDriver
 
 	private static XrayServerConfigImpl instance;
 	private IPreferencesService service = Platform.getPreferencesService();
@@ -105,6 +106,36 @@ public class XrayServerConfigImpl implements ServerConfig {
 	public boolean isInsecureTls() {
 		// This method is not used by the plug-in.
 		return false;
+	}
+
+	@Override
+	public String getAccessToken() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getExternalResourcesRepo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PolicyType getPolicyType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getWatches() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

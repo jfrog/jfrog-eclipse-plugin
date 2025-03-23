@@ -10,7 +10,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import com.jfrog.ide.eclipse.scan.ScanManagersFactory;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
@@ -57,7 +56,8 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			}
 		}
 		if (doQuickScan) {
-			ScanManagersFactory.getInstance().startScan(getShell().getParent(), true);
+			// ScanManager.getInstance().startScan(getShell().getParent(), true);
+			// TODO: run a scan
 		}
 		return true;
 	}

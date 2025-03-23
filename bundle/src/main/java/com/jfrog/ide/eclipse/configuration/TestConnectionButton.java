@@ -103,7 +103,7 @@ public class TestConnectionButton extends FieldEditor {
 				Xray xrayClient = createXrayClient(); 
 				Version xrayVersion = xrayClient.system().version();
 
-				if (!XrayConnectionUtils.isXrayVersionSupported(xrayVersion)) {
+				if (!XrayConnectionUtils.isSupportedInXrayVersion(xrayVersion)) {
 					connectionResults.setText(XrayConnectionUtils.Results.unsupported(xrayVersion));
 				} else {
 					Pair<Boolean, String> testComponentPermissionRes = XrayConnectionUtils
