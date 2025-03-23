@@ -10,7 +10,8 @@ public class XrayJobEventListener extends JobChangeAdapter {
 	@Override
 	public void done(IJobChangeEvent event) {
 		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
-//		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance(); TODO: check if this listener is relevant
+		// TODO: implement a listener for the audit scan
+//		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance(); 
 		if (ArrayUtils.isEmpty(jobs)) {
 //			scanManagersFactory.scanFinished(); 
 		}

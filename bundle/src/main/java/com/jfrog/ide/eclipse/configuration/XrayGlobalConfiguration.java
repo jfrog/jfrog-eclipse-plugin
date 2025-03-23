@@ -43,6 +43,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 
 	@Override
 	public boolean performOk() {
+		// TODO: implement server configuration using CliDriver here
 		super.performOk();
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;

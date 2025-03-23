@@ -22,7 +22,7 @@ import com.jfrog.ide.common.configuration.ServerConfig;
  */
 @SuppressWarnings("restriction")
 public class XrayServerConfigImpl implements ServerConfig {
-	// TODO: change implementation to configure the server using JfrogCliDriver
+	// TODO: adjust implementation for configuring server using JfrogCliDriver
 
 	private static XrayServerConfigImpl instance;
 	private IPreferencesService service = Platform.getPreferencesService();

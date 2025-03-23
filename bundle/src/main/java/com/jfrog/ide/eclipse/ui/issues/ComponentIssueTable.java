@@ -86,14 +86,6 @@ public class ComponentIssueTable extends Panel {
 			}
 		});
 
-//		createTableViewerColumn("Issue Type", 0, new ColumnLabelProvider() {
-//			@Override
-//			public String getText(Object element) {
-//				Issue issue = (Issue) element;
-//				return issue.getIssueType();
-//			}
-//		}); TODO: remove
-
 		createTableViewerColumn("Component", 4, new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
