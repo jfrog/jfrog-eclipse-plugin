@@ -43,7 +43,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 
 	@Override
 	public boolean performOk() {
-		// TODO: implement server configuration using CliDriver here
+		// TODO: This code runs when clicking the 'Apply' button in the settings panel. Implement server configuration using CliDriver here
 		super.performOk();
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
@@ -57,8 +57,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			}
 		}
 		if (doQuickScan) {
-			// ScanManager.getInstance().startScan(getShell().getParent(), true);
-			// TODO: run a scan
+			// TODO: run a scan using the ScanManager
 		}
 		return true;
 	}

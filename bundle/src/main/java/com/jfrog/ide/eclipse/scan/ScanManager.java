@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfrog.ide.common.configuration.JfrogCliDriver;
 import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.common.log.ProgressIndicator;
 import com.jfrog.ide.common.scan.ComponentPrefix;
@@ -36,11 +37,13 @@ public abstract class ScanManager {
 	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private IProgressMonitor monitor;
 	IProject project;
-	Log log = Logger.getInstance();
+	Log log;
+	JfrogCliDriver cliDriver;
 	
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
 		this.project = project;
 		Files.createDirectories(HOME_PATH);
+		log = Logger.getInstance();
 	}
 
 	/**
@@ -95,51 +98,11 @@ public abstract class ScanManager {
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			// TODO: implement scan manager using JfrogCliDrvier
-//			ScanManager.this.monitor = monitor;
-//			if (isDisposed()) {
-//				return;
-//			}
-//			log.info("Performing scan for " + getProjectName());
-//			try {
-//				if (isDisposed() || getScanResults() == null) {
-//					return;
-//				}
-//				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
-//				scanAndCacheArtifacts(indicator, quickScan);
-//				addXrayInfoToTree(getScanResults());
-//				setScanResults();
-//			} catch (IOException e) {
-//				Logger.getInstance().error(e.getMessage(), e);
-//				return;
-//			}
+			// TODO: implement scan manager using JfrogCliDriver
 		}
 
 		private void setScanResults() {
 			// TODO: re implement using SarifParser
-//			FilterManager filterManager = FilterManagerSingleton.getInstance();
-//			DependencyTree scanResults = getScanResults();
-//			
-//			if (!scanResults.isLeaf()) {
-//				filterManager.collectsFiltersInformation(scanResults);
-//			}
-//			issuesTree.addScanResults(getProjectName(), scanResults);
-//			licensesTree.addScanResults(getProjectName(), scanResults);
-//			if (isDisposed()) {
-//				return;
-//			}
-//			parent.getDisplay().syncExec(new Runnable() {
-//				@Override
-//				public void run() {
-//					if (monitor.isCanceled()) {
-//						return;
-//					}
-//					ProjectsMap.ProjectKey projectKey = ProjectsMap.createKey(getProjectName(),
-//							scanResults.getGeneralInfo());
-//					licensesTree.applyFilters(projectKey);
-//					issuesTree.applyFilters(projectKey);
-//				}
-//			});
 		}
 		
 		private boolean isDisposed() {
