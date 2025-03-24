@@ -31,7 +31,6 @@ public class ComponentIssueDetails extends ComponentDetails {
 		createCommonInfo(node);
 		Issue topIssue = node.getTopIssue();
 		addSection("Top Issue Severity:", StringUtils.capitalize(topIssue.getSeverity().toString()));
-		addSection("Top Issue Type:", StringUtils.capitalize(topIssue.getIssueType()));
 		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
 		refreshPanel();
 	}

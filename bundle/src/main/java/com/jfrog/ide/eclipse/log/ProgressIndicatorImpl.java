@@ -21,4 +21,16 @@ public class ProgressIndicatorImpl implements ProgressIndicator {
 	public void setFraction(double fraction) {
 		progressMonitor.worked((int) (fraction * TOTAL_WORK));
 	}
+
+	@Override
+	public void setIndeterminate(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setText(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -14,10 +14,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfrog.ide.common.configuration.JfrogCliDriver;
 import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.common.log.ProgressIndicator;
 import com.jfrog.ide.common.scan.ComponentPrefix;
-import com.jfrog.ide.common.scan.ScanManagerBase;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
@@ -27,20 +27,23 @@ import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 import com.jfrog.xray.client.services.summary.Components;
+import org.jfrog.build.api.util.Log;
 
 /**
  * @author yahavi
  */
-public abstract class ScanManager extends ScanManagerBase {
+public abstract class ScanManager {
 
 	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private IProgressMonitor monitor;
 	IProject project;
-
+	Log log;
+	JfrogCliDriver cliDriver;
+	
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		super(HOME_PATH.resolve("cache"), project.getName(), Logger.getInstance(), XrayServerConfigImpl.getInstance(), prefix);
 		this.project = project;
 		Files.createDirectories(HOME_PATH);
+		log = Logger.getInstance();
 	}
 
 	/**
@@ -53,15 +56,7 @@ public abstract class ScanManager extends ScanManagerBase {
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
-	abstract void buildTree() throws CoreException, JsonProcessingException, IOException;
-
-	@Override
-	public void checkCanceled() {
-		if (monitor != null && monitor.isCanceled()) {
-			throw new CancellationException("Xray scan was canceled");
-		}
-	}
-
+	
 	public IProject getIProject() {
 		return project;
 	}
@@ -103,50 +98,11 @@ public abstract class ScanManager extends ScanManagerBase {
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			ScanManager.this.monitor = monitor;
-			if (isDisposed()) {
-				return;
-			}
-			getLog().info("Performing scan for " + getProjectName());
-			try {
-				buildTree();
-				if (isDisposed() || getScanResults() == null) {
-					return;
-				}
-				ProgressIndicator indicator = new ProgressIndicatorImpl("Xray Scan - " + getProjectName(), monitor);
-				scanAndCacheArtifacts(indicator, quickScan);
-				addXrayInfoToTree(getScanResults());
-				setScanResults();
-			} catch (IOException e) {
-				Logger.getInstance().error(e.getMessage(), e);
-				return;
-			}
+			// TODO: implement scan manager using JfrogCliDriver
 		}
 
 		private void setScanResults() {
-			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			DependencyTree scanResults = getScanResults();
-			
-			if (!scanResults.isLeaf()) {
-				filterManager.collectsFiltersInformation(scanResults);
-			}
-			issuesTree.addScanResults(getProjectName(), scanResults);
-			licensesTree.addScanResults(getProjectName(), scanResults);
-			if (isDisposed()) {
-				return;
-			}
-			parent.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (monitor.isCanceled()) {
-						return;
-					}
-					ProjectsMap.ProjectKey projectKey = ProjectsMap.createKey(getProjectName(),
-							scanResults.getGeneralInfo());
-					licensesTree.applyFilters(projectKey);
-					issuesTree.applyFilters(projectKey);
-				}
-			});
+			// TODO: re implement using SarifParser
 		}
 		
 		private boolean isDisposed() {

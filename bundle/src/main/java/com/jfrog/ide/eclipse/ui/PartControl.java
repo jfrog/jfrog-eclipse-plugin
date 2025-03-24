@@ -11,7 +11,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
-import com.jfrog.ide.eclipse.scan.ScanManagersFactory;
 import com.jfrog.ide.eclipse.ui.actions.Filter.FilterType;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTab;
@@ -52,7 +51,8 @@ public class PartControl {
 
 	private void doQuickScan(Composite parent) {
 		if (XrayServerConfigImpl.getInstance().areCredentialsSet()) {
-			ScanManagersFactory.getInstance().startScan(parent, true);
+//			ScanManagersFactory.getInstance().startScan(parent, true);
+			// TODO: run a scan
 		}
 	}
 

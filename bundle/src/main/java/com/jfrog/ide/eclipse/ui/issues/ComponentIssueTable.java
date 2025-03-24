@@ -86,14 +86,6 @@ public class ComponentIssueTable extends Panel {
 			}
 		});
 
-		createTableViewerColumn("Issue Type", 0, new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				Issue issue = (Issue) element;
-				return issue.getIssueType();
-			}
-		});
-
 		createTableViewerColumn("Component", 4, new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -101,13 +93,13 @@ public class ComponentIssueTable extends Panel {
 				return issue.getComponent();
 			}
 		});
-		
+
 		createTableViewerColumn("Fixed Versions", 0, new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				Issue issue = (Issue) element;
-                List<String> fixedVersions = ListUtils.emptyIfNull(issue.getFixedVersions());
-                return StringUtils.defaultIfEmpty(String.join(", ", fixedVersions), "[]");                
+				List<String> fixedVersions = ListUtils.emptyIfNull(issue.getFixedVersions());
+				return StringUtils.defaultIfEmpty(String.join(", ", fixedVersions), "[]");
 			}
 		});
 	}

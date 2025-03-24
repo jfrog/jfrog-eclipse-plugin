@@ -10,7 +10,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import com.jfrog.ide.eclipse.scan.ScanManagersFactory;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
@@ -44,6 +43,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 
 	@Override
 	public boolean performOk() {
+		// TODO: This code runs when clicking the 'Apply' button in the settings panel. Implement server configuration using CliDriver here
 		super.performOk();
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
@@ -57,7 +57,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			}
 		}
 		if (doQuickScan) {
-			ScanManagersFactory.getInstance().startScan(getShell().getParent(), true);
+			// TODO: run a scan using the ScanManager
 		}
 		return true;
 	}
