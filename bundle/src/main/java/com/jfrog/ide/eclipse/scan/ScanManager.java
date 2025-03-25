@@ -1,16 +1,21 @@
 package com.jfrog.ide.eclipse.scan;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
+import org.jfrog.build.extractor.executor.CommandResults;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,18 +36,21 @@ import org.jfrog.build.api.util.Log;
 /**
  * @author yahavi
  */
-public abstract class ScanManager {
+public class ScanManager {
 
 	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private IProgressMonitor monitor;
-	IProject project;
+	IWorkspace iworkspace;
+	IProject[] projects;
 	Log log;
 	JfrogCliDriver cliDriver;
 	
-	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
-		this.project = project;
+	ScanManager(ComponentPrefix prefix) throws IOException {
+		this.iworkspace = ResourcesPlugin.getWorkspace();
+		this.projects = iworkspace.getRoot().getProjects();
 		Files.createDirectories(HOME_PATH);
-		log = Logger.getInstance();
+		this.log = Logger.getInstance();
+		this.cliDriver = new JfrogCliDriver(System.getenv(), HOME_PATH.toString(), log); // TODO: use the singleton implemented by 
 	}
 
 	/**
@@ -55,10 +63,7 @@ public abstract class ScanManager {
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
-	
-	public IProject getIProject() {
-		return project;
-	}
+
 	
 	public void setMonitor(IProgressMonitor monitor) {
 		this.monitor = monitor;
@@ -76,11 +81,11 @@ public abstract class ScanManager {
 	 *                  disposed.
 	 */
 	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, Composite parent) {
-		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, quickScan));
+//		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, quickScan));
 	}
 
 	/**
-	 * Start a dependency scan.
+	 * Start an audit scan.
 	 */
 	private class ScanRunnable implements ICoreRunnable {
 		private IssuesTree issuesTree;
@@ -95,7 +100,20 @@ public abstract class ScanManager {
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			// TODO: implement scan manager using JfrogCliDriver
+			try {
+//				(File workingDirectory, List<String> scannedDirectories, String serverId, List<String> extraArgs)
+				// TODO: get working dir = the root project, scannedDirectories = empty string for now, server-id (from singleton),  
+				CommandResults auditResults = cliDriver.runCliAudit(null, null, null, null);
+				if (!auditResults.isOk()) {
+					// log the issue to the problems tab
+					log.error("Audit scan failed with an error: " + auditResults.getErr());
+					return;
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		private void setScanResults() {
