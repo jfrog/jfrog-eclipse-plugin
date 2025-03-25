@@ -12,7 +12,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
-import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 
 /**
  * Panel for configuring Xray URL, username and password.
@@ -49,7 +48,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			return true;
 		}
 		boolean doQuickScan = false;
-		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance(), ComponentLicenseDetails.getInstance() };
+		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
 			if (componentsDetail != null) {
 				componentsDetail.credentialsSet();

@@ -15,9 +15,6 @@ import com.jfrog.ide.eclipse.ui.actions.Filter.FilterType;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTab;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
-import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
-import com.jfrog.ide.eclipse.ui.licenses.LicensesTab;
-import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 
 /**
  * The entry point of the plug-in. Creates the UI and perform a quick scan if
@@ -41,7 +38,6 @@ public class PartControl {
 		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		new IssuesTab(tabFolder);
-		new LicensesTab(tabFolder);
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				xrayScanToolbar.setFilterType(FilterType.values()[tabFolder.getSelectionIndex()]);
@@ -59,9 +55,7 @@ public class PartControl {
 	@PreDestroy
 	public void dispose() {
 		ComponentIssueDetails.disposeComponentDetails();
-		ComponentLicenseDetails.disposeComponentDetails();
 		IssuesTree.disposeTree();
-		LicensesTree.disposeTree();
 		IconManager.dispose();
 	}
 }

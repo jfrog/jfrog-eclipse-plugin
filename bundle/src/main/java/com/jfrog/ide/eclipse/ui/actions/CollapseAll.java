@@ -3,10 +3,9 @@ package com.jfrog.ide.eclipse.ui.actions;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
-import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 
 /**
- * Collapse the issue/licenses tree.
+ * Collapse the issues tree.
  * 
  * @author yahavi
  */
@@ -19,6 +18,5 @@ public class CollapseAll extends Action {
 	@Override
 	public void execute(SelectionEvent event) {
 		IssuesTree.getInstance().collapseAll();
-		LicensesTree.getInstance().collapseAll();
 	}
 }
