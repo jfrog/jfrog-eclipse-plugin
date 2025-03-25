@@ -24,7 +24,6 @@ import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
 import com.jfrog.ide.eclipse.scheduling.ScanJob;
 import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
-import com.jfrog.ide.eclipse.ui.licenses.LicensesTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 import com.jfrog.xray.client.services.summary.Components;
 import org.jfrog.build.api.util.Log;
@@ -38,7 +37,7 @@ public abstract class ScanManager {
 	private IProgressMonitor monitor;
 	IProject project;
 	Log log;
-	JfrogCliDriver cliDriver;
+	JfrogCliDriver cliDriver; 
 	
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
 		this.project = project;
@@ -76,23 +75,21 @@ public abstract class ScanManager {
 	 * @param parent    - The parent UI composite. Cancel the scan if the parent is
 	 *                  disposed.
 	 */
-	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, LicensesTree licensesTree, Composite parent) {
-		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, licensesTree, quickScan));
+	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, Composite parent) {
+		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, quickScan));
 	}
 
 	/**
 	 * Start a dependency scan.
 	 */
 	private class ScanRunnable implements ICoreRunnable {
-		private LicensesTree licensesTree;
 		private IssuesTree issuesTree;
 		private boolean quickScan;
 		private Composite parent;
 
-		private ScanRunnable(Composite parent, IssuesTree issuesTree, LicensesTree licensesTree, boolean quickScan) {
+		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean quickScan) {
 			this.parent = parent;
 			this.issuesTree = issuesTree;
-			this.licensesTree = licensesTree;
 			this.quickScan = quickScan;
 		}
 
