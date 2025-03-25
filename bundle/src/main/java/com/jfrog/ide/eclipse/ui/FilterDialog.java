@@ -35,7 +35,7 @@ public abstract class FilterDialog extends Dialog {
 	 * Construct a filter dialog.
 	 * 
 	 * @param parentShell    - The shell that will contain the dialog.
-	 * @param title          - Filter dialog title - "Severity" or "License".
+	 * @param title          - Filter dialog title - "Severity".
 	 * @param selectAllState - The state of "All" checkbox.
 	 */
 	public FilterDialog(Shell parentShell, String title, MutableBoolean selectAllState) {

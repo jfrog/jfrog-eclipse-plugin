@@ -12,7 +12,7 @@ import com.jfrog.ide.eclipse.ui.issues.IssuesFilterDialog;
 public class Filter extends Action {
 
 	public enum FilterType {
-		Severity, License
+		Severity
 	}
 
 	private FilterType filterType = FilterType.Severity;

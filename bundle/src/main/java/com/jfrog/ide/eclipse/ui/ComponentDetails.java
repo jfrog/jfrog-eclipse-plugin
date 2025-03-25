@@ -3,30 +3,20 @@ package com.jfrog.ide.eclipse.ui;
 import static com.jfrog.ide.eclipse.ui.UiUtils.createLabel;
 import static com.jfrog.ide.eclipse.ui.UiUtils.setGridLayout;
 
-import java.util.Set;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.GeneralInfo;
-import org.jfrog.build.extractor.scan.License;
 
-import com.jfrog.ide.common.utils.Utils;
 import com.jfrog.ide.eclipse.configuration.XrayGlobalConfiguration;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 
@@ -106,7 +96,7 @@ public abstract class ComponentDetails extends Panel {
 	}
 
 	/**
-	 * Create the common information between issues and licenses tabs.
+	 * Create the common information.
 	 * 
 	 * @param node - Extract the component information from this node.
 	 */
@@ -123,7 +113,6 @@ public abstract class ComponentDetails extends Panel {
 		addSection("Version:", generalInfo.getVersion());
 		addSection("Type:", StringUtils.capitalize(generalInfo.getPkgType()));
 		addSection("Path:", generalInfo.getPath());
-		addLicenses(node.getLicenses());
 		refreshPanel();
 	}
 
@@ -143,36 +132,4 @@ public abstract class ComponentDetails extends Panel {
 		componentDetailsPanel.pack();
 	}
 
-	/**
-	 * Add licenses to panel.
-	 * 
-	 * @param licenses - The licenses to add.
-	 */
-	private void addLicenses(Set<License> licenses) {
-		if (licenses.isEmpty()) {
-			return;
-		}
-		createLabel(componentDetailsPanel, "Licenses:");
-		Panel licensesPanel = new Panel(componentDetailsPanel);
-		licensesPanel.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
-		licenses.forEach(license -> {
-			if (CollectionUtils.isEmpty(license.getMoreInfoUrl())) {
-				// Add a license without URL.
-				createLabel(licensesPanel, Utils.createLicenseString(license));
-			} else {
-				// Add a license with URL.
-				addHyperlink(licensesPanel, Utils.createLicenseString(license), license.getMoreInfoUrl().get(0));
-			}
-		});
-	}
-
-	private static void addHyperlink(Panel parent, String text, String url) {
-		Link link = new Link(parent, SWT.NONE);
-		link.setText("<A>" + text + "</A>");
-		link.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				Program.launch(url);
-			}
-		});
-	}
 }

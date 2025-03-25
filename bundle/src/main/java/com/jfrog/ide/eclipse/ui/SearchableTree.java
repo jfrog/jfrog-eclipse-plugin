@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 
 /**
- * Base class for the issues and licenses trees.
+ * Base class for the issues tree.
  * 
  * @author yahavi
  */
