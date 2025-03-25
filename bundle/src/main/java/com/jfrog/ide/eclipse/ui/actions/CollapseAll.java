@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 
 /**
- * Collapse the issue/licenses tree.
+ * Collapse the issues tree.
  * 
  * @author yahavi
  */

@@ -4,7 +4,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 /**
- * Expand the issue/licenses tree.
+ * Expand the issues tree.
  * 
  * @author yahavi
  */

@@ -37,7 +37,7 @@ public abstract class ScanManager {
 	private IProgressMonitor monitor;
 	IProject project;
 	Log log;
-	JfrogCliDriver cliDriver; 
+	JfrogCliDriver cliDriver;
 	
 	ScanManager(IProject project, ComponentPrefix prefix) throws IOException {
 		this.project = project;
