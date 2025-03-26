@@ -12,6 +12,7 @@ public class PreferenceConstants {
 	public static final String XRAY_URL = "URL";
 	public static final String XRAY_USERNAME = "Username";
 	public static final String XRAY_PASSWORD = "Password";
+	public static final String DEBUG_LOGS = "checkboxPreference";
 	
 	// Connection constants
 	public static final int CONNECTION_TIMEOUT_MILLISECONDS = 300 * 1000;

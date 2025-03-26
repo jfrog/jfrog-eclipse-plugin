@@ -19,6 +19,8 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
+import com.jfrog.ide.common.nodes.FileTreeNode;
+import com.jfrog.ide.eclipse.scan.ScanCache;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 
 /**
@@ -28,9 +30,10 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap;
  */
 public abstract class SearchableTree extends FilteredTree {
 
-	protected ProjectsMap projects = new ProjectsMap();
+//	protected ProjectsMap projects = new ProjectsMap();
 	protected ComponentDetails componentDetails;
 	private TreeColumnLayout treeLayout = new TreeColumnLayout();
+	protected List<FileTreeNode> scanResults;
 
 	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {
 		super(parent, true);
@@ -106,11 +109,11 @@ public abstract class SearchableTree extends FilteredTree {
 	}
 
 	public void reset() {
-		projects.clear();
+		scanResults.clear();
 	}
 
-	public void addScanResults(String projectName, DependencyTree dependencyTree) {
-		projects.put(projectName, dependencyTree);
+	public void setScanResults() {
+		scanResults = ScanCache.getInstance().getScanResults();
 	}
 
 	public abstract void applyFilters(ProjectsMap.ProjectKey projectName);

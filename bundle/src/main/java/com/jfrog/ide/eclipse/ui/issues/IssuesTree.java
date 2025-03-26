@@ -1,5 +1,6 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -35,7 +36,8 @@ public class IssuesTree extends SearchableTree {
 	private IssuesTree(Composite parent) {
 		super(parent, new IssuesTreeColumnLabelProvider());
 		issuesCountColumn = createColumn("Issues (0)", new IssueCountColumnLabelProvider(this), SWT.RIGHT, 0);
-		applyFiltersForAllProjects();
+		showScanResults();
+		//		applyFiltersForAllProjects();
 	}
 
 	@Override
@@ -50,29 +52,30 @@ public class IssuesTree extends SearchableTree {
 
 	@Override
 	public void applyFilters(ProjectKey projectKey) {
-		DependencyTree project = projects.get(projectKey);
-		if (project != null) {
-			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			DependencyTree filteredRoot = filterManager.applyFilters(project);
-			filteredRoot.setIssues(filteredRoot.processTreeIssues());
-			root.add(filteredRoot);
-			if (root.getChildCount() == 1) {
-				// If there is only one project - Show only its dependencies in the tree viewer.
-				treeViewer.setInput(filteredRoot);
-			} else {
-				treeViewer.setInput(root);
-			}
-			long totalIssues = root.getChildren().stream().mapToInt(DependencyTree::getIssueCount).sum();
-			issuesCountColumn.getColumn().setText("Issues (" + totalIssues + ")");
-		}
+//		DependencyTree project = projects.get(projectKey);
+//		if (project != null) {
+//			FilterManager filterManager = FilterManagerSingleton.getInstance();
+//			DependencyTree filteredRoot = filterManager.applyFilters(project);
+//			filteredRoot.setIssues(filteredRoot.processTreeIssues());
+//			root.add(filteredRoot);
+//			if (root.getChildCount() == 1) {
+//				// If there is only one project - Show only its dependencies in the tree viewer.
+//				treeViewer.setInput(filteredRoot);
+//			} else {
+//				treeViewer.setInput(root);
+//			}
+//			long totalIssues = root.getChildren().stream().mapToInt(DependencyTree::getIssueCount).sum();
+//			issuesCountColumn.getColumn().setText("Issues (" + totalIssues + ")");
+//		}
+		treeViewer.setInput(scanResults);
 	}
 
 	@Override
 	public void applyFiltersForAllProjects() {
-		root = new DependencyTree();
-		for (Entry<ProjectKey, DependencyTree> entry : projects.entrySet()) {
-			applyFilters(entry.getKey());
-		}
+//		root = new DependencyTree();
+//		for (Entry<ProjectKey, DependencyTree> entry : projects.entrySet()) {
+//			applyFilters(entry.getKey());
+//		}
 	}
 
 	@Override
@@ -88,5 +91,9 @@ public class IssuesTree extends SearchableTree {
 		if (instance != null) {
 			instance.dispose();
 		}
+	}
+	
+	private void showScanResults() {
+		
 	}
 }
