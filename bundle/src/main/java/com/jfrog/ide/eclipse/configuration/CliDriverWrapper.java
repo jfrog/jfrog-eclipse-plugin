@@ -53,7 +53,7 @@ public class CliDriverWrapper {
         return cliDriver;
     }
 
-    private void showCliError(Exception e) {
+    public void showCliError(Exception e) {
         Logger.getInstance().error(e.getMessage(), e);
         IStatus status = new Status(IStatus.ERROR, "jfrog-eclipse-plugin", "An error occurred: " + e.getMessage(), e);
 

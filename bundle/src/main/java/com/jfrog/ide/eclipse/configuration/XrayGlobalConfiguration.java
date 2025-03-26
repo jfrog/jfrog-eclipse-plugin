@@ -19,7 +19,7 @@ import com.jfrog.ide.eclipse.ui.licenses.ComponentLicenseDetails;
 
 /**
  * Panel for configuring Xray URL, username and password.
- * 
+ *
  * @author yahavi
  */
 public class XrayGlobalConfiguration extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -50,15 +50,20 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
 		}
-			CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
+		try{
+        CliDriverWrapper.getInstance();
+        CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
 			XrayServerConfigImpl.getInstance().getXrayUrl(),
 			XrayServerConfigImpl.getInstance().getArtifactoryUrl(),
-			CliDriverWrapper.getInstance().CLIENT_ID_SERVER,
+                CliDriverWrapper.CLIENT_ID_SERVER,
 			XrayServerConfigImpl.getInstance().getUsername(),
 			XrayServerConfigImpl.getInstance().getPassword(),
-			XrayServerConfigImpl.getInstance().getAccessToken(),
-			Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin").toFile()  // Convert Path to File here
+				CliDriverWrapper.HOME_PATH.toFile()
 		);
+		}
+		catch (e Exception){
+			CliDriverWrapper.getInstance().showCliError(e);
+		}
 		boolean doQuickScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance(), ComponentLicenseDetails.getInstance() };
 		for (ComponentDetails componentsDetail : componentsDetails) {
