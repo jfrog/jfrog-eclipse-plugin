@@ -1,5 +1,7 @@
 package com.jfrog.ide.eclipse.configuration;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
