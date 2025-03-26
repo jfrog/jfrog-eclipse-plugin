@@ -27,14 +27,14 @@ public class CliDriverWrapper {
         try {
             Files.createDirectories(HOME_PATH);
         } catch (Exception e) {
-            showCliError(e);
+            showCliError("An error occurred while creating the JFrog Eclipse plugin directory:",e);
         }
         // Initialize the cliDriver and download CLI if needed
         this.cliDriver = new JfrogCliDriver(null, Logger.getInstance());
         try {
             this.cliDriver.downloadCliIfNeeded(HOME_PATH.toString(), CLI_VERSION);
         } catch (IOException e) {
-            showCliError(e);
+            showCliError("An error occurred while downloading the JFrog cli:",e);
         }
     }
 
@@ -53,15 +53,15 @@ public class CliDriverWrapper {
         return cliDriver;
     }
 
-    public void showCliError(Exception e) {
+    public void showCliError(String errorTitle,Exception e) {
         Logger.getInstance().error(e.getMessage(), e);
-        IStatus status = new Status(IStatus.ERROR, "jfrog-eclipse-plugin", "An error occurred: " + e.getMessage(), e);
+        IStatus status = new Status(IStatus.ERROR, "jfrog-eclipse-plugin",e.getMessage(), e);
 
         // Run UI-related code on the main UI thread
         Display.getDefault().asyncExec(() -> {
             Shell shell = Display.getDefault().getActiveShell();
             if (shell != null) {
-                ErrorDialog.openError(shell, "Error", "An error occurred", status);
+                ErrorDialog.openError(shell, "Error", errorTitle, status);
             }
         });
     }

@@ -61,8 +61,8 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 				CliDriverWrapper.HOME_PATH.toFile()
 		);
 		}
-		catch (e Exception){
-			CliDriverWrapper.getInstance().showCliError(e);
+		catch (Exception e){
+			CliDriverWrapper.getInstance().showCliError("An error occurred while Setting up the server connection:",e);
 		}
 		boolean doQuickScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance(), ComponentLicenseDetails.getInstance() };
