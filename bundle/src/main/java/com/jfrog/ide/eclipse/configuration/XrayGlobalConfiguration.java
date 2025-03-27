@@ -42,11 +42,25 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 
 	@Override
 	public boolean performOk() {
-		// TODO: This code runs when clicking the 'Apply' button in the settings panel. Implement server configuration using CliDriver here
 		super.performOk();
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
 		}
+		try{
+	        CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
+				XrayServerConfigImpl.getInstance().getXrayUrl(),
+				XrayServerConfigImpl.getInstance().getArtifactoryUrl(),
+	                CliDriverWrapper.CLIENT_ID_SERVER,
+				XrayServerConfigImpl.getInstance().getUsername(),
+				XrayServerConfigImpl.getInstance().getPassword(),
+				XrayServerConfigImpl.getInstance().getAccessToken(),
+					CliDriverWrapper.HOME_PATH.toFile(),
+					System.getenv()
+			);
+			}
+			catch (Exception e){
+				CliDriverWrapper.getInstance().showCliError("An error occurred while Setting up the server connection:",e);
+			}
 		boolean doQuickScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
