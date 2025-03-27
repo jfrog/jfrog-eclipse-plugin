@@ -21,7 +21,7 @@ import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
-import com.jfrog.ide.eclipse.scheduling.ScanJob;
+import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
@@ -76,7 +76,7 @@ public abstract class ScanManager {
 	 *                  disposed.
 	 */
 	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, Composite parent) {
-		ScanJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, quickScan));
+		CliJob.doSchedule(project.getName(), new ScanRunnable(parent, issuesTree, quickScan));
 	}
 
 	/**

@@ -5,11 +5,11 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
-public class XrayJobEventListener extends JobChangeAdapter {
+public class CliJobEventListener extends JobChangeAdapter {
 
 	@Override
 	public void done(IJobChangeEvent event) {
-		Job[] jobs = Job.getJobManager().find(ScanJob.FAMILY);
+		Job[] jobs = Job.getJobManager().find(CliJob.FAMILY);
 		// TODO: implement a listener for the audit scan
 //		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance(); 
 		if (ArrayUtils.isEmpty(jobs)) {
