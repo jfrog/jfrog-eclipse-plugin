@@ -66,8 +66,23 @@ public class ScanManager {
 	}
 	
 	
-	public void runScan(boolean isDebugLogs) {
-
+	public void startScan(Composite parent, boolean isDebugLogs) {
+		Map<String, String> auditEnvVars = new HashMap<>();
+		try {
+				if (isDebugLogs) {
+					auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
+				}
+				ServerConfig server = XrayServerConfigImpl.getInstance();
+				cliDriver.addCliServerConfig(server.getXrayUrl(), server.getArtifactoryUrl(), "eclipse-plugin", server.getUsername(), server.getPassword(), server.getAccessToken(), null, null);
+				List<String> projectsListAsString = Arrays.stream(projects)
+			             .map(IProject::getName)
+			             .collect(Collectors.toList());
+		        for (IProject project : projects) {
+		        	scanAndUpdateResults(IssuesTree.getInstance(), parent, isDebugLogs, project, auditEnvVars);
+		        }
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }
 	}
 	
 
@@ -98,8 +113,8 @@ public class ScanManager {
 	 * @param parent    - The parent UI composite. Cancel the scan if the parent is
 	 *                  disposed.
 	 */
-	public void scanAndUpdateResults(boolean quickScan, IssuesTree issuesTree, Composite parent, boolean isDebugLogs) {
-		ScanJob.doSchedule("ScanJob", new ScanRunnable(parent, issuesTree, quickScan, isDebugLogs)); //TODO: change name
+	public void scanAndUpdateResults(IssuesTree issuesTree, Composite parent, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
+		ScanJob.doSchedule("Performing Scan", new ScanRunnable(parent, issuesTree, isDebugLogs, project, envVars)); 
 	}
 
 	/**
@@ -107,37 +122,39 @@ public class ScanManager {
 	 */
 	private class ScanRunnable implements ICoreRunnable {
 		private IssuesTree issuesTree;
-		private boolean quickScan;
 		private Composite parent;
-		boolean isDebugLogs;
+		private boolean isDebugLogs;
+		private IProject project;
+		private Map<String, String> envVars;
+		
 
-		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean quickScan, boolean isDebugLogs) {
+		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
 			this.parent = parent;
 			this.issuesTree = issuesTree;
-			this.quickScan = quickScan;
 			this.isDebugLogs = isDebugLogs;
+			this.project = project;
+			this.envVars = envVars;
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			Map<String, String> auditEnvVars = new HashMap<>();
+//			Map<String, String> auditEnvVars = new HashMap<>();
+//			try {
+//				if (isDebugLogs) {
+//					auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
+//				}
+//				ServerConfig server = XrayServerConfigImpl.getInstance();
+//				cliDriver.addCliServerConfig(server.getXrayUrl(), server.getArtifactoryUrl(), "eclipse-plugin", server.getUsername(), server.getPassword(), server.getAccessToken(), null, null);
+//				List<String> projectsListAsString = Arrays.stream(projects)
+//			             .map(IProject::getName)
+//			             .collect(Collectors.toList());
+//		        for (IProject project : projects) {
 			try {
-				if (isDebugLogs) {
-					auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
-				}
-				// TODO: get working dir = the root project, scannedDirectories = empty string for now, server-id (from singleton),  
-//				String workingDir = iworkspace.getRoot().getLocation().toString(); // not working well
-				ServerConfig server = XrayServerConfigImpl.getInstance();
-				cliDriver.addCliServerConfig(server.getXrayUrl(), server.getArtifactoryUrl(), "eclipse-plugin", server.getUsername(), server.getPassword(), server.getAccessToken(), null, null);
-				List<String> projectsListAsString = Arrays.stream(projects)
-			             .map(IProject::getName)
-			             .collect(Collectors.toList());
-		        for (IProject project : projects) {
 		            if (project.isOpen()) {
 		                IPath projectPath = project.getLocation();
 		                log.info(String.format("Performing scan on: %s", project.getName()));
 		                
-		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, "eclipse-plugin", null, auditEnvVars);
+		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, "eclipse-plugin", null, envVars);
 		    			if (!auditResults.isOk()) {
 		    				// log the issue to the problems tab
 		    				log.error("Audit scan failed with an error: " + auditResults.getErr());
@@ -161,7 +178,7 @@ public class ScanManager {
 		    				}
 		    			});
 		            }
-	            }
+//	            }
 
 			} catch (Exception e) {
 				e.printStackTrace();

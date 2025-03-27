@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfrog.ide.common.nodes.FileTreeNode;
+import com.jfrog.ide.common.utils.XrayConnectionUtils.Results;
 
 public class ScanCache {
 	private List<FileTreeNode> scanResults;
@@ -33,5 +34,9 @@ public class ScanCache {
     	if (results != null) {
     		scanResults.addAll(results);
     	}
+    }
+    
+    public void resetCache() {
+    	scanResults = new ArrayList<FileTreeNode>();
     }
 }
