@@ -66,14 +66,8 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 			}
 		}
 		if (doQuickScan) {
-			// TODO: run a scan using the ScanManager
-			try {
-				new ScanManager().startScan(getShell().getParent(),
+			ScanManager.getInstance().startScan(getShell().getParent(),
 						getPreferenceStore().getBoolean(PreferenceConstants.DEBUG_LOGS));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return true;
 	}

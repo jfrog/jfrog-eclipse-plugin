@@ -48,6 +48,10 @@ public class XrayServerConfigImpl implements ServerConfig {
 	public String getPassword() {
 		return getValue(PreferenceConstants.XRAY_PASSWORD);
 	}
+	
+	public boolean getIsDebugLogs() {
+		return getValue(PreferenceConstants.DEBUG_LOGS) == "true";
+	}
 
 	private String getValue(String key) {
 		return trim(service.getString(PreferenceConstants.XRAY_QUALIFIER, key, "", null));
