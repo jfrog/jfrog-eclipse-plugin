@@ -22,8 +22,6 @@ import com.jfrog.ide.common.configuration.ServerConfig;
  */
 @SuppressWarnings("restriction")
 public class XrayServerConfigImpl implements ServerConfig {
-	// TODO: adjust implementation for configuring server using JfrogCliDriver
-
 	private static XrayServerConfigImpl instance;
 	private IPreferencesService service = Platform.getPreferencesService();
 
@@ -114,31 +112,31 @@ public class XrayServerConfigImpl implements ServerConfig {
 
 	@Override
 	public String getAccessToken() {
-		// TODO Auto-generated method stub
+		// This functionality is not yet implemented by the plug-in.
 		return null;
 	}
 
 	@Override
 	public String getExternalResourcesRepo() {
-		// TODO Auto-generated method stub
+		// This functionality is not yet implemented by the plug-in.
 		return null;
 	}
 
 	@Override
 	public PolicyType getPolicyType() {
-		// TODO Auto-generated method stub
+		// This functionality is not yet implemented by the plug-in.
 		return null;
 	}
 
 	@Override
 	public String getProject() {
-		// TODO Auto-generated method stub
+		// This functionality is not yet implemented by the plug-in.
 		return null;
 	}
 
 	@Override
 	public String getWatches() {
-		// TODO Auto-generated method stub
+		// This functionality is not yet implemented by the plug-in.
 		return null;
 	}
 

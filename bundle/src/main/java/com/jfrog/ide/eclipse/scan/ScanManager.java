@@ -36,6 +36,7 @@ import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.common.parse.SarifParser;
 import com.jfrog.ide.common.scan.ComponentPrefix;
 import com.jfrog.ide.common.configuration.ServerConfig;
+import com.jfrog.ide.eclipse.configuration.CliDriverWrapper;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.log.ProgressIndicatorImpl;
@@ -54,25 +55,20 @@ import org.jfrog.build.api.util.Log;
 public class ScanManager {
 	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private static ScanManager instance;
-	private IProgressMonitor monitor;
-	IWorkspace iworkspace;
-	IProject[] projects;
-	Log log;
-	JfrogCliDriver cliDriver;
-	SarifParser sarifParser;
+	private IProgressMonitor monitor; // TODO: validate if necessary
+	private IWorkspace iworkspace;
+	private IProject[] projects;
+	private Log log;
+	private JfrogCliDriver cliDriver;
+	private SarifParser sarifParser;
 	private AtomicBoolean scanInProgress = new AtomicBoolean(false);
 	
 	private ScanManager() {
-		try {
 		this.iworkspace = ResourcesPlugin.getWorkspace();
 		this.projects = iworkspace.getRoot().getProjects();
-		Files.createDirectories(HOME_PATH);
 		this.log = Logger.getInstance();
-		this.cliDriver = new JfrogCliDriver(System.getenv(), HOME_PATH.toString(), log); // TODO: use the singleton implemented for clidriver 
+		this.cliDriver = CliDriverWrapper.getInstance().getCliDriver();  
 		this.sarifParser = new SarifParser(log);
-		}catch (Exception e) {
-			log.error(e.getMessage()); // TODO: remove after merging CLI config PR
-		}
 	}
 	
 	public static synchronized ScanManager getInstance(){
@@ -82,33 +78,30 @@ public class ScanManager {
         return instance;
 	}
 	
-	public void startScan(Composite parent, boolean debugLogs) {
+	public void startScan(Composite parent, boolean isDebugLogs) {
 		Map<String, String> auditEnvVars = new HashMap<>();
 		
 		// If scan is in progress - do not perform another scan
 		if (isScanInProgress()) {
+			// TODO: pop up a window message
 			Logger.getInstance().info("Previous scan still running...");
 			return;
 		}
 		
 		scanInProgress.compareAndSet(false, true);
-		
 		resetIssuesView(IssuesTree.getInstance());
 		
-		try {
-				if (debugLogs) {
-					auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
-					auditEnvVars.put("CI", "true");
-				}
-				ServerConfig server = XrayServerConfigImpl.getInstance();
-				// TODO: this server config should be removed since it will be done at settings panel. also remove the try catch
-				cliDriver.addCliServerConfig(server.getXrayUrl(), server.getArtifactoryUrl(), "eclipse-plugin", server.getUsername(), server.getPassword(), server.getAccessToken(), null, null);
-		        for (IProject project : projects) {
-		        	scanAndUpdateResults(IssuesTree.getInstance(), parent, debugLogs, project, auditEnvVars);
-		        }
-	        } catch (Exception e) {
-	        	e.printStackTrace(); // TODO: remove try catch
-	        }
+		// refresh projects list
+		this.projects = this.iworkspace.getRoot().getProjects();
+
+		if (isDebugLogs) {
+			auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
+			auditEnvVars.put("CI", "true");
+		}
+		
+        for (IProject project : projects) {
+        	scanAndUpdateResults(IssuesTree.getInstance(), parent, isDebugLogs, project, auditEnvVars);
+        }
 	}
 
 	public void setMonitor(IProgressMonitor monitor) {
@@ -142,12 +135,12 @@ public class ScanManager {
 	 * @param issuesTree - The issues tree object to present the issues found by the scan.
 	 * @param parent    - The parent UI composite. Cancel the scan if the parent is
 	 *                  disposed.
-	 * @param debugLogs - If set to True, generate debug logs from the audit command.
+	 * @param isDebugLogs - If set to True, generate debug logs from the audit command.
 	 * @param project - The scanned project object.
 	 * @param envVars = The environment variables for running the audit command.                 
 	 */
-	public void scanAndUpdateResults(IssuesTree issuesTree, Composite parent, boolean debugLogs, IProject project, Map<String, String> envVars) {
-		ScanJob.doSchedule(String.format("Performing Scan: %s", project.getName()), new ScanRunnable(parent, issuesTree, debugLogs, project, envVars)); 
+	public void scanAndUpdateResults(IssuesTree issuesTree, Composite parent, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
+		ScanJob.doSchedule(String.format("Performing Scan: %s", project.getName()), new ScanRunnable(parent, issuesTree, isDebugLogs, project, envVars)); 
 	}
 
 	/**
@@ -158,13 +151,15 @@ public class ScanManager {
 		private Composite parent;
 		private IProject project;
 		private Map<String, String> envVars;
+		private boolean isDebugLogs;
 		
 
-		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean debugLogs, IProject project, Map<String, String> envVars) {
+		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
 			this.parent = parent;
 			this.issuesTree = issuesTree;
 			this.project = project;
 			this.envVars = envVars;
+			this.isDebugLogs = isDebugLogs;
 		}
 
 		@Override
@@ -181,6 +176,9 @@ public class ScanManager {
 		    				return;
 		    			}
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
+		    			if (isDebugLogs) {
+		    				log.debug(auditResults.getErr());
+		    			}
 		    			
 		    			// update scan cache
 		    			ScanCache.getInstance().updateScanResults(sarifParser.parse(auditResults.getRes()));
@@ -200,14 +198,8 @@ public class ScanManager {
 		            }
 
 			} catch (Exception e) {
-				// TODO: pop an error message window
-				log.error(e.getMessage());
+				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);;
 			}
-		}
-	
-
-		private void setScanResults() {
-			// TODO: re implement using SarifParser - delete? 
 		}
 		
 		private boolean isDisposed() {

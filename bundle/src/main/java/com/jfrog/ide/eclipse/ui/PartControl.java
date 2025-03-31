@@ -30,7 +30,6 @@ public class PartControl {
 		XrayScanToolbar xrayScanToolbar = new XrayScanToolbar(parent);
 
 		createTabs(parent, xrayScanToolbar);
-		doQuickScan(parent);
 	}
 
 	private void createTabs(Composite parent, XrayScanToolbar xrayScanToolbar) {
@@ -43,13 +42,6 @@ public class PartControl {
 				xrayScanToolbar.setFilterType(FilterType.values()[tabFolder.getSelectionIndex()]);
 			}
 		});
-	}
-
-	private void doQuickScan(Composite parent) {
-		if (XrayServerConfigImpl.getInstance().areCredentialsSet()) {
-//			ScanManagersFactory.getInstance().startScan(parent, true);
-			// TODO: run a scan
-		}
 	}
 
 	@PreDestroy
