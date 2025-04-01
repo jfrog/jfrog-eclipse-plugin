@@ -13,16 +13,16 @@ import org.eclipse.core.runtime.jobs.Job;
  * 
  * @author yahavi
  */
-public class ScanJob extends Job {
+public class CliJob extends Job {
 
 	private ICoreRunnable runnable;
 	public static String FAMILY = "JFrogEclipsePluginJob";
 
-	public ScanJob(String name, ICoreRunnable runnable) {
+	public CliJob(String name, ICoreRunnable runnable) {
 		super(name);
 		setUser(true);
 		setRule(ResourcesPlugin.getWorkspace().getRoot());
-		addJobChangeListener(new XrayJobEventListener());
+		addJobChangeListener(new CliJobEventListener());
 		this.runnable = runnable;
 	}
 
@@ -33,7 +33,7 @@ public class ScanJob extends Job {
 	 * @param runnable - Job's callback.
 	 */
 	public static void doSchedule(String name, ICoreRunnable runnable) {
-		new ScanJob(name, runnable).schedule();
+		new CliJob(name, runnable).schedule();
 	}
 
 	@Override

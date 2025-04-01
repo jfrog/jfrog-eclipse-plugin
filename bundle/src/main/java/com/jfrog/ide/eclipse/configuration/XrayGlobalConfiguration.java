@@ -1,5 +1,6 @@
 package com.jfrog.ide.eclipse.configuration;
 
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -10,6 +11,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
+import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 
@@ -42,11 +44,32 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 
 	@Override
 	public boolean performOk() {
-		// TODO: This code runs when clicking the 'Apply' button in the settings panel. Implement server configuration using CliDriver here
 		super.performOk();
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
 		}
+
+	    // Define the runnable to execute the CLI config command 
+	    ICoreRunnable runnable = monitor -> {
+	        try {
+	            CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
+	                XrayServerConfigImpl.getInstance().getXrayUrl(),
+	                XrayServerConfigImpl.getInstance().getArtifactoryUrl(),
+	                CliDriverWrapper.CLIENT_ID_SERVER,
+	                XrayServerConfigImpl.getInstance().getUsername(),
+	                XrayServerConfigImpl.getInstance().getPassword(),
+	                XrayServerConfigImpl.getInstance().getAccessToken(),
+	                CliDriverWrapper.HOME_PATH.toFile(),
+	                System.getenv()
+	            );
+	        } catch (Exception e) {
+	            CliDriverWrapper.getInstance().showCliError("An error occurred while setting up the server connection:", e);
+	        }
+	    };
+
+	    // Schedule the CliJob to execute the runnable
+	    CliJob.doSchedule("Setup Server Configuration", runnable);
+		
 		boolean doQuickScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
