@@ -10,7 +10,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.ui.actions.Filter.FilterType;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTab;
@@ -30,7 +29,6 @@ public class PartControl {
 		XrayScanToolbar xrayScanToolbar = new XrayScanToolbar(parent);
 
 		createTabs(parent, xrayScanToolbar);
-		doQuickScan(parent);
 	}
 
 	private void createTabs(Composite parent, XrayScanToolbar xrayScanToolbar) {
@@ -43,13 +41,6 @@ public class PartControl {
 				xrayScanToolbar.setFilterType(FilterType.values()[tabFolder.getSelectionIndex()]);
 			}
 		});
-	}
-
-	private void doQuickScan(Composite parent) {
-		if (XrayServerConfigImpl.getInstance().areCredentialsSet()) {
-//			ScanManagersFactory.getInstance().startScan(parent, true);
-			// TODO: run a scan
-		}
 	}
 
 	@PreDestroy

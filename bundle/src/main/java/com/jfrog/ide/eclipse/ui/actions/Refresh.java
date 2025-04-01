@@ -4,6 +4,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.ToolBar;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 import com.jfrog.ide.eclipse.log.Logger;
+import com.jfrog.ide.eclipse.scan.ScanManager;
 
 /**
  * Start a new slow scan.
@@ -22,7 +23,7 @@ public class Refresh extends Action {
 			Logger.getInstance().error("Xray server is not configured.");
 			return;
 		}
-//		ScanManagersFactory.getInstance().startScan(getParent(), false);
-		// TODO: run a scan
+		
+		ScanManager.getInstance().startScan(getParent(), XrayServerConfigImpl.getInstance().getIsDebugLogs());
 	}
 }
