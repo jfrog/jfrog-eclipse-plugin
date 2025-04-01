@@ -1,11 +1,14 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependencyTree;
+
+import com.jfrog.ide.common.nodes.FileTreeNode;
 
 /**
  * The issues count component in the issues tree.
@@ -22,7 +25,10 @@ public class IssueCountColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		int issueCount = ((DependencyTree) element).getIssueCount();
+		int issueCount = 0;
+		if (element instanceof FileTreeNode) {
+			issueCount = ((FileTreeNode) element).getChildCount();
+		}
 		return issueCount == 0 ? "" : "(" + issueCount + ")";
 	}
 

@@ -2,8 +2,9 @@ package com.jfrog.ide.eclipse.ui.issues;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.Issue;
+
+import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 
 /**
@@ -27,11 +28,11 @@ public class ComponentIssueDetails extends ComponentDetails {
 	}
 
 	@Override
-	public void createDetailsView(DependencyTree node) {
+	public void createDetailsView(FileTreeNode node) {
 		createCommonInfo(node);
-		Issue topIssue = node.getTopIssue();
-		addSection("Top Issue Severity:", StringUtils.capitalize(topIssue.getSeverity().toString()));
-		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
+//		Issue topIssue = node.getTopIssue();
+//		addSection("Top Issue Severity:", StringUtils.capitalize(topIssue.getSeverity().toString()));
+//		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
 		refreshPanel();
 	}
 

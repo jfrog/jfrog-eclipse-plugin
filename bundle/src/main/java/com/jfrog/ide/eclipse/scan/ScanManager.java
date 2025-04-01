@@ -62,6 +62,7 @@ public class ScanManager {
 	private JfrogCliDriver cliDriver;
 	private SarifParser sarifParser;
 	private AtomicBoolean scanInProgress = new AtomicBoolean(false);
+	private AtomicBoolean cancellationRequested = new AtomicBoolean(false);
 	
 	private ScanManager() {
 		this.iworkspace = ResourcesPlugin.getWorkspace();
@@ -102,6 +103,13 @@ public class ScanManager {
         for (IProject project : projects) {
         	scanAndUpdateResults(IssuesTree.getInstance(), parent, isDebugLogs, project, auditEnvVars);
         }
+	}
+	
+	public void checkCanceled() {
+		if (monitor != null && monitor.isCanceled()) {
+			cancellationRequested.set(true);
+			throw new CancellationException("Xray scan was canceled"); // TODO: pop up a message
+		}
 	}
 
 	public void setMonitor(IProgressMonitor monitor) {
@@ -164,23 +172,30 @@ public class ScanManager {
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
+			ScanManager.this.monitor = monitor;
+			if (isDisposed() || monitor.isCanceled()) {
+				return;
+			}
+			
+			log.info(String.format("Performing scan on: %s", project.getName()));
+			
 			try {
 		            if (project.isOpen()) {
 		                IPath projectPath = project.getLocation();
-		                log.info(String.format("Performing scan on: %s", project.getName()));
-		                
 		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, "eclipse-plugin", null, envVars);
 		    			if (!auditResults.isOk()) {
 		    				// log the issue to the problems tab
 		    				log.error("Audit scan failed with an error: " + auditResults.getErr());
 		    				return;
 		    			}
+		    			
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
 		    			if (isDebugLogs) {
 		    				log.debug(auditResults.getErr());
 		    			}
 		    			
 		    			// update scan cache
+		    			log.info("Updating scan cache.");
 		    			ScanCache.getInstance().updateScanResults(sarifParser.parse(auditResults.getRes()));
 		    			
 		    			// update issues tree
@@ -198,7 +213,9 @@ public class ScanManager {
 		            }
 
 			} catch (Exception e) {
-				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);;
+				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);
+			} finally {
+				scanFinished();
 			}
 		}
 		
@@ -207,5 +224,4 @@ public class ScanManager {
 		}
 		
 	}
-
 }

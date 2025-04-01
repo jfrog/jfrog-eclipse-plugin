@@ -1,5 +1,6 @@
 package com.jfrog.ide.eclipse.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +17,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
-import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
 import com.jfrog.ide.common.nodes.FileTreeNode;
@@ -33,7 +33,7 @@ public abstract class SearchableTree extends FilteredTree {
 //	protected ProjectsMap projects = new ProjectsMap();
 	protected ComponentDetails componentDetails;
 	private TreeColumnLayout treeLayout = new TreeColumnLayout();
-	protected List<FileTreeNode> scanResults;
+	protected List<FileTreeNode> scanResults = new ArrayList<FileTreeNode>();
 
 	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {
 		super(parent, true);
@@ -65,23 +65,24 @@ public abstract class SearchableTree extends FilteredTree {
 	}
 
 	private void registerListeners() {
-		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (event.getSelection().isEmpty()) {
-					return;
-				}
-				DependencyTree selection = (DependencyTree) treeViewer.getStructuredSelection().getFirstElement();
-				onClick(selection);
-			}
-		});
+		// TODO: implement using FileIssueNode and FileTreeNode
+//		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				if (event.getSelection().isEmpty()) {
+//					return;
+//				}
+//				DependencyTree selection = (DependencyTree) treeViewer.getStructuredSelection().getFirstElement();
+//				onClick(selection);
+//			}
+//		});
 	}
 
 	public void setComponentDetails(ComponentDetails componentDetails) {
 		this.componentDetails = componentDetails;
 	}
 
-	protected abstract void onClick(DependencyTree selection);
+	protected abstract void onClick(FileTreeNode selection);
 
 	private static PatternFilter createFilter() {
 		PatternFilter patternFilter = new PatternFilter();
@@ -89,12 +90,12 @@ public abstract class SearchableTree extends FilteredTree {
 		return patternFilter;
 	}
 
-	public List<DependencyTree> getSelectedNodes() {
-		List<DependencyTree> selectedNodes = Lists.newArrayList();
+	public List<FileTreeNode> getSelectedNodes() {
+		List<FileTreeNode> selectedNodes = Lists.newArrayList();
 		TreePath[] selectionPaths = treeViewer.getStructuredSelection().getPaths();
 		if (selectionPaths != null) {
 			selectedNodes = Arrays.stream(selectionPaths)
-					.map(selectedPath -> (DependencyTree) selectedPath.getLastSegment()).collect(Collectors.toList());
+					.map(selectedPath -> (FileTreeNode) selectedPath.getLastSegment()).collect(Collectors.toList());
 		}
 
 		return selectedNodes;

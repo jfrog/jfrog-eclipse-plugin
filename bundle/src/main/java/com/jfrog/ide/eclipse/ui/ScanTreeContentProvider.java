@@ -6,8 +6,9 @@ import java.util.List;
 import javax.swing.tree.TreeNode;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
+
+import com.jfrog.ide.common.nodes.FileIssueNode;
 import com.jfrog.ide.common.nodes.FileTreeNode;
-import com.jfrog.ide.common.nodes.IssueNode;
 /**
  * Content provider for DependenciesTree.
  * 
@@ -24,7 +25,7 @@ public class ScanTreeContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object element) {
         if (element instanceof FileTreeNode) {
-            List<TreeNode> children = ((FileTreeNode) element).getChildren(); // TODO: check if works
+            List<TreeNode> children = ((FileTreeNode) element).getChildren();
             return children.toArray();
         } else if (element instanceof List) {
             // If the element is a List (root nodes), return its elements
@@ -39,6 +40,9 @@ public class ScanTreeContentProvider implements ITreeContentProvider {
         if (element instanceof FileTreeNode) {
             return ((FileTreeNode) element).getParent();
         }
+        if (element instanceof FileIssueNode) {
+            return ((FileIssueNode) element).getParent();
+        }
         return null;
 	}
 
@@ -46,6 +50,9 @@ public class ScanTreeContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
         if (element instanceof FileTreeNode) {
             return !((FileTreeNode) element).isLeaf();
+        }
+        if (element instanceof FileIssueNode) {
+            return ((FileIssueNode) element).isLeaf();
         }
         return false;
 	}

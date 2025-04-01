@@ -21,11 +21,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.jfrog.build.extractor.scan.DependencyTree;
 import org.jfrog.build.extractor.scan.Issue;
 import org.jfrog.build.extractor.scan.Severity;
 
 import com.jfrog.ide.common.filter.FilterManager;
+import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.IconManager;
 import com.jfrog.ide.eclipse.ui.Panel;
@@ -114,12 +114,13 @@ public class ComponentIssueTable extends Panel {
 		return viewerColumn;
 	}
 
-	public void updateIssuesTable(List<DependencyTree> selectedNodes) {
-		Set<Issue> issuesSet = Sets.newHashSet();
-		FilterManager filterManager = FilterManagerSingleton.getInstance();
-		issuesSet.addAll(filterManager.getFilteredScanIssues(selectedNodes));
-		tableViewer.setInput(
-				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
-						.collect(Collectors.toList()));
+	public void updateIssuesTable(List<FileTreeNode> selectedNodes) {
+		// TODO: implement correctly
+//		Set<Issue> issuesSet = Sets.newHashSet();
+//		FilterManager filterManager = FilterManagerSingleton.getInstance();
+//		issuesSet.addAll(filterManager.getFilteredScanIssues(selectedNodes));
+//		tableViewer.setInput(
+//				issuesSet.stream().sorted(Comparator.comparing(issue -> ((Issue) issue).getSeverity()).reversed())
+//						.collect(Collectors.toList()));
 	}
 }
