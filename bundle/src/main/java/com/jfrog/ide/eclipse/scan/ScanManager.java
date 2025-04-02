@@ -51,7 +51,11 @@ public class ScanManager {
 	
 	public static synchronized ScanManager getInstance(){
         if (instance == null) {
-            instance = new ScanManager();
+            synchronized (ScanManager.class) {
+                if (instance == null) {
+                    instance = new ScanManager();
+                }
+            }
         }
         return instance;
 	}
