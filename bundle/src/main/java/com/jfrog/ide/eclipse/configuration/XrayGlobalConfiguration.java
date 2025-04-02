@@ -76,15 +76,15 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	    // Schedule the CliJob to execute the runnable
 	    CliJob.doSchedule("Setup Server Configuration", runnable);
 		
-		boolean doQuickScan = false;
+		boolean runScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
 			if (componentsDetail != null) {
 				componentsDetail.credentialsSet();
-				doQuickScan = true;
+				runScan = true;
 			}
 		}
-		if (doQuickScan) {
+		if (runScan) {
 			ScanManager.getInstance().startScan(getShell().getParent(),
 					getPreferenceStore().getBoolean(PreferenceConstants.DEBUG_LOGS));
 		}

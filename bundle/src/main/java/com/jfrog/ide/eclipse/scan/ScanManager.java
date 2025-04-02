@@ -67,6 +67,7 @@ public class ScanManager {
 		
 		scanInProgress.compareAndSet(false, true);
 		resetIssuesView(IssuesTree.getInstance());
+		ScanCache.getInstance().resetCache();
 		
 		// refresh projects list
 		projects = iworkspace.getRoot().getProjects();
