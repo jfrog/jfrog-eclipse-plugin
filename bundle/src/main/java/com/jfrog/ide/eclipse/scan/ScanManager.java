@@ -40,7 +40,6 @@ public class ScanManager {
 	private JfrogCliDriver cliDriver;
 	private SarifParser sarifParser;
 	private AtomicBoolean scanInProgress = new AtomicBoolean(false);
-	private AtomicBoolean cancellationRequested = new AtomicBoolean(false);
 	
 	private ScanManager() {
 		this.iworkspace = ResourcesPlugin.getWorkspace();
@@ -62,8 +61,7 @@ public class ScanManager {
 		
 		// If scan is in progress - do not perform another scan
 		if (isScanInProgress()) {
-			// TODO: pop up a window message
-			Logger.getInstance().info("Previous scan still running...");
+			log.info("Previous scan still running...");
 			return;
 		}
 		
@@ -71,13 +69,16 @@ public class ScanManager {
 		resetIssuesView(IssuesTree.getInstance());
 		
 		// refresh projects list
-		this.projects = this.iworkspace.getRoot().getProjects();
+		projects = iworkspace.getRoot().getProjects();
+		if (projects.length == 0) {
+			log.info("No projects to scan.");
+		}
 
 		if (isDebugLogs) {
 			auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
 			auditEnvVars.put("CI", "true");
 		}
-		
+
         for (IProject project : projects) {
         	scanAndUpdateResults(IssuesTree.getInstance(), parent, isDebugLogs, project, auditEnvVars);
         }
@@ -85,8 +86,7 @@ public class ScanManager {
 	
 	public void checkCanceled() {
 		if (monitor != null && monitor.isCanceled()) {
-			cancellationRequested.set(true);
-			throw new CancellationException("Xray scan was canceled"); // TODO: pop up a message
+			throw new CancellationException("Xray scan was canceled");
 		}
 	}
 
@@ -151,7 +151,7 @@ public class ScanManager {
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			ScanManager.this.monitor = monitor;
-			if (isDisposed() || monitor.isCanceled()) {
+			if (isDisposed()) {
 				return;
 			}
 			
@@ -160,12 +160,14 @@ public class ScanManager {
 			try {
 		            if (project.isOpen()) {
 		                IPath projectPath = project.getLocation();
-		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, "eclipse-plugin", null, envVars);
+		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, CliDriverWrapper.CLIENT_ID_SERVER, null, envVars);
 		    			if (!auditResults.isOk()) {
 		    				// log the issue to the problems tab
 		    				log.error("Audit scan failed with an error: " + auditResults.getErr());
 		    				return;
 		    			}
+		    			
+		    			checkCanceled();
 		    			
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
 		    			if (isDebugLogs) {
@@ -178,7 +180,8 @@ public class ScanManager {
 		    			
 		    			// TODO: update issues tree
 		            }
-
+			} catch (CancellationException ce) {
+				log.info(ce.getMessage());
 			} catch (Exception e) {
 				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);
 			} finally {
