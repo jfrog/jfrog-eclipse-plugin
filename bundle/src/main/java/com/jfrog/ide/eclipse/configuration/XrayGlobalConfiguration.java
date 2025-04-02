@@ -56,7 +56,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		}
 
 	    // Define the runnable to execute the CLI config command 
-	    ICoreRunnable runnable = monitor -> {
+	    ICoreRunnable runnableServerConfig = monitor -> {
 	        try {
 	            CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
 	                XrayServerConfigImpl.getInstance().getXrayUrl(),
@@ -74,19 +74,13 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	    };
 
 	    // Schedule the CliJob to execute the runnable
-	    CliJob.doSchedule("Setup Server Configuration", runnable);
+	    CliJob.doSchedule("Setup Server Configuration", runnableServerConfig);
 		
-		boolean runScan = false;
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
 			if (componentsDetail != null) {
 				componentsDetail.credentialsSet();
-				runScan = true;
 			}
-		}
-		if (runScan) {
-			ScanManager.getInstance().startScan(getShell().getParent(),
-					getPreferenceStore().getBoolean(PreferenceConstants.DEBUG_LOGS));
 		}
 		return true;
 	}
