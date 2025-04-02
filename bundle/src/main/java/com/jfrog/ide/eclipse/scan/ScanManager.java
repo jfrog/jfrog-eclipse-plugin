@@ -49,7 +49,7 @@ public class ScanManager {
 		this.sarifParser = new SarifParser(log);
 	}
 	
-	public static synchronized ScanManager getInstance(){
+	public static ScanManager getInstance(){
         if (instance == null) {
             synchronized (ScanManager.class) {
                 if (instance == null) {
