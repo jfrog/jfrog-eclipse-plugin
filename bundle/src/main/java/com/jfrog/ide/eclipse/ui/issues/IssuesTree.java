@@ -1,5 +1,6 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -9,6 +10,7 @@ import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
 import com.jfrog.ide.common.filter.FilterManager;
+import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
@@ -19,7 +21,6 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
 public class IssuesTree extends SearchableTree {
 
 	private static IssuesTree instance;
-
 	private DependencyTree root = new DependencyTree();
 	private ComponentIssueTable componentIssueTable;
 	private TreeViewerColumn issuesCountColumn;
@@ -34,8 +35,7 @@ public class IssuesTree extends SearchableTree {
 
 	private IssuesTree(Composite parent) {
 		super(parent, new IssuesTreeColumnLabelProvider());
-		issuesCountColumn = createColumn("Issues (0)", new IssueCountColumnLabelProvider(this), SWT.RIGHT, 0);
-		applyFiltersForAllProjects();
+		issuesCountColumn = createColumn("Issues", new IssueCountColumnLabelProvider(this), SWT.RIGHT, 0);
 	}
 
 	@Override
@@ -79,9 +79,8 @@ public class IssuesTree extends SearchableTree {
 	public void reset() {
 		super.reset();
 		componentIssueTable.updateIssuesTable(Lists.newArrayList());
-		issuesCountColumn.getColumn().setText("Issues (0)");
-		root = new DependencyTree();
-		treeViewer.setInput(root);
+		issuesCountColumn.getColumn().setText("Issues");
+		treeViewer.setInput(new ArrayList<FileTreeNode>());
 	}
 
 	public static void disposeTree() {
