@@ -14,7 +14,7 @@ public class UiUtils {
 
 	public static void setGridLayout(Composite composite, int numColumns, boolean makeColumnsEqualWidth) {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).equalWidth(makeColumnsEqualWidth)
-				.spacing(LayoutConstants.getSpacing().x, 0).create());
+				.spacing(LayoutConstants.getSpacing().x, 3).create());
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
 

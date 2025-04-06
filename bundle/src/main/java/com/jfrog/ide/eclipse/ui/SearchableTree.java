@@ -20,6 +20,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
+import com.jfrog.ide.common.nodes.FileIssueNode;
 import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.utils.ProjectsMap;
 
@@ -70,7 +71,7 @@ public abstract class SearchableTree extends FilteredTree {
 				if (event.getSelection().isEmpty()) {
 					return;
 				}
-				DependencyTree selection = (DependencyTree) treeViewer.getStructuredSelection().getFirstElement();
+				FileIssueNode selection = (FileIssueNode) treeViewer.getStructuredSelection().getFirstElement();
 				onClick(selection);
 			}
 		});
@@ -80,7 +81,7 @@ public abstract class SearchableTree extends FilteredTree {
 		this.componentDetails = componentDetails;
 	}
 
-	protected abstract void onClick(DependencyTree selection);
+	protected abstract void onClick(FileIssueNode selection);
 
 	private static PatternFilter createFilter() {
 		PatternFilter patternFilter = new PatternFilter();
@@ -114,7 +115,7 @@ public abstract class SearchableTree extends FilteredTree {
 	public void addScanResults(List<FileTreeNode> results) {
 		scanResults.addAll(results);
 	}
-	
+
 	public void showResultsOnTree() {
 		treeViewer.setInput(scanResults);
 	}

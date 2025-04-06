@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.jfrog.build.extractor.scan.DependencyTree;
-import org.jfrog.build.extractor.scan.GeneralInfo;
 
+import com.jfrog.ide.common.nodes.FileIssueNode;
+import com.jfrog.ide.common.nodes.ScaIssueNode;
 import com.jfrog.ide.eclipse.configuration.XrayGlobalConfiguration;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 
@@ -40,7 +40,7 @@ public abstract class ComponentDetails extends Panel {
 		recreateComponentDetails();
 	}
 
-	public abstract void createDetailsView(DependencyTree node);
+	public abstract void createDetailsView(FileIssueNode node);
 	
 	public void recreateComponentDetails() {
 		if (isDisposed()) {
@@ -85,13 +85,13 @@ public abstract class ComponentDetails extends Panel {
 
 	protected void createComponentsPanel() {
 		createLabel(this, title);
-		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FILL);
 		scrolledComposite.setBackground(getBackground());
 		setGridLayout(scrolledComposite, 1, false);
 		componentDetailsPanel = new Panel(scrolledComposite);
 		componentDetailsPanel.setBackground(scrolledComposite.getBackground());
 		setGridLayout(componentDetailsPanel, 2, false);
-		UiUtils.createDisabledTextLabel(componentDetailsPanel, "Component information is not available");
+		UiUtils.createDisabledTextLabel(componentDetailsPanel, "Issue information is not available");
 		scrolledComposite.setContent(componentDetailsPanel);
 	}
 
@@ -100,20 +100,18 @@ public abstract class ComponentDetails extends Panel {
 	 * 
 	 * @param node - Extract the component information from this node.
 	 */
-	protected void createCommonInfo(DependencyTree node) {
+	protected void createCommonInfo(FileIssueNode node) {
 		for (Control control : componentDetailsPanel.getChildren()) {
 			control.dispose();
 		}
-		GeneralInfo generalInfo = ObjectUtils.defaultIfNull(node.getGeneralInfo(), new GeneralInfo());
-		if (!StringUtils.equalsIgnoreCase("Npm", generalInfo.getPkgType())) {
-			addSection("Group:", generalInfo.getGroupId());
+		addSection("Title:", node.getTitle());
+		addSection("Reporter:", node.getReporterType().getScannerName());
+		addSection("Severity:", node.getSeverity().getSeverityName());
+		if (!(node instanceof ScaIssueNode)) {
+			addSection("Reason:", node.getReason());
 		}
-
-		addSection("Artifact:", generalInfo.getArtifactId());
-		addSection("Version:", generalInfo.getVersion());
-		addSection("Type:", StringUtils.capitalize(generalInfo.getPkgType()));
-		addSection("Path:", generalInfo.getPath());
-		refreshPanel();
+		addSection("Full Description", node.getFullDescription());
+		addSection("File Path:", node.getFilePath());
 	}
 
 	protected void addSection(String name, String content) {

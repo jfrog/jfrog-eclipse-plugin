@@ -1,9 +1,11 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependencyTree;
-import org.jfrog.build.extractor.scan.Issue;
+
+import com.jfrog.ide.common.nodes.FileIssueNode;
+import com.jfrog.ide.common.nodes.SastIssueNode;
+import com.jfrog.ide.common.nodes.ScaIssueNode;
+import com.jfrog.ide.common.parse.Applicability;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 
 /**
@@ -23,15 +25,23 @@ public class ComponentIssueDetails extends ComponentDetails {
 	}
 
 	private ComponentIssueDetails(Composite parent) {
-		super(parent, "Component Details");
+		super(parent, "Issue Details");
 	}
 
 	@Override
-	public void createDetailsView(DependencyTree node) {
+	public void createDetailsView(FileIssueNode node) {
 		createCommonInfo(node);
-		Issue topIssue = node.getTopIssue();
-		addSection("Top Issue Severity:", StringUtils.capitalize(topIssue.getSeverity().toString()));
-		addSection("Issues Count:", String.valueOf(node.getIssueCount()));
+		if (node instanceof ScaIssueNode ) {
+			ScaIssueNode scaNode = (ScaIssueNode) node;
+			Applicability applicability = scaNode.getApplicability();
+			addSection("Component Name:", scaNode.getComponentName());
+			addSection("Component Version:", scaNode.getComponentVersion());
+			addSection("Fixed Versions:", scaNode.getFixedVersions());
+			addSection("Applicability:", applicability != null ? applicability.getValue() : "");  
+		} else if (node instanceof SastIssueNode) {
+			SastIssueNode sastNode = (SastIssueNode) node;
+			addSection("Rule ID:", sastNode.getRuleId());
+		}
 		refreshPanel();
 	}
 
