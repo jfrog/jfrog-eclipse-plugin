@@ -186,7 +186,7 @@ public class ScanManager {
 		    					if (monitor.isCanceled()) {
 		    						return;
 		    					}
-		    					issuesTree.applyFiltersForAllProjects();
+		    					issuesTree.showResultsOnTree();
 		    				}
 		    			});
 		            }

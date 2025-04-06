@@ -30,7 +30,6 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap;
  */
 public abstract class SearchableTree extends FilteredTree {
 
-	protected ProjectsMap projects = new ProjectsMap();
 	protected ComponentDetails componentDetails;
 	private TreeColumnLayout treeLayout = new TreeColumnLayout();
 	protected List<FileTreeNode> scanResults = new ArrayList<FileTreeNode>();
@@ -115,8 +114,10 @@ public abstract class SearchableTree extends FilteredTree {
 	public void addScanResults(List<FileTreeNode> results) {
 		scanResults.addAll(results);
 	}
-
-	public abstract void applyFilters(ProjectsMap.ProjectKey projectName);
+	
+	public void showResultsOnTree() {
+		treeViewer.setInput(scanResults);
+	}
 
 	public abstract void applyFiltersForAllProjects();
 }

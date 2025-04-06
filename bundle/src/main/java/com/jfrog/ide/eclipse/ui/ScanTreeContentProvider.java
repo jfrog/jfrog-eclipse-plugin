@@ -1,7 +1,6 @@
 package com.jfrog.ide.eclipse.ui;
 
 import java.util.List;
-
 import javax.swing.tree.TreeNode;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;

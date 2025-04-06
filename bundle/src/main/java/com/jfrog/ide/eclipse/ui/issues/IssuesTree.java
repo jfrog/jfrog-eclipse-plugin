@@ -1,7 +1,6 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
@@ -9,11 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.jfrog.build.extractor.scan.DependencyTree;
 
 import com.google.common.collect.Lists;
-import com.jfrog.ide.common.filter.FilterManager;
 import com.jfrog.ide.common.nodes.FileTreeNode;
-import com.jfrog.ide.eclipse.ui.FilterManagerSingleton;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
-import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
 
 /**
  * @author yahavi
@@ -21,7 +17,6 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap.ProjectKey;
 public class IssuesTree extends SearchableTree {
 
 	private static IssuesTree instance;
-	private DependencyTree root = new DependencyTree();
 	private ComponentIssueTable componentIssueTable;
 	private TreeViewerColumn issuesCountColumn;
 
@@ -49,27 +44,7 @@ public class IssuesTree extends SearchableTree {
 	}
 
 	@Override
-	public void applyFilters(ProjectKey projectKey) {
-		DependencyTree project = projects.get(projectKey);
-		if (project != null) {
-			FilterManager filterManager = FilterManagerSingleton.getInstance();
-			DependencyTree filteredRoot = filterManager.applyFilters(project);
-			filteredRoot.setIssues(filteredRoot.processTreeIssues());
-			root.add(filteredRoot);
-			if (root.getChildCount() == 1) {
-				// If there is only one project - Show only its dependencies in the tree viewer.
-				treeViewer.setInput(filteredRoot);
-			} else {
-				treeViewer.setInput(root);
-			}
-			long totalIssues = root.getChildren().stream().mapToInt(DependencyTree::getIssueCount).sum();
-			issuesCountColumn.getColumn().setText("Issues (" + totalIssues + ")");
-		}
-	}
-
-	@Override
 	public void applyFiltersForAllProjects() {
-		treeViewer.setInput(scanResults);
 	}
 
 	@Override
