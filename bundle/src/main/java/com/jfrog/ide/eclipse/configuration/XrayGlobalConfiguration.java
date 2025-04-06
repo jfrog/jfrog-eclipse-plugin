@@ -16,12 +16,9 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.jfrog.ide.eclipse.log.Logger;
-import com.jfrog.ide.eclipse.scan.ScanManager;
 import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
-import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
-
 /**
  * Panel for configuring Xray URL, username and password.
  * 
@@ -42,7 +39,6 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		StringFieldEditor passwordEditor = new StringFieldEditor(PreferenceConstants.XRAY_PASSWORD, "Password:",
 				getFieldEditorParent());
 		passwordEditor.getTextControl(getFieldEditorParent()).setEchoChar('*');
-		
 
 		addField(urlEditor);
 		addField(usernameEditor);
@@ -88,7 +84,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	    };
 
 	    // Schedule the CliJob to execute the runnable
-	    CliJob.doSchedule("Setup Server Configuration and Perform Initial Scan", runnableServerConfig);
+	    CliJob.doSchedule("Setup Server Configuration", runnableServerConfig);
 	    
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
@@ -96,7 +92,6 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 				componentsDetail.credentialsSet();
 			}
 		}
-		
 		return true;
 	}
 
