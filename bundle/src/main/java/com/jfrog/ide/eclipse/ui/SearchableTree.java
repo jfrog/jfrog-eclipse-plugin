@@ -112,8 +112,8 @@ public abstract class SearchableTree extends FilteredTree {
 		scanResults.clear();
 	}
 
-	public void addScanResults(List<FileTreeNode> scanResults) {
-		scanResults.addAll(scanResults);
+	public void addScanResults(List<FileTreeNode> results) {
+		scanResults.addAll(results);
 	}
 
 	public abstract void applyFilters(ProjectsMap.ProjectKey projectName);

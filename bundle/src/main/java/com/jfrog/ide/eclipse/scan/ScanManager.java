@@ -177,10 +177,18 @@ public class ScanManager {
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
 	    				log.debug(auditResults.getErr());
 		    			
-		    			log.debug("Updating scan cache.");
-		    			ScanCache.getInstance().updateScanResults(sarifParser.parse(auditResults.getRes()));
-		    			
-		    			// TODO: update issues tree
+		    			log.debug("Updating scan results in UI.");
+		    			issuesTree.addScanResults(sarifParser.parse(auditResults.getRes()));
+		    			// update the issues tree in the UI with the scan results
+		    			parent.getDisplay().syncExec(new Runnable() {
+		    				@Override
+		    				public void run() {
+		    					if (monitor.isCanceled()) {
+		    						return;
+		    					}
+		    					issuesTree.applyFiltersForAllProjects();
+		    				}
+		    			});
 		            }
 			} catch (CancellationException ce) {
 				log.info(ce.getMessage());

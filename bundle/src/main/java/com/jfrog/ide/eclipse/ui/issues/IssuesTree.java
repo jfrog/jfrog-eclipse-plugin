@@ -69,10 +69,7 @@ public class IssuesTree extends SearchableTree {
 
 	@Override
 	public void applyFiltersForAllProjects() {
-		root = new DependencyTree();
-		for (Entry<ProjectKey, DependencyTree> entry : projects.entrySet()) {
-			applyFilters(entry.getKey());
-		}
+		treeViewer.setInput(scanResults);
 	}
 
 	@Override
