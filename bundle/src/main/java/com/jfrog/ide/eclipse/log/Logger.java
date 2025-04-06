@@ -19,7 +19,7 @@ public class Logger implements Log {
 	public static final int ERROR = 4;
 	
 	//set default log level as INFO
-	private int logLevel = INFO;
+	private int minLogLevel = INFO;
 
 	private Logger() {
 		ilog = ResourcesPlugin.getPlugin().getLog();
@@ -33,11 +33,11 @@ public class Logger implements Log {
 	}
 	
 	public void setLogLevel(int logLevel) {
-	    this.logLevel = logLevel;
+	    this.minLogLevel = logLevel;
 	}
 
 	public int getLogLevel() {
-	    return logLevel;
+	    return minLogLevel;
 	}
 
 	@Override
@@ -67,12 +67,13 @@ public class Logger implements Log {
 	}
 	
     private void log(int level, int status, String prefix, String message) {
-        if (logLevel <= level) {
-            ilog.log(new Status(status, ID, prefix + message));
-            if (status == Status.WARNING || status == Status.ERROR) {
-                logToProblemsLogger(message, status);
-            }
-        }
+        if (minLogLevel > level) {
+            return; 
+       }
+       ilog.log(new Status(status, ID, prefix + message));
+       if (status == Status.WARNING || status == Status.ERROR) {
+           logToProblemsLogger(message, status);
+       }
     }
 
 	private void logToProblemsLogger(String message, int status) {

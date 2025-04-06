@@ -2,7 +2,6 @@ package com.jfrog.ide.eclipse.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * Constant definitions for plug-in preferences
  * 
