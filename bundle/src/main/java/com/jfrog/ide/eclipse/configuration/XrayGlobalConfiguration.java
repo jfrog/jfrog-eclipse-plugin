@@ -1,7 +1,11 @@
 package com.jfrog.ide.eclipse.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -11,10 +15,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
+import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
-
 /**
  * Panel for configuring Xray URL, username and password.
  * 
@@ -40,6 +44,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		addField(usernameEditor);
 		addField(passwordEditor);
 		addField(new TestConnectionButton(urlEditor, usernameEditor, passwordEditor, getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.DEBUG_LOGS, "Generate Debug Logs", getFieldEditorParent()));
 	}
 
 	@Override
@@ -48,9 +53,20 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 		if (!XrayServerConfigImpl.getInstance().areCredentialsSet()) {
 			return true;
 		}
+		
+		final Map<String, String> configEnv;
+		
+		// define log level
+		if (XrayServerConfigImpl.getInstance().getIsDebugLogs()) {
+			Logger.getInstance().setLogLevel(Logger.DEBUG);
+			configEnv = PreferenceConstants.getCliDebugLogsEnvVars();
+		} else {
+			Logger.getInstance().setLogLevel(Logger.INFO);
+			configEnv = new HashMap<>();
+		}
 
 	    // Define the runnable to execute the CLI config command 
-	    ICoreRunnable runnable = monitor -> {
+	    ICoreRunnable runnableServerConfig = monitor -> {
 	        try {
 	            CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
 	                XrayServerConfigImpl.getInstance().getXrayUrl(),
@@ -60,7 +76,7 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	                XrayServerConfigImpl.getInstance().getPassword(),
 	                XrayServerConfigImpl.getInstance().getAccessToken(),
 	                CliDriverWrapper.HOME_PATH.toFile(),
-	                System.getenv()
+	                configEnv
 	            );
 	        } catch (Exception e) {
 	            CliDriverWrapper.getInstance().showCliError("An error occurred while setting up the server connection:", e);
@@ -68,18 +84,13 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	    };
 
 	    // Schedule the CliJob to execute the runnable
-	    CliJob.doSchedule("Setup Server Configuration", runnable);
-		
-		boolean doQuickScan = false;
+	    CliJob.doSchedule("Setup Server Configuration", runnableServerConfig);
+	    
 		ComponentDetails[] componentsDetails = { ComponentIssueDetails.getInstance()};
 		for (ComponentDetails componentsDetail : componentsDetails) {
 			if (componentsDetail != null) {
 				componentsDetail.credentialsSet();
-				doQuickScan = true;
 			}
-		}
-		if (doQuickScan) {
-			// TODO: run a scan using the ScanManager
 		}
 		return true;
 	}

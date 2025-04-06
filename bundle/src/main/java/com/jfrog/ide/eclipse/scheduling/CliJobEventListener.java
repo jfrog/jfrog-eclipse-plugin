@@ -5,15 +5,15 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
+import com.jfrog.ide.eclipse.scan.ScanManager;
+
 public class CliJobEventListener extends JobChangeAdapter {
 
 	@Override
 	public void done(IJobChangeEvent event) {
 		Job[] jobs = Job.getJobManager().find(CliJob.FAMILY);
-		// TODO: implement a listener for the audit scan
-//		ScanManagersFactory scanManagersFactory = ScanManagersFactory.getInstance(); 
 		if (ArrayUtils.isEmpty(jobs)) {
-//			scanManagersFactory.scanFinished();
+			ScanManager.getInstance().scanFinished();
 		}
 	}
 }

@@ -12,6 +12,14 @@ public class Logger implements Log {
 	private static Logger instance;
 	private static ProblemsLogger viewLogger;
 	private final String ID = "jfrog-eclipse-plugin";
+	
+	public static final int DEBUG = 1;
+	public static final int INFO = 2;
+	public static final int WARN = 3;
+	public static final int ERROR = 4;
+	
+	//set default log level as INFO
+	private int minLogLevel = INFO;
 
 	private Logger() {
 		ilog = ResourcesPlugin.getPlugin().getLog();
@@ -23,16 +31,23 @@ public class Logger implements Log {
 		}
 		return instance;
 	}
+	
+	public void setLogLevel(int logLevel) {
+	    this.minLogLevel = logLevel;
+	}
+
+	public int getLogLevel() {
+	    return minLogLevel;
+	}
 
 	@Override
 	public void debug(String message) {
-		ilog.log(new Status(Status.OK, ID, "[OK] " + message));
+		log(DEBUG, Status.OK, "[DEBUG] ", message);
 	}
 
 	@Override
 	public void error(String message) {
-		ilog.log(new Status(Status.ERROR, ID, "[ERROR] " + message));
-		logToProblemsLogger(message, Status.ERROR);
+		log(ERROR, Status.ERROR, "[ERROR] ", message);
 	}
 
 	@Override
@@ -43,14 +58,23 @@ public class Logger implements Log {
 
 	@Override
 	public void info(String message) {
-		ilog.log(new Status(Status.INFO, ID, "[INFO] " + message));
+		log(INFO, Status.INFO, "[INFO] ", message);
 	}
 
 	@Override
 	public void warn(String message) {
-		ilog.log(new Status(Status.WARNING, ID, "[WARN] " + message));
-		logToProblemsLogger(message, Status.WARNING);
+		log(WARN, Status.WARNING, "[WARN] ", message);
 	}
+	
+    private void log(int level, int status, String prefix, String message) {
+        if (minLogLevel > level) {
+            return; 
+       }
+       ilog.log(new Status(status, ID, prefix + message));
+       if (status == Status.WARNING || status == Status.ERROR) {
+           logToProblemsLogger(message, status);
+       }
+    }
 
 	private void logToProblemsLogger(String message, int status) {
 		if (viewLogger == null) {
