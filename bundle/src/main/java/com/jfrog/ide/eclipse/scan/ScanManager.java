@@ -21,6 +21,7 @@ import org.jfrog.build.extractor.executor.CommandResults;
 import com.jfrog.ide.common.configuration.JfrogCliDriver;
 import com.jfrog.ide.common.parse.SarifParser;
 import com.jfrog.ide.eclipse.configuration.CliDriverWrapper;
+import com.jfrog.ide.eclipse.configuration.PreferenceConstants;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.issues.ComponentIssueDetails;
@@ -63,29 +64,29 @@ public class ScanManager {
 	public void startScan(Composite parent, boolean isDebugLogs) {
 		Map<String, String> auditEnvVars = new HashMap<>();
 		
+		// refresh projects list
+		projects = iworkspace.getRoot().getProjects();
+		if (projects.length == 0) {
+			log.info("No projects to scan.");
+			return;
+		}
+		
 		// If scan is in progress - do not perform another scan
 		if (isScanInProgress()) {
 			log.info("Previous scan still running...");
 			return;
 		}
 		
-		scanInProgress.compareAndSet(false, true);
+		scanInProgress.set(true);
 		resetIssuesView(IssuesTree.getInstance());
 		ScanCache.getInstance().resetCache();
-		
-		// refresh projects list
-		projects = iworkspace.getRoot().getProjects();
-		if (projects.length == 0) {
-			log.info("No projects to scan.");
-		}
 
 		if (isDebugLogs) {
-			auditEnvVars.put("JFROG_CLI_LOG_LEVEL", "DEBUG");
-			auditEnvVars.put("CI", "true");
+			auditEnvVars = PreferenceConstants.getCliDebugLogsEnvVars();
 		}
 
         for (IProject project : projects) {
-        	scanAndUpdateResults(IssuesTree.getInstance(), parent, isDebugLogs, project, auditEnvVars);
+        	scanAndUpdateResults(IssuesTree.getInstance(), parent, project, auditEnvVars);
         }
 	}
 	
@@ -126,12 +127,11 @@ public class ScanManager {
 	 * @param issuesTree - The issues tree object to present the issues found by the scan.
 	 * @param parent    - The parent UI composite. Cancel the scan if the parent is
 	 *                  disposed.
-	 * @param isDebugLogs - If set to True, generate debug logs from the audit command.
 	 * @param project - The scanned project object.
 	 * @param envVars = The environment variables for running the audit command.                 
 	 */
-	public void scanAndUpdateResults(IssuesTree issuesTree, Composite parent, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
-		CliJob.doSchedule(String.format("Performing Scan: %s", project.getName()), new ScanRunnable(parent, issuesTree, isDebugLogs, project, envVars)); 
+	public void scanAndUpdateResults(IssuesTree issuesTree, Composite parent, IProject project, Map<String, String> envVars) {
+		CliJob.doSchedule(String.format("Performing Scan: %s", project.getName()), new ScanRunnable(parent, issuesTree, project, envVars)); 
 	}
 
 	/**
@@ -142,20 +142,20 @@ public class ScanManager {
 		private Composite parent;
 		private IProject project;
 		private Map<String, String> envVars;
-		private boolean isDebugLogs;
 		
 
-		private ScanRunnable(Composite parent, IssuesTree issuesTree, boolean isDebugLogs, IProject project, Map<String, String> envVars) {
+		private ScanRunnable(Composite parent, IssuesTree issuesTree, IProject project, Map<String, String> envVars) {
 			this.parent = parent;
 			this.issuesTree = issuesTree;
 			this.project = project;
 			this.envVars = envVars;
-			this.isDebugLogs = isDebugLogs;
+
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			ScanManager.this.monitor = monitor;
+			// if the parent process is disposed - do not run the scan
 			if (isDisposed()) {
 				return;
 			}
@@ -175,12 +175,9 @@ public class ScanManager {
 		    			checkCanceled();
 		    			
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
-		    			if (isDebugLogs) {
-		    				log.debug(auditResults.getErr());
-		    			}
+	    				log.debug(auditResults.getErr());
 		    			
-		    			// update scan cache
-		    			log.info("Updating scan cache.");
+		    			log.debug("Updating scan cache.");
 		    			ScanCache.getInstance().updateScanResults(sarifParser.parse(auditResults.getRes()));
 		    			
 		    			// TODO: update issues tree
