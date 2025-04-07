@@ -107,11 +107,10 @@ public abstract class ComponentDetails extends Panel {
 		addSection("Title:", node.getTitle());
 		addSection("Reporter:", node.getReporterType().getScannerName());
 		addSection("Severity:", node.getSeverity().getSeverityName());
-		if (!(node instanceof ScaIssueNode)) {
-			addSection("Reason:", node.getReason());
-		}
 		addSection("Full Description:", node.getFullDescription());
 		addSection("File Path:", node.getFilePath());
+		addSection("Line Snippet:", node.getLineSnippet());
+
 	}
 
 	protected void addSection(String name, String content) {

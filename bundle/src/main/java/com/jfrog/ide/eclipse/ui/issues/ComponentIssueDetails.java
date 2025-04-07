@@ -38,9 +38,9 @@ public class ComponentIssueDetails extends ComponentDetails {
 			addSection("Component Version:", scaNode.getComponentVersion());
 			addSection("Fixed Versions:", scaNode.getFixedVersions());
 			addSection("Applicability:", applicability != null ? applicability.getValue() : "");  
-		} else if (node instanceof SastIssueNode) {
-			SastIssueNode sastNode = (SastIssueNode) node;
-			addSection("Rule ID:", sastNode.getRuleId());
+		} else {
+			addSection("Location:", "row: " + node.getRowStart() + " col: " + node.getColStart());
+			addSection("Reason:", node.getReason());
 		}
 		refreshPanel();
 	}
@@ -49,5 +49,9 @@ public class ComponentIssueDetails extends ComponentDetails {
 		if (instance != null) {
 			instance.dispose();
 		}
+	}
+	
+	private void createScaDetailsView(ScaIssueNode node) {
+		
 	}
 }
