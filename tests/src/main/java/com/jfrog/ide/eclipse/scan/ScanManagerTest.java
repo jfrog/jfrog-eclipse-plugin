@@ -1,6 +1,7 @@
 package com.jfrog.ide.eclipse.scan;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,7 +12,9 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.swt.widgets.Composite;
 
+import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.utils.Utils;
 
@@ -19,17 +22,29 @@ import junit.framework.TestCase;
 
 public class ScanManagerTest extends TestCase {
 	private ScanManager scanManager = ScanManager.getInstance();
+	private ScanCache scanCache = ScanCache.getInstance();
 
 	
 	// TODO: generate test for scanning: Maven, Gradle and NPM projects. 
 	// TODO: add resources dir with example projects to scan
+	public void testScanMavenProject() throws IOException, CoreException {
+		String projectName = "mavenIsApplicable";
+		JobListener jobListener = new JobListener();
+		IProject project = Utils.createProject(projectName, "maven");
+		Job.getJobManager().addJobChangeListener(jobListener);
+		
+		scanManager.startScan(null, false);
+		List<FileTreeNode> scanResults = scanCache.getScanResults();
+		
+	}
+	
 	public void testSchedulingAJob()
 			throws IOException, CoreException, OperationCanceledException, InterruptedException {
 		String projectName = "gradleIsApplicable";
 		JobListener jobListener = new JobListener();
 		IProject project = Utils.createProject(projectName, "gradle");
 		Job.getJobManager().addJobChangeListener(jobListener);
-		scanManager.scanAndUpdateResults(null, null, null, null);
+		scanManager.scanAndUpdateResults(null, new Composite(null, 0), null, null);
 		Job.getJobManager().join(CliJob.FAMILY, new NullProgressMonitor());
 		assertJobInformation(projectName, jobListener);
 		cleanup(jobListener);
