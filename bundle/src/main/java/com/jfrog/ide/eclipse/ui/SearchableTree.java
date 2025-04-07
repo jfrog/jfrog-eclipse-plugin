@@ -22,7 +22,6 @@ import org.jfrog.build.extractor.scan.DependencyTree;
 import com.google.common.collect.Lists;
 import com.jfrog.ide.common.nodes.FileIssueNode;
 import com.jfrog.ide.common.nodes.FileTreeNode;
-import com.jfrog.ide.eclipse.utils.ProjectsMap;
 
 /**
  * Base class for the issues tree.
@@ -71,8 +70,11 @@ public abstract class SearchableTree extends FilteredTree {
 				if (event.getSelection().isEmpty()) {
 					return;
 				}
-				FileIssueNode selection = (FileIssueNode) treeViewer.getStructuredSelection().getFirstElement();
-				onClick(selection);
+				Object selectedElement = treeViewer.getStructuredSelection().getFirstElement();
+				if (selectedElement instanceof FileIssueNode) {
+					FileIssueNode issueNode = (FileIssueNode) selectedElement;
+					onClick(issueNode);
+				}
 			}
 		});
 	}

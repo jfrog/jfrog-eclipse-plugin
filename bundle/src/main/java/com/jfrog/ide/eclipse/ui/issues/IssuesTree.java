@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import com.google.common.collect.Lists;
+import com.jfrog.ide.common.nodes.FileIssueNode;
 import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 

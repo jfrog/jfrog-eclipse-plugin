@@ -110,7 +110,7 @@ public abstract class ComponentDetails extends Panel {
 		if (!(node instanceof ScaIssueNode)) {
 			addSection("Reason:", node.getReason());
 		}
-		addSection("Full Description", node.getFullDescription());
+		addSection("Full Description:", node.getFullDescription());
 		addSection("File Path:", node.getFilePath());
 	}
 
