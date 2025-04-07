@@ -11,10 +11,11 @@ import org.eclipse.swt.widgets.Label;
  * @author yahavi
  */
 public class UiUtils {
+	private static final int GRID_VERTICAL_SPACER = 3;
 
 	public static void setGridLayout(Composite composite, int numColumns, boolean makeColumnsEqualWidth) {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).equalWidth(makeColumnsEqualWidth)
-				.spacing(LayoutConstants.getSpacing().x, 3).create());
+				.spacing(LayoutConstants.getSpacing().x, GRID_VERTICAL_SPACER).create());
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
 

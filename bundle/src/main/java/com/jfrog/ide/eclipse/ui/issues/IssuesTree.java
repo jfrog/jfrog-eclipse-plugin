@@ -38,7 +38,6 @@ public class IssuesTree extends SearchableTree {
 
 	@Override
 	public void applyFiltersForAllProjects() {
-		treeViewer.setInput(scanResults);
 	}
 
 	@Override
