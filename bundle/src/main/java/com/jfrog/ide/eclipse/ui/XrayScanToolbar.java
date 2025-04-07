@@ -16,14 +16,15 @@ import com.jfrog.ide.eclipse.ui.actions.Refresh;
 public class XrayScanToolbar extends Panel {
 
 	private Filter filter;
+	private final int SPACER_WIDTH = 20;
 	
 	public XrayScanToolbar(Composite parent) {
 		super(parent);
 		ToolBar toolBar = new ToolBar(this, SWT.NONE);
 		new Refresh(toolBar);
-		createSeparator(toolBar, 20);
+		createSeparator(toolBar, SPACER_WIDTH);
 		new CollapseAll(toolBar);
-		createSeparator(toolBar, 20);
+		createSeparator(toolBar, SPACER_WIDTH);
 		new ExpandAll(toolBar);
 		toolBar.pack();
 	}

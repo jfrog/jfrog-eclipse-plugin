@@ -26,9 +26,11 @@ public class ScanTreeContentProvider implements ITreeContentProvider {
             List<TreeNode> children = ((FileTreeNode) element).getChildren();
             return children.toArray();
         } else if (element instanceof List) {
-            // If the element is a List (root nodes), return its elements
-            List<?> list = (List<?>) element;
-            return list.toArray();
+        	List<?> elementList = (List<?>) element;
+            // Verify the element is a List of FileTreeNode, then return its elements
+        	if(!elementList.isEmpty() && elementList.get(0) instanceof FileTreeNode) {
+        		return elementList.toArray();
+        	}
         }
         return new Object[0];
 	}

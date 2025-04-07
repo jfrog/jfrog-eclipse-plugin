@@ -30,8 +30,8 @@ import com.jfrog.ide.eclipse.utils.ProjectsMap;
  */
 public abstract class SearchableTree extends FilteredTree {
 
-	protected ComponentDetails componentDetails;
 	private TreeColumnLayout treeLayout = new TreeColumnLayout();
+	protected ComponentDetails componentDetails;
 	protected List<FileTreeNode> scanResults = new ArrayList<FileTreeNode>();
 
 	public SearchableTree(Composite parent, ColumnLabelProvider labelProvider) {

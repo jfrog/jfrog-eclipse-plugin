@@ -1,8 +1,6 @@
 package com.jfrog.ide.eclipse.scan;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -32,7 +30,6 @@ import org.jfrog.build.api.util.Log;
  * @author yahavi
  */
 public class ScanManager {
-	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private static ScanManager instance;
 	private IProgressMonitor monitor;
 	private IWorkspace iworkspace;
