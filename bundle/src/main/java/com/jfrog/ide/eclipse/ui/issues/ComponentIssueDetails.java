@@ -3,7 +3,6 @@ package com.jfrog.ide.eclipse.ui.issues;
 import org.eclipse.swt.widgets.Composite;
 
 import com.jfrog.ide.common.nodes.FileIssueNode;
-import com.jfrog.ide.common.nodes.SastIssueNode;
 import com.jfrog.ide.common.nodes.ScaIssueNode;
 import com.jfrog.ide.common.parse.Applicability;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
@@ -49,9 +48,5 @@ public class ComponentIssueDetails extends ComponentDetails {
 		if (instance != null) {
 			instance.dispose();
 		}
-	}
-	
-	private void createScaDetailsView(ScaIssueNode node) {
-		
 	}
 }

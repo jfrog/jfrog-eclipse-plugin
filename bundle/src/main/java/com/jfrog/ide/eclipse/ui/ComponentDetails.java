@@ -3,7 +3,6 @@ package com.jfrog.ide.eclipse.ui;
 import static com.jfrog.ide.eclipse.ui.UiUtils.createLabel;
 import static com.jfrog.ide.eclipse.ui.UiUtils.setGridLayout;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -16,7 +15,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 import com.jfrog.ide.common.nodes.FileIssueNode;
-import com.jfrog.ide.common.nodes.ScaIssueNode;
 import com.jfrog.ide.eclipse.configuration.XrayGlobalConfiguration;
 import com.jfrog.ide.eclipse.configuration.XrayServerConfigImpl;
 
