@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.jfrog.build.extractor.scan.DependencyTree;
 
-import com.google.common.collect.Lists;
+import com.jfrog.ide.common.nodes.FileIssueNode;
 import com.jfrog.ide.common.nodes.FileTreeNode;
 import com.jfrog.ide.eclipse.ui.SearchableTree;
 
@@ -17,7 +16,6 @@ import com.jfrog.ide.eclipse.ui.SearchableTree;
 public class IssuesTree extends SearchableTree {
 
 	private static IssuesTree instance;
-	private ComponentIssueTable componentIssueTable;
 	private TreeViewerColumn issuesCountColumn;
 
 	public static void createIssuesTree(Composite parent) {
@@ -34,13 +32,8 @@ public class IssuesTree extends SearchableTree {
 	}
 
 	@Override
-	protected void onClick(DependencyTree selection) {
+	protected void onClick(FileIssueNode selection) {
 		componentDetails.createDetailsView(selection);
-		componentIssueTable.updateIssuesTable(getSelectedNodes());
-	}
-
-	public void setComponentIssueTable(ComponentIssueTable componentIssueTable) {
-		this.componentIssueTable = componentIssueTable;
 	}
 
 	@Override
@@ -50,7 +43,6 @@ public class IssuesTree extends SearchableTree {
 	@Override
 	public void reset() {
 		super.reset();
-		componentIssueTable.updateIssuesTable(Lists.newArrayList());
 		issuesCountColumn.getColumn().setText("Issues");
 		treeViewer.setInput(new ArrayList<FileTreeNode>());
 	}
