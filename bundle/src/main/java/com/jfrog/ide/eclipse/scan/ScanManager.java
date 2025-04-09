@@ -157,10 +157,9 @@ public class ScanManager {
 				return;
 			}
 			
-			log.info(String.format("Performing scan on: %s", project.getName()));
-			
 			try {
 		            if (project.isOpen()) {
+		    			log.info(String.format("Performing scan on: %s", project.getName()));
 		                IPath projectPath = project.getLocation();
 		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, CliDriverWrapper.CLIENT_ID_SERVER, null, envVars);
 		    			if (!auditResults.isOk()) {
