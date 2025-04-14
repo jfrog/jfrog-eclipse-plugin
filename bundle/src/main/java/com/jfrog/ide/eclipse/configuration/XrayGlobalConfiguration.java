@@ -82,7 +82,6 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	                configEnv
 	            );
 	            if (!configResults.getErr().isBlank()) {
-	            	// throw exception and pop up a message error
 	            	throw new Exception(configResults.getErr());
 	            }
 	        } catch (Exception e) {
