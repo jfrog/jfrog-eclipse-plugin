@@ -30,7 +30,7 @@ public class CliDriverWrapper {
             showCliError("An error occurred while creating the JFrog Eclipse plugin directory:",e);
         }
         // Initialize the cliDriver and download CLI if needed
-        this.cliDriver = new JfrogCliDriver(null, Logger.getInstance());
+        this.cliDriver = new JfrogCliDriver(null, HOME_PATH.toString(), Logger.getInstance());
         try {
             this.cliDriver.downloadCliIfNeeded(HOME_PATH.toString(), CLI_VERSION);
         } catch (IOException e) {

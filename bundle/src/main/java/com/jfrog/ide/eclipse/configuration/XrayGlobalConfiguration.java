@@ -14,7 +14,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.jfrog.build.extractor.executor.CommandResults;
 
+import com.jfrog.ide.common.configuration.JfrogCliDriver;
 import com.jfrog.ide.eclipse.log.Logger;
 import com.jfrog.ide.eclipse.scheduling.CliJob;
 import com.jfrog.ide.eclipse.ui.ComponentDetails;
@@ -68,7 +70,8 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	    // Define the runnable to execute the CLI config command 
 	    ICoreRunnable runnableServerConfig = monitor -> {
 	        try {
-	            CliDriverWrapper.getInstance().getCliDriver().addCliServerConfig(
+	            JfrogCliDriver cliDriver = CliDriverWrapper.getInstance().getCliDriver();
+        		CommandResults configResults = cliDriver.addCliServerConfig(
 	                XrayServerConfigImpl.getInstance().getXrayUrl(),
 	                XrayServerConfigImpl.getInstance().getArtifactoryUrl(),
 	                CliDriverWrapper.CLIENT_ID_SERVER,
@@ -78,6 +81,9 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	                CliDriverWrapper.HOME_PATH.toFile(),
 	                configEnv
 	            );
+	            if (!configResults.getErr().isBlank()) {
+	            	throw new Exception(configResults.getErr());
+	            }
 	        } catch (Exception e) {
 	            CliDriverWrapper.getInstance().showCliError("An error occurred while setting up the server connection:", e);
 	        }
