@@ -81,8 +81,9 @@ public class XrayGlobalConfiguration extends FieldEditorPreferencePage implement
 	                CliDriverWrapper.HOME_PATH.toFile(),
 	                configEnv
 	            );
-	            if (!configResults.getErr().isBlank()) {
-	            	throw new Exception(configResults.getErr());
+        		// log an error in case that the config command returned output not in debug log level
+	            if (!configResults.getErr().isBlank() && !XrayServerConfigImpl.getInstance().getIsDebugLogs()) {
+	            	Logger.getInstance().error(configResults.getErr());
 	            }
 	        } catch (Exception e) {
 	            CliDriverWrapper.getInstance().showCliError("An error occurred while setting up the server connection:", e);
