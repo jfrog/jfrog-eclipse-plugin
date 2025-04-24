@@ -189,7 +189,7 @@ public class ScanManager {
 			} catch (CancellationException ce) {
 				log.info(ce.getMessage());
 			} catch (Exception e) {
-				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);
+				log.error("An error occurred while performing audit scan", e);
 			} finally {
 				scanFinished();
 			}
