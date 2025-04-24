@@ -1,3 +1,6 @@
+## 2.0.1 (24 April 2025)
+- Fixed false error message in server configuration.
+
 ## 2.0.0 (16 April 2025)
 - Added support for performing JAS scans, along with displaying their findings.
 - Updated tree view hierarchy: transitioned from dependency-based structure to a file-based structure for identified issues.
