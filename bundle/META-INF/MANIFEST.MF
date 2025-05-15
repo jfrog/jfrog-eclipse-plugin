@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XRay Plugin
 Bundle-SymbolicName: com.jfrog.ide.eclipse;singleton:=true
-Bundle-Version: 1.2.0
+Bundle-Version: 2.0.1
 nEnvironment: JavaSE-17
 Import-Package: javax.annotation
 Automatic-Module-Name: org.jfrog.plugin.rcp

@@ -24,17 +24,15 @@ public class IssuesTab {
 		// Right
 		SashForm verticalDivision = new SashForm(horizontalDivision, SWT.VERTICAL);
 		ComponentDetails componentDetails = ComponentIssueDetails.createComponentIssueDetails(verticalDivision);
-		ComponentIssueTable componentIssueTable = new ComponentIssueTable(verticalDivision);
 
-		registerTreeListeners(componentDetails, componentIssueTable);
+		registerTreeListeners(componentDetails);
 		horizontalDivision.setWeights(new int[] { 1, 4 });
 		parent.setSelection(tab);
 		tab.setControl(horizontalDivision);
 	}
 
-	private void registerTreeListeners(ComponentDetails componentDetails, ComponentIssueTable componentIssueTable) {
+	private void registerTreeListeners(ComponentDetails componentDetails) {
 		IssuesTree issuesTree = IssuesTree.getInstance();
 		issuesTree.setComponentDetails(componentDetails);
-		issuesTree.setComponentIssueTable(componentIssueTable);
 	}
 }

@@ -1,8 +1,6 @@
 package com.jfrog.ide.eclipse.scan;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -32,7 +30,6 @@ import org.jfrog.build.api.util.Log;
  * @author yahavi
  */
 public class ScanManager {
-	static final Path HOME_PATH = Paths.get(System.getProperty("user.home"), ".jfrog-eclipse-plugin");
 	private static ScanManager instance;
 	private IProgressMonitor monitor;
 	private IWorkspace iworkspace;
@@ -160,10 +157,9 @@ public class ScanManager {
 				return;
 			}
 			
-			log.info(String.format("Performing scan on: %s", project.getName()));
-			
 			try {
 		            if (project.isOpen()) {
+		    			log.info(String.format("Performing scan on: %s", project.getName()));
 		                IPath projectPath = project.getLocation();
 		    			CommandResults auditResults = cliDriver.runCliAudit(new File(projectPath.toString()), null, CliDriverWrapper.CLIENT_ID_SERVER, null, envVars);
 		    			if (!auditResults.isOk()) {
@@ -177,15 +173,23 @@ public class ScanManager {
 		    			log.info("Finished audit scan successfully.\n" + auditResults.getRes());
 	    				log.debug(auditResults.getErr());
 		    			
-		    			log.debug("Updating scan cache.");
-		    			ScanCache.getInstance().updateScanResults(sarifParser.parse(auditResults.getRes()));
-		    			
-		    			// TODO: update issues tree
+		    			log.debug("Updating scan results in UI.");
+		    			issuesTree.addScanResults(sarifParser.parse(auditResults.getRes()));
+		    			// update the issues tree in the UI with the scan results
+		    			parent.getDisplay().syncExec(new Runnable() {
+		    				@Override
+		    				public void run() {
+		    					if (monitor.isCanceled()) {
+		    						return;
+		    					}
+		    					issuesTree.showResultsOnTree();
+		    				}
+		    			});
 		            }
 			} catch (CancellationException ce) {
 				log.info(ce.getMessage());
 			} catch (Exception e) {
-				CliDriverWrapper.getInstance().showCliError("An error occurred while performing audit scan", e);
+				log.error("An error occurred while performing audit scan:\n" + e.getMessage(), e);
 			} finally {
 				scanFinished();
 			}
