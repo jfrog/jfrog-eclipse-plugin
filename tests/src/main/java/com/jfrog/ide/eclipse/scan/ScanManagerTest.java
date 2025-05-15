@@ -11,11 +11,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
 
 import com.jfrog.ide.eclipse.scheduling.CliJob;
-import com.jfrog.ide.eclipse.ui.Panel;
 import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 import com.jfrog.ide.eclipse.utils.Utils;
 import junit.framework.TestCase;
