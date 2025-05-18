@@ -37,15 +37,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 7.6
-      - name: Setup NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-          check-latest: true
 
       # Run tests
       - name: Tests on macOS, Linux, Windows
