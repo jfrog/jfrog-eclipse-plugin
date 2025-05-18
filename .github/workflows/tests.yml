@@ -40,4 +40,4 @@ jobs:
 
       # Run tests
       - name: Tests on macOS, Linux, Windows
-        run: mvn clean test
+        run: mvn clean verify
