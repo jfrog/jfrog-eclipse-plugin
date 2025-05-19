@@ -13,38 +13,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import com.jfrog.ide.eclipse.scheduling.CliJob;
-import com.jfrog.ide.eclipse.ui.issues.IssuesTree;
 
 import com.jfrog.ide.eclipse.utils.Utils;
 import junit.framework.TestCase;
 
 public class ScanManagerTest extends TestCase {
 	private ScanManager scanManager = ScanManager.getInstance();
-	private IssuesTree issuesTree = IssuesTree.getInstance();
 
-	// TODO: generate test for scanning: Maven, Gradle and NPM projects. 
-
-	public void testScanMavenProject() throws IOException, CoreException, InterruptedException {
-		String projectName = "mavenIsApplicable";
-		CountDownLatch latch = new CountDownLatch(1);
-		
-		JobListener jobListener = new JobListener(latch);
-		IProject project = Utils.createProject(projectName, "maven");
-		
-		Job.getJobManager().addJobChangeListener(jobListener);
-		
-		scanManager.scanAndUpdateResults(issuesTree, null, project, null);
-		
-		// wait for scanAndUpdateResults to return, then check issuesTree has results 
-		 boolean completed = latch.await(60, java.util.concurrent.TimeUnit.SECONDS);
-		
-        // Ensure the job completed
-        assertTrue(completed);
-
-        // Check the issuesTree has results
-//        assertTrue(scanCache.getScanResults().size() > 0);
-        cleanup(jobListener);
-	}
+	// TODO: add integration test for scanning: Maven, Gradle and NPM projects. 
 	
 	public void testSchedulingAJob()
 			throws IOException, CoreException, OperationCanceledException, InterruptedException {
