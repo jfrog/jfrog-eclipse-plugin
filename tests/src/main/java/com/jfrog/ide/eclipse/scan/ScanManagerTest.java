@@ -25,7 +25,7 @@ public class ScanManagerTest extends TestCase {
 	public void testSchedulingAJob()
 			throws IOException, CoreException, OperationCanceledException, InterruptedException {
 		String projectName = "gradleIsApplicable";
-		JobListener jobListener = new JobListener(null);
+		JobListener jobListener = new JobListener();
 		IProject project = Utils.createProject(projectName, "gradle");
 		Job.getJobManager().addJobChangeListener(jobListener);
 		scanManager.scanAndUpdateResults(null, null, project, null);
@@ -37,7 +37,7 @@ public class ScanManagerTest extends TestCase {
 	public void testScanFinished() throws IOException, CoreException, OperationCanceledException, InterruptedException {
 		scanManager.getScanInProgress().set(true);
 		String projectName = "gradleIsApplicable";
-		JobListener jobListener = new JobListener(null);
+		JobListener jobListener = new JobListener();
 		Job.getJobManager().addJobChangeListener(jobListener);
 		IProject project = Utils.createProject(projectName, "gradle");
 		scanManager.scanAndUpdateResults(null, null, project, null);
@@ -64,11 +64,6 @@ public class ScanManagerTest extends TestCase {
 		private static AtomicBoolean jobExists = new AtomicBoolean(false);
 		private String jobName;
 		private static AtomicInteger numOfJobs = new AtomicInteger();
-		private final CountDownLatch latch;
-
-        public JobListener(CountDownLatch latch) {
-            this.latch = latch;
-        }
 		
 		@Override
 		public void scheduled(IJobChangeEvent event) {
@@ -82,9 +77,6 @@ public class ScanManagerTest extends TestCase {
 		public void done(IJobChangeEvent event) {
 			if (event.getJob().belongsTo(CliJob.FAMILY)) {
 				jobExists.set(true);
-			}
-			if (latch != null) {
-				latch.countDown();
 			}
 		}
 
