@@ -1,10 +1,8 @@
 package com.jfrog.ide.eclipse.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IProject;
@@ -17,8 +15,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-
-import com.jfrog.ide.eclipse.scan.GradleScanManager;
 
 /**
  * Utils class for testing
@@ -58,16 +54,6 @@ public class Utils {
 			}
 		}, null);
 		return project;
-	}
-
-	/**
-	 * Returns the gradle init script file location
-	 */
-	public static String getGradleInitScriptLocation(GradleScanManager gradleScanManager) throws IOException {
-		File currentDir = new File(System.getProperty("user.dir"));
-		File parentDir = currentDir.getParentFile();
-		File pathToGradleScriptFile = Paths.get(parentDir.getAbsolutePath(), "bundle", "src", "main", "resources", "gradle", GradleScanManager.GRADLE_INIT_SCRIPT).toFile();
-		return gradleScanManager.createGradleFile(new FileInputStream(pathToGradleScriptFile));
 	}
 
 	/**

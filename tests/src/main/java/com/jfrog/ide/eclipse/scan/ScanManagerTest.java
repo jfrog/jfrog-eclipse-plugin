@@ -1,9 +1,9 @@
 package com.jfrog.ide.eclipse.scan;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -12,37 +12,38 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
-import com.jfrog.ide.eclipse.scheduling.ScanJob;
-import com.jfrog.ide.eclipse.utils.Utils;
+import com.jfrog.ide.eclipse.scheduling.CliJob;
 
+import com.jfrog.ide.eclipse.utils.Utils;
 import junit.framework.TestCase;
 
 public class ScanManagerTest extends TestCase {
+	private ScanManager scanManager = ScanManager.getInstance();
 
+	// TODO: add integration test for scanning: Maven, Gradle and NPM projects. 
+	
 	public void testSchedulingAJob()
 			throws IOException, CoreException, OperationCanceledException, InterruptedException {
 		String projectName = "gradleIsApplicable";
 		JobListener jobListener = new JobListener();
 		IProject project = Utils.createProject(projectName, "gradle");
-		ScanManager scanManager = new GradleScanManager(project);
 		Job.getJobManager().addJobChangeListener(jobListener);
-		scanManager.scanAndUpdateResults(false, null, null, null);
-		Job.getJobManager().join(ScanJob.FAMILY, new NullProgressMonitor());
+		scanManager.scanAndUpdateResults(null, null, project, null);
+		Job.getJobManager().join(CliJob.FAMILY, new NullProgressMonitor());
 		assertJobInformation(projectName, jobListener);
 		cleanup(jobListener);
 	}
 
 	public void testScanFinished() throws IOException, CoreException, OperationCanceledException, InterruptedException {
-		ScanManagersFactory.getInstance().getScanInProgress().set(true);
+		scanManager.getScanInProgress().set(true);
 		String projectName = "gradleIsApplicable";
 		JobListener jobListener = new JobListener();
 		Job.getJobManager().addJobChangeListener(jobListener);
 		IProject project = Utils.createProject(projectName, "gradle");
-		ScanManager scanManager = new GradleScanManager(project);
-		scanManager.scanAndUpdateResults(false, null, null, null);
-		Job.getJobManager().join(ScanJob.FAMILY, new NullProgressMonitor());
+		scanManager.scanAndUpdateResults(null, null, project, null);
+		Job.getJobManager().join(CliJob.FAMILY, new NullProgressMonitor());
 		assertJobInformation(projectName, jobListener);
-		assertFalse(ScanManagersFactory.getInstance().getScanInProgress().get());
+		assertFalse(scanManager.getScanInProgress().get());
 		cleanup(jobListener);
 	}
 
@@ -54,7 +55,7 @@ public class ScanManagerTest extends TestCase {
 
 	private void assertJobInformation(String projectName, JobListener jobListener) {
 		assertTrue(jobListener.isJobExists());
-		assertEquals(projectName, jobListener.getJobName());
+		assertEquals("Performing Scan: " + projectName, jobListener.getJobName());
 		assertEquals(1, jobListener.numOfJobs());
 	}
 
@@ -63,10 +64,10 @@ public class ScanManagerTest extends TestCase {
 		private static AtomicBoolean jobExists = new AtomicBoolean(false);
 		private String jobName;
 		private static AtomicInteger numOfJobs = new AtomicInteger();
-
+		
 		@Override
 		public void scheduled(IJobChangeEvent event) {
-			if (event.getJob().belongsTo(ScanJob.FAMILY)) {
+			if (event.getJob().belongsTo(CliJob.FAMILY)) {
 				this.jobName = event.getJob().getName();
 				numOfJobs.incrementAndGet();
 			}
@@ -74,7 +75,7 @@ public class ScanManagerTest extends TestCase {
 
 		@Override
 		public void done(IJobChangeEvent event) {
-			if (event.getJob().belongsTo(ScanJob.FAMILY)) {
+			if (event.getJob().belongsTo(CliJob.FAMILY)) {
 				jobExists.set(true);
 			}
 		}
