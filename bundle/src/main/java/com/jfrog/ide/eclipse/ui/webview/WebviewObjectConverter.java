@@ -90,28 +90,6 @@ public class WebviewObjectConverter {
      * Each path is a list of ImpactPath objects, representing a path from root to leaf.
      * Node names are "name:version" (or just "name" if version is empty).
      */
-//    public static ImpactGraph toImpactGraph(List<List<ImpactPath>> impactPaths) {
-//        // Use a dummy root node
-//        ImpactTreeNode root = new ImpactTreeNode("root");
-//        int maxDepth = 0;
-//        for (List<ImpactPath> path : impactPaths) {
-//            ImpactTreeNode current = root;
-//            int depth = 0;
-//            for (ImpactPath ip : path) {
-//                String nodeName = ip.getName() + (ip.getVersion() != null && !ip.getVersion().isEmpty() ? ":" + ip.getVersion() : "");
-//                current.getChildren().add(new ImpactTreeNode(nodeName));
-//                depth++;
-//            }
-//            if (depth > maxDepth) {
-//                maxDepth = depth;
-//            }
-//        }
-//        ImpactGraphNode rootGraphNode = toImpactGraphNode(root);
-//        // +1 to include root
-//        maxDepth += 1;
-//        // Set pathsLimit to the IMPACT_PATHS_LIMIT if maximum depth found exceeding the limit
-//        return new ImpactGraph(rootGraphNode, maxDepth > IMPACT_PATHS_LIMIT ? IMPACT_PATHS_LIMIT : -1 );
-//    } TODO: improve implementation
     
     public static ImpactGraph toImpactGraph(List<List<ImpactPath>> impactPaths) {
         if (impactPaths == null || impactPaths.isEmpty()) {
@@ -119,28 +97,32 @@ public class WebviewObjectConverter {
         }
         // Use the first element in each path as the root for that path
         Map<String, ImpactTreeNode> rootMap = new LinkedHashMap<>();
-        int maxDepth = 0;
-        for (List<ImpactPath> path : impactPaths) {
-            if (path == null || path.isEmpty()) {
+        boolean isMaxLimitExceeded;
+        int pathsNumber = impactPaths.size();
+        int pathIndex = 0;
+        
+        for (; pathIndex < pathsNumber && pathIndex < IMPACT_PATHS_LIMIT; pathIndex++) {
+        	List<ImpactPath> currentPath = impactPaths.get(pathIndex);
+            if (currentPath == null || currentPath.isEmpty()) {
                 continue;
             }
 
-            String rootName = getNodeName(path.get(0));
+            String rootName = getNodeName(currentPath.get(0));
             ImpactTreeNode root = rootMap.computeIfAbsent(rootName, ImpactTreeNode::new);
-            ImpactTreeNode current = root;
-            int depth = 1;
-            for (int i = 1; i < path.size(); i++) {
-                String nodeName = getNodeName(path.get(i));
-                current = getOrAddChild(current, nodeName);
-                depth++;
-            }
-            if (depth > maxDepth) {
-                maxDepth = depth;
+            ImpactTreeNode currentNode = root;
+            int currentPathSize = currentPath.size();
+            
+            for (int nodeIndex = 1; nodeIndex < currentPathSize; nodeIndex++) {
+                String nodeName = getNodeName(currentPath.get(nodeIndex));
+                currentNode = getOrAddChild(currentNode, nodeName);
             }
         }
-        // Always use the first root in the map as the ImpactGraph root
+        
+        isMaxLimitExceeded = pathIndex >= IMPACT_PATHS_LIMIT ?  true : false;
+
         ImpactGraphNode rootGraphNode = toImpactGraphNode(rootMap.values().iterator().next());
-        return new ImpactGraph(rootGraphNode, maxDepth);
+        // pass value for pathsLimit only if exceeded the defined IMPACT_PATHS_LIMIT, so a corresponding message will appear in the WebView UI
+        return new ImpactGraph(rootGraphNode, isMaxLimitExceeded ? IMPACT_PATHS_LIMIT : -1);
     }
 
     private static String getNodeName(ImpactPath ip) {
