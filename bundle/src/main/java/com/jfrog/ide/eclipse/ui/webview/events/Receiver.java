@@ -67,11 +67,7 @@ public class Receiver {
      * @param event The received IdeEvent to handle.
      */
     private void handler(IdeEvent event) {
-//        if (Objects.requireNonNull(event.getType()) == IdeEvent.Type.JUMP_TO_CODE) {
-//            new JumpToCodeTask(this.project).execute(createMapper().convertValue(event.getData(), Location.class));
-//            Logger.getInstance().debug("Jump to " + event.getType());
-//        } else {
-            Logger.getInstance().debug("Received unknown event from the webview: " + event.getType());
+        Logger.getInstance().debug("Received event from the webview: " + event.getType());
     }
     
     private class MessageHandler extends CefMessageRouterHandlerAdapter {
