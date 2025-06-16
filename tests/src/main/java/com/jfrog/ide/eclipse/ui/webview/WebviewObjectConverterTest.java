@@ -8,25 +8,27 @@ import com.jfrog.ide.common.nodes.subentities.Severity;
 import com.jfrog.ide.common.nodes.subentities.SourceCodeScanType;
 import com.jfrog.ide.common.parse.Applicability;
 import com.jfrog.ide.common.webview.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebviewObjectConverterTest {
+public class WebviewObjectConverterTest extends TestCase{
 
     private ScaIssueNode scaIssueNode;
     private FileIssueNode secretIssueNode;
     private SastIssueNode sastIssueNode;
+    
+    // setup common data
+    String filePath = "/test/path/file.java";
+    int rowStart = 10;
+    int colStart = 5;
+    int rowEnd = 20;
+    int colEnd = 10;
+    String lineSnippet = "vulnerable code line";
 
-    @Before
-    void setUp() {
-        // Setup SCA test data
+    public void testConvertScaIssueToDepPage() {
+    	// Setup SCA test data
     	String scaTitle = "CVE-2023-1234";
     	String reason = "sca issue reason";
     	Severity severity = Severity.High;
@@ -37,37 +39,6 @@ public class WebviewObjectConverterTest {
     	String fullDescription = "Test vulnerability description";
     	
         scaIssueNode = new ScaIssueNode(scaTitle, reason, severity, ruleID, applicability, impactPaths, fixedVersions, fullDescription);
-        
-        // setup common data
-        String filePath = "/test/path/file.java";
-        int rowStart = 10;
-        int colStart = 5;
-        int rowEnd = 20;
-        int colEnd = 10;
-        String lineSnippet = "vulnerable code line";
-        
-        // setup secrets test data
-        String secretTitle = "Secret issue";
-        String secretReason = "Hard coded secrets were found";
-        Severity secretSeverity = Severity.Medium; 
-        String secretRuleId = "SECRET-RULE"; 
-        String secretFullDescription = "Test Secret issue description";
-        
-        secretIssueNode = new FileIssueNode(secretTitle, filePath, rowStart, colStart, rowEnd, colEnd, secretReason, lineSnippet, SourceCodeScanType.SECRETS, secretSeverity, secretFullDescription);
-
-        
-        // setup sast test data
-        String sastTitle = "SAST Issue";
-        String sastReason = "SAST issue reason";
-        Severity sastSeverity = Severity.Critical;
-        String sastRuleId = "SAST-RULE";
-        String sastFullDescription = "Test SAST issue description";
-        
-        sastIssueNode = new SastIssueNode(sastTitle, filePath, rowStart, colStart, rowEnd, colEnd, sastReason, lineSnippet, null, sastSeverity, sastRuleId, sastFullDescription);
-    }
-
-    @Test
-    void testConvertScaIssueToDepPage() {
         DependencyPage result = WebviewObjectConverter.convertScaIssueToDepPage(scaIssueNode);
 
         assertNotNull(result);
@@ -80,8 +51,15 @@ public class WebviewObjectConverterTest {
         assertEquals(scaIssueNode.getTitle(), result.getCve().getId());
     }
 
-    @Test
-    void testConvertFileIssueToIssuePage() {
+    public void testConvertFileIssueToIssuePage() {
+        // setup secrets test data
+        String secretTitle = "Secret issue";
+        String secretReason = "Hard coded secrets were found";
+        Severity secretSeverity = Severity.Medium; 
+        String secretRuleId = "SECRET-RULE"; 
+        String secretFullDescription = "Test Secret issue description";
+        
+        secretIssueNode = new FileIssueNode(secretTitle, filePath, rowStart, colStart, rowEnd, colEnd, secretReason, lineSnippet, SourceCodeScanType.SECRETS, secretSeverity, secretRuleId, secretFullDescription);
         IssuePage result = WebviewObjectConverter.convertFileIssueToIssuePage(secretIssueNode);
 
         assertNotNull(result);
@@ -94,8 +72,16 @@ public class WebviewObjectConverterTest {
         assertEquals(secretIssueNode.getColStart() + 1, result.getLocation().getStartColumn());
     }
 
-    @Test
-    void testConvertSastIssueToSastIssuePage() {
+    public void testConvertSastIssueToSastIssuePage() {
+        // setup SAST test data
+        String sastTitle = "SAST Issue";
+        String sastReason = "SAST issue reason";
+        Severity sastSeverity = Severity.Critical;
+        String sastRuleId = "SAST-RULE";
+        String sastFullDescription = "Test SAST issue description";
+        
+        sastIssueNode = new SastIssueNode(sastTitle, filePath, rowStart, colStart, rowEnd, colEnd, sastReason, lineSnippet, null, sastSeverity, sastRuleId, sastFullDescription);
+        
         IssuePage result = WebviewObjectConverter.convertSastIssueToSastIssuePage(sastIssueNode);
 
         assertNotNull(result);
@@ -107,8 +93,7 @@ public class WebviewObjectConverterTest {
         assertEquals(sastIssueNode.getFullDescription(), sastResult.getDescription());
     }
 
-    @Test
-    void testToImpactGraph_EmptyInput() {
+    public void testToImpactGraph_EmptyInput() {
         ImpactGraph result = WebviewObjectConverter.toImpactGraph(null);
 
         assertNotNull(result);
@@ -117,8 +102,7 @@ public class WebviewObjectConverterTest {
         assertEquals(0, result.getRoot().getChildren().length);
     }
 
-    @Test
-    void testToImpactGraph_SinglePath() {
+    public void testToImpactGraph_SinglePath() {
         List<List<ImpactPath>> impactPaths = new ArrayList<>();
         List<ImpactPath> path = new ArrayList<>();
         path.add(new ImpactPath("root", "1.0"));
@@ -137,8 +121,7 @@ public class WebviewObjectConverterTest {
         assertEquals("child2:3.0", result.getRoot().getChildren()[0].getChildren()[0].getName());
     }
 
-    @Test
-    void testToImpactGraph_MultiplePaths() {
+    public void testToImpactGraph_MultiplePaths() {
         List<List<ImpactPath>> impactPaths = new ArrayList<>();
         
         // First path
@@ -170,8 +153,7 @@ public class WebviewObjectConverterTest {
         assertTrue(hasChild1 && hasChild2);
     }
 
-    @Test
-    void testToImpactGraph_ExceedsLimit() {
+    public void testToImpactGraph_ExceedsLimit() {
         List<List<ImpactPath>> impactPaths = new ArrayList<>();
         for (int i = 0; i < WebviewObjectConverter.IMPACT_PATHS_LIMIT + 5; i++) {
             List<ImpactPath> path = new ArrayList<>();
