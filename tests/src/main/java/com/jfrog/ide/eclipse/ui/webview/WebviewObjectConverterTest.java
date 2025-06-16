@@ -82,15 +82,13 @@ public class WebviewObjectConverterTest extends TestCase{
         
         sastIssueNode = new SastIssueNode(sastTitle, filePath, rowStart, colStart, rowEnd, colEnd, sastReason, lineSnippet, null, sastSeverity, sastRuleId, sastFullDescription);
         
-        IssuePage result = WebviewObjectConverter.convertSastIssueToSastIssuePage(sastIssueNode);
+        SastIssuePage result = WebviewObjectConverter.convertSastIssueToSastIssuePage(sastIssueNode);
 
         assertNotNull(result);
-        assertTrue(result instanceof SastIssuePage);
-        SastIssuePage sastResult = (SastIssuePage) result;
-        assertEquals(sastIssueNode.getTitle(), sastResult.getHeader());
-        assertEquals(sastIssueNode.getRuleId(), sastResult.getRuleId());
-        assertEquals(sastIssueNode.getSeverity().name(), sastResult.getSeverity());
-        assertEquals(sastIssueNode.getFullDescription(), sastResult.getDescription());
+        assertEquals(sastIssueNode.getTitle(), result.getHeader());
+        assertEquals(sastIssueNode.getRuleId(), result.getRuleId());
+        assertEquals(sastIssueNode.getSeverity().name(), result.getSeverity());
+        assertEquals(sastIssueNode.getFullDescription(), result.getDescription());
     }
 
     public void testToImpactGraph_EmptyInput() {

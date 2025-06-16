@@ -40,7 +40,7 @@ public class WebviewObjectConverter {
                 .location(convertFileLocation(fileIssueNode));
     }
 
-    public static IssuePage convertSastIssueToSastIssuePage(SastIssueNode sastIssueNode) {
+    public static SastIssuePage convertSastIssueToSastIssuePage(SastIssueNode sastIssueNode) {
         return new SastIssuePage(convertFileIssueToIssuePage(sastIssueNode))
                 .setAnalysisSteps(convertCodeFlowsToLocations(sastIssueNode.getCodeFlows()))
                 .setRuleID(sastIssueNode.getRuleId());
