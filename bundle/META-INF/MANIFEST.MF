@@ -22,8 +22,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.114.0",
 Bundle-ClassPath: .,
  lib/ide-plugins-common.jar
 Bundle-Vendor: JFrog
-Export-Package: 
- com.jfrog.ide.eclipse.configuration,
+Export-Package: com.jfrog.ide.eclipse.configuration,
  com.jfrog.ide.eclipse.log,
  com.jfrog.ide.eclipse.npm,
  com.jfrog.ide.eclipse.scan,
