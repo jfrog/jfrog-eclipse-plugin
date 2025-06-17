@@ -48,8 +48,10 @@ public class WebviewObjectConverter {
 
     private static Location[] convertCodeFlowsToLocations(FindingInfo[][] codeFlows) {
         if (codeFlows != null && codeFlows.length > 0) {
-            Location[] locations = new Location[codeFlows[0].length];
-            for (int i = 0; i < codeFlows[0].length; i++) {
+        	FindingInfo[] codeFlowList = codeFlows[0];
+        	int codeFlowListSize = codeFlowList.length;
+            Location[] locations = new Location[codeFlowListSize];
+            for (int i = 0; i < codeFlowListSize; i++) {
                 FindingInfo codeFlow = codeFlows[0][i];
                 locations[i] = new Location(
                         codeFlow.getFilePath(),
@@ -70,7 +72,7 @@ public class WebviewObjectConverter {
             case SECRETS -> "SECRETS";
             case IAC -> "IAC";
             case SAST -> "SAST";
-            default -> "EMPTY";
+            default -> "EMPTY"; // any other value passed will result the load of the default WebView page
         };
     }
 
@@ -90,7 +92,6 @@ public class WebviewObjectConverter {
      * Each path is a list of ImpactPath objects, representing a path from root to leaf.
      * Node names are "name:version" (or just "name" if version is empty).
      */
-    
     public static ImpactGraph toImpactGraph(List<List<ImpactPath>> impactPaths) {
         if (impactPaths == null || impactPaths.isEmpty()) {
             return new ImpactGraph(new ImpactGraphNode("", new ImpactGraphNode[0]), 0);

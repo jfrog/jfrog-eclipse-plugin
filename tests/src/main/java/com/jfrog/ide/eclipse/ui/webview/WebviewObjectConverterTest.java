@@ -109,7 +109,7 @@ public class WebviewObjectConverterTest extends TestCase{
         impactPaths.add(path);
 
         ImpactGraph result = WebviewObjectConverter.toImpactGraph(impactPaths);
-
+        
         assertNotNull(result);
         assertNotNull(result.getRoot());
         assertEquals("root:1.0", result.getRoot().getName());
@@ -117,6 +117,8 @@ public class WebviewObjectConverterTest extends TestCase{
         assertEquals("child1:2.0", result.getRoot().getChildren()[0].getName());
         assertEquals(1, result.getRoot().getChildren()[0].getChildren().length);
         assertEquals("child2:3.0", result.getRoot().getChildren()[0].getChildren()[0].getName());
+        // validate IMPACT_PATHS_LIMIT wasn't exceeded 
+        assertEquals(-1, result.getPathsLimit());
     }
 
     public void testToImpactGraph_MultiplePaths() {
