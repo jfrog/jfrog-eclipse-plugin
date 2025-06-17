@@ -30,4 +30,5 @@ Export-Package: com.jfrog.ide.eclipse.configuration,
  com.jfrog.ide.eclipse.ui,
  com.jfrog.ide.eclipse.ui.actions,
  com.jfrog.ide.eclipse.ui.issues,
+ com.jfrog.ide.eclipse.ui.webview,
  com.jfrog.ide.eclipse.utils
