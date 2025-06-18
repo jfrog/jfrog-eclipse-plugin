@@ -1,8 +1,6 @@
 package com.jfrog.ide.eclipse.ui.webview.events;
 
 import org.cef.browser.CefBrowser;
-import org.eclipse.core.resources.IProject;
-
 import com.jfrog.ide.common.webview.events.WebviewEvent;
 
 /**
@@ -15,15 +13,15 @@ public class EventManager {
     private final Sender sender;
 
     /**
-     * Constructs a new EventManager with the provided JBCefBrowser and Project.
+     * Constructs a new EventManager with the provided CefBrowser.
      * Note: The eventManager must be created before the webview is initialized.
      *
-     * @param browser The JBCefBrowser associated with the webview.
+     * @param cefBrowser The JBCefBrowser associated with the webview.
      * @param project   The Project associated with the IDE.
      */
-    public EventManager(CefBrowser browser, IProject project) {
-        this.receiver = new Receiver(browser, project);
-        this.sender = new Sender(browser);
+    public EventManager(CefBrowser cefBrowser) {
+        this.receiver = new Receiver(cefBrowser);
+        this.sender = new Sender(cefBrowser);
     }
 
     /**
@@ -33,12 +31,9 @@ public class EventManager {
      *
      * @param onLoadEnd A {@link Runnable} to run when the webview finishes loading.
      */
-    public void onWebviewLoadEnd(Runnable onLoadEnd) {
+    public void onWebviewLoadEnd() {
         String ideSendFuncBody = this.receiver.createIdeSendFuncBody(ideSendFuncName);
         this.sender.sendIdeSendFunc(ideSendFuncName, ideSendFuncBody);
-        if (onLoadEnd != null) {
-            onLoadEnd.run();
-        }
     }
 
     /**

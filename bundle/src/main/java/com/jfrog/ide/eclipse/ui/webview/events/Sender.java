@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfrog.ide.common.webview.events.WebviewEvent;
 import com.jfrog.ide.eclipse.log.Logger;
 
-import static com.jfrog.ide.common.utils.Utils.createMapper;
-
 import org.cef.browser.CefBrowser;
 
+import static com.jfrog.ide.common.utils.Utils.createMapper;
+
+import javax.swing.SwingUtilities;
 
 /**
  * The Sender class is responsible for sending events from the IDE to the webview.
@@ -69,10 +70,12 @@ public class Sender {
 
     /**
      * Sends the specified event to the webview by executing the JavaScript code.
-     *
+     * this action must be done on the SWT thread 
      * @param event The JavaScript code to be executed in the webview.
      */
     public void send(String event) {
-        browser.executeJavaScript(event, "", 0);
+		SwingUtilities.invokeLater(() -> {
+			browser.executeJavaScript(event, "", 0);
+		});
     }
 }
