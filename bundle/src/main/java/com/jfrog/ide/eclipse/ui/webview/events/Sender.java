@@ -61,10 +61,10 @@ public class Sender {
     public void sendEvent(WebviewEvent.Type type, Object data) {
         try {
             String raw = pack(type, data);
-            Logger.getInstance().debug("Sending data to jfrog webview: " + raw);
-            this.send("window.postMessage(" + raw + ")");
+            Logger.getInstance().debug(String.format("Sending data to jfrog webview: %s", raw));
+            this.send(String.format("window.postMessage( %s )", raw));
         } catch (JsonProcessingException e) {
-            Logger.getInstance().error(e.getMessage());
+            Logger.getInstance().error(String.format("Failed to pack the Webview event: %s", e.getMessage()));
         }
     }
 

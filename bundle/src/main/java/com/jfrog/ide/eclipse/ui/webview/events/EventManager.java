@@ -8,7 +8,7 @@ import com.jfrog.ide.common.webview.events.WebviewEvent;
  * It handles the creation of a receiver and sender, allowing communication between the components.
  */
 public class EventManager {
-    private final static String ideSendFuncName = "sendMessageToIdeFunc";
+    private final static String IDE_SEND_FUNC_NAME = "sendMessageToIdeFunc";
     private final Receiver receiver;
     private final Sender sender;
 
@@ -32,8 +32,8 @@ public class EventManager {
      * @param onLoadEnd A {@link Runnable} to run when the webview finishes loading.
      */
     public void onWebviewLoadEnd() {
-        String ideSendFuncBody = this.receiver.createIdeSendFuncBody(ideSendFuncName);
-        this.sender.sendIdeSendFunc(ideSendFuncName, ideSendFuncBody);
+        String ideSendFuncBody = this.receiver.createIdeSendFuncBody(IDE_SEND_FUNC_NAME);
+        this.sender.sendIdeSendFunc(IDE_SEND_FUNC_NAME, ideSendFuncBody);
     }
 
     /**

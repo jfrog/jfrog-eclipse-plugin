@@ -29,10 +29,11 @@ public class Receiver {
                 try {
                     IdeEvent event = unpack(request);
                     handler(event);
-                    callback.success("");
+                    callback.success("Request processed successfully.");
                 } catch (JsonProcessingException e) {
-                    Logger.getInstance().error(e.getMessage());
-                    callback.failure(500, e.getMessage());
+                    Logger.getInstance().error(String.format("Failed to parse event from the Webview: %s", e.getMessage()));
+                    callback.failure(500,String.format("Invalid request format: %s", e.getMessage()));
+                    return false;
                 }
                 return true;
             }
@@ -47,10 +48,7 @@ public class Receiver {
 
     public String createIdeSendFuncBody(String ideSendFunctionName) {
         // This JS function sends a message to the Java side using the message router.
-        return "window['" + ideSendFunctionName + "'] = obj => { " +
-                "let raw = JSON.stringify(obj); " +
-                "cefQuery({request: raw}); " +
-                "}";
+        return String.format("window['%s'] = obj => { let raw = JSON.stringify(obj); cefQuery({request: raw}); };",ideSendFunctionName);
     }
 
     /**
@@ -60,7 +58,7 @@ public class Receiver {
      */
     private void handler(IdeEvent event) {
     	// TODO: add logic for handling Webview events such as: JUMP_TO_CODE
-        Logger.getInstance().info("Received event from the webview: " + event.getType());
+        Logger.getInstance().info(String.format("Received event from the webview: %s", event.getType()));
     }
     
 }
