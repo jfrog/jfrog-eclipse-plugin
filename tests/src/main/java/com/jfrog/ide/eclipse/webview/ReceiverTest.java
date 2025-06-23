@@ -12,6 +12,7 @@ public class ReceiverTest extends TestCase {
         assertNotNull(event);
         assertEquals("JUMP_TO_CODE", event.getType().toString());
         assertNotNull(event.getData());
+        assertTrue((event.getData().toString()).contains("filePath"));
     }
 
     public void testUnpackWithNullData() throws JsonProcessingException {
@@ -23,14 +24,12 @@ public class ReceiverTest extends TestCase {
     }
 
     public void testUnpackWithExtraFields() throws JsonProcessingException {
-        String json = "{\"type\":\"CUSTOM\",\"data\":{\"foo\":123},\"extra\":\"ignored\"}";
-        try 
-        {
-            IdeEvent event = Receiver.unpack(json);
-            fail("Expected JsonProcessingException");
-        } catch (JsonProcessingException e) {
-        	// Expected
-        }
+        String json = "{\"type\":\"JUMP_TO_CODE\",\"data\":{\"filePath\":\"path\"},\"extra\":\"data\"}";
+        IdeEvent event = Receiver.unpack(json);
+        assertNotNull(event);
+        assertEquals("JUMP_TO_CODE", event.getType().toString());
+        assertNotNull(event.getData());
+        assertTrue(event.getData().toString().contains("filePath"));
     }
 
     public void testUnpackWithInvalidJson() {
@@ -56,7 +55,7 @@ public class ReceiverTest extends TestCase {
         String json = "{\"type\":\"SOME_EVENT\",\"data\":{\"value\":42}}";
         try
         {
-            IdeEvent event = Receiver.unpack(json);
+            Receiver.unpack(json);
             fail("Expected JsonProcessingException");
         } catch (JsonProcessingException e) {
         	// Expected
