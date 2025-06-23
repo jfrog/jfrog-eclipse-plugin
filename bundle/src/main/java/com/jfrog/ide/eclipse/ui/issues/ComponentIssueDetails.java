@@ -55,16 +55,13 @@ public class ComponentIssueDetails extends ComponentDetails {
 				return;
 			}
 			
-			// Get the webview URL
 			String webviewUrl = getWebviewUrl();
 			if (webviewUrl == null) {
 				log.error("Could not find webview resources");
 				return;
 			}
 			
-			// Create browser using WebviewManager
 			webviewManager.createBrowser(parent, webviewUrl);
-			
 			log.debug("Webview browser created successfully");
 			
 		} catch (Exception e) {
@@ -91,8 +88,8 @@ public class ComponentIssueDetails extends ComponentDetails {
 	 * Gets the webview URL. This method can be customized to load from different sources.
 	 */
 	private String getWebviewUrl() {
-		// For now, using the hardcoded path. This can be made more flexible
-		return "C:\\Users\\Keren Reshef\\Projects\\jfrog-eclipse-plugin\\bundle\\src\\main\\resources\\jfrog-ide-webview\\index.html";
+		String root = System.getProperty("user.dir");
+		return root + "/bundle/src/main/resources/jfrog-ide-webview/index.html";
 	}
 
 	public static void disposeComponentDetails() {

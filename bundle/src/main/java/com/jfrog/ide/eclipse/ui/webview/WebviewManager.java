@@ -104,21 +104,12 @@ public class WebviewManager {
 			// Create browser on Swing thread
 			SwingUtilities.invokeLater(() -> {
 				try {
-					// Create browser
 					cefBrowser = client.createBrowser(webviewUrl, false, false);
-					
-					// Initialize event manager after browser is created
 					eventManager = new EventManager(cefBrowser);
-					
-					// Set up load handler
 					setupLoadHandler(() -> eventManager.onWebviewLoadEnd());
-					
-					// Add browser to frame
 					frame.add(cefBrowser.getUIComponent(), BorderLayout.CENTER);
 					frame.validate();
-					
 					log.info("Webview browser created and embedded successfully");
-					
 				} catch (Exception e) {
 					log.error("Error creating browser: " + e.getMessage(), e);
 				}
@@ -246,8 +237,6 @@ public class WebviewManager {
 				// Initialize CEF
 				CefApp.startup(new String[0]);
 				cefApp = CefApp.getInstance(settings);
-				
-				// Create client
 				client = cefApp.createClient();
 				
 				// Add message router for console logging
@@ -281,12 +270,6 @@ public class WebviewManager {
 			public void onLoadError(CefBrowser browser, CefFrame frame, ErrorCode errorCode, 
 								  String errorText, String failedUrl) {
 				super.onLoadError(browser, frame, errorCode, errorText, failedUrl);
-				// When opening links in external browser, JBCef cancels the page redirection
-				// and opens the page in a new browser window.
-				// This cancellation causes CEF to throw an ERR_ABORTED error.
-//				if (errorCode == ErrorCode.ERR_ABORTED) {
-//					return;
-//				}
 				log.error("An error occurred while loading the webview: " + errorText);
 			}
 		});
