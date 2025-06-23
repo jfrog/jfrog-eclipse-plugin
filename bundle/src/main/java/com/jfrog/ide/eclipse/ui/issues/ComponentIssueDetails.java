@@ -1,5 +1,7 @@
 package com.jfrog.ide.eclipse.ui.issues;
 
+import java.nio.file.Paths;
+
 import org.eclipse.swt.widgets.Composite;
 
 import com.jfrog.ide.common.nodes.FileIssueNode;
@@ -88,8 +90,7 @@ public class ComponentIssueDetails extends ComponentDetails {
 	 * Gets the webview URL. This method can be customized to load from different sources.
 	 */
 	private String getWebviewUrl() {
-		String root = System.getProperty("user.dir");
-		return root + "/bundle/src/main/resources/jfrog-ide-webview/index.html";
+		return Paths.get(System.getProperty("user.dir"), "bundle", "src", "main", "resources", "jfrog-ide-webview", "index.html").toString();
 	}
 
 	public static void disposeComponentDetails() {
