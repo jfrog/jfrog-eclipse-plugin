@@ -127,4 +127,5 @@ public abstract class ComponentDetails extends Panel {
 		componentDetailsPanel.pack();
 	}
 
+	protected abstract void createBrowserJCEF(Composite parent);
 }
